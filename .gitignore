@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches & temporary files
+.pytest_cache/
+*.tmp
+*.log
+.user_uploaded/
+.system_generated/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Agent / Workspace rules & vibe-coding instruction files (keep local, do not upload to GitHub)
+GEMINI.md
+guidelines.md
+
+# Scratch helper scripts
+generate_*.py
+test_*.py
+
+# Raw extracted page images, scans & OCR text dumps
+extracted_diagrams/
+extracted_preview/
+*.txt
+
+# Raw source lecture PDFs (Preserve only the compiled master monograph General_Surgery_Master_Notes.pdf)
+*.pdf
+!General_Surgery_Master_Notes.pdf
