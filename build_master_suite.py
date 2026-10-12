@@ -1152,7 +1152,39 @@ body {{
     margin-right: 6px;
 }}
 
-.viva-pearls-container.answers-hidden .viva-a-row {{
+.viva-qa-block {{
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}}
+
+.viva-qa-block:hover {{
+    border-color: rgba(124, 58, 237, 0.2);
+    background: rgba(124, 58, 237, 0.03);
+}}
+
+body.dark .viva-qa-block:hover {{
+    border-color: rgba(167, 139, 250, 0.3);
+    background: rgba(167, 139, 250, 0.06);
+}}
+
+.viva-pearls-container.answers-hidden .viva-qa-block:not(.revealed) .viva-a-row {{
+    display: none;
+}}
+
+.viva-pearls-container.answers-hidden .viva-qa-block.revealed .viva-a-row {{
+    display: block !important;
+    animation: fadeIn 0.2s ease;
+}}
+
+.viva-pearls-container.answers-hidden .viva-click-hint {{
+    display: inline-block;
+}}
+
+.viva-click-hint {{
     display: none;
 }}
 
@@ -2548,6 +2580,7 @@ function selectChapter(idx) {{
     currentChapterIdx = idx;
     quizCardIdx = 0;
     quizAnswerRevealed = false;
+    vivaAnswersVisible = false;
     document.getElementById('btnNavDash').classList.remove('active');
     document.getElementById('topicTabsNav').style.display = 'flex';
     const mobNav = document.getElementById('mobileSectionNav');
@@ -2788,15 +2821,15 @@ function renderTopicView() {{
                             {ICONS["viva"]} High-Yield Clinical & Viva Examiner Pearls
                         </h4>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 4px 12px; font-size: 8pt;">
-                                Hide / Show Answers
+                            <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 4px 14px; font-size: 8pt; font-weight: 600; min-width: 65px;">
+                                ${{vivaAnswersVisible ? 'Hide' : 'Show'}}
                             </button>
                             <button class="btn btn-primary" onclick="switchTopicTab('quiz')" style="padding: 4px 12px; font-size: 8pt;">
                                 Practice Flashcards →
                             </button>
                         </div>
                     </div>
-                    <div class="viva-pearls-container" id="vivaContainer">
+                    <div class="viva-pearls-container ${{vivaAnswersVisible ? '' : 'answers-hidden'}}" id="vivaContainer">
             `;
             ch.viva_pearls.forEach((p, pIdx) => {{
                 let qText = p;
@@ -2808,10 +2841,15 @@ function renderTopicView() {{
                 }}
                 if (aText) {{
                     html += `
-                        <div class="viva-qa-block">
+                        <div class="viva-qa-block" onclick="toggleSingleVivaAnswer(this)">
                             <div style="display: flex; align-items: flex-start; gap: 8px;">
                                 <span class="viva-badge-q">Q${{pIdx + 1}}</span>
-                                <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
+                                    <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
+                                        💡 Tap question to reveal model answer
+                                    </div>
+                                </div>
                             </div>
                             <div class="viva-a-row">
                                 <strong class="viva-model-label">Model Answer: </strong>
@@ -2892,11 +2930,65 @@ function renderTopicView() {{
         }}
         html += `</div>`;
     }} else if (currentTopicTab === 'viva') {{
-        html += `<div class="card"><div class="card-title">Examiner Viva & Practical Clinical Pearls</div><ul class="content-list">`;
-        (ch.viva_pearls || []).forEach(p => {{
-            html += `<li>${{p}}</li>`;
+        const pearls = ch.viva_pearls || [];
+        html += `
+            <div class="viva-card" style="padding: 22px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12pt; color: #b45309; font-weight: 700;">
+                            {ICONS["viva"]} High-Yield Clinical & Viva Examiner Pearls
+                        </h3>
+                        <div style="font-size: 8.5pt; color: var(--text-muted); margin-top: 3px;">
+                            Active Test-Yourself Mode — Answers are hidden by default. Tap any question or use toggle button.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 5px 16px; font-size: 8.5pt; font-weight: 600; min-width: 65px;">
+                            ${{vivaAnswersVisible ? 'Hide' : 'Show'}}
+                        </button>
+                        <button class="btn btn-primary" onclick="switchTopicTab('quiz')" style="padding: 5px 14px; font-size: 8.5pt;">
+                            Practice Flashcards →
+                        </button>
+                    </div>
+                </div>
+                <div class="viva-pearls-container ${{vivaAnswersVisible ? '' : 'answers-hidden'}}" id="vivaContainer">
+        `;
+        pearls.forEach((p, pIdx) => {{
+            let qText = p;
+            let aText = "";
+            if (p.includes('?')) {{
+                const qEnd = p.indexOf('?') + 1;
+                qText = p.substring(0, qEnd).trim();
+                aText = p.substring(qEnd).trim();
+            }}
+            if (aText) {{
+                html += `
+                    <div class="viva-qa-block" onclick="toggleSingleVivaAnswer(this)">
+                        <div style="display: flex; align-items: flex-start; gap: 8px;">
+                            <span class="viva-badge-q">Q${{pIdx + 1}}</span>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
+                                <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
+                                    💡 Tap question to reveal model answer
+                                </div>
+                            </div>
+                        </div>
+                        <div class="viva-a-row">
+                            <strong class="viva-model-label">Model Answer: </strong>
+                            <span>${{aText}}</span>
+                        </div>
+                    </div>
+                `;
+            }} else {{
+                html += `
+                    <div class="viva-qa-block" style="padding: 10px 14px; background: rgba(245, 158, 11, 0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 9pt; line-height: 1.6;">
+                        <strong style="color: #b45309;">Clinical Pearl ${{pIdx + 1}}: </strong>
+                        <span>${{p}}</span>
+                    </div>
+                `;
+            }}
         }});
-        html += `</ul></div>`;
+        html += `</div></div>`;
     }} else if (currentTopicTab === 'quiz') {{
         const pearls = ch.viva_pearls || [];
         const totalCards = pearls.length;
@@ -2974,9 +3066,8 @@ function renderTopicView() {{
                         <button class="btn btn-secondary" onclick="prevQuizCard()" ${{quizCardIdx === 0 ? 'disabled' : ''}} style="min-width: 105px;">
                             ← Previous
                         </button>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-secondary" onclick="toggleQuizReveal()">
-                                ${{quizAnswerRevealed ? 'Hide Answer' : 'Show Answer'}}
+                            <button class="btn btn-secondary" onclick="toggleQuizReveal()" style="min-width: 80px; font-weight: 600;">
+                                ${{quizAnswerRevealed ? 'Hide' : 'Show'}}
                             </button>
                             <button class="btn ${{isMastered ? 'btn-secondary' : 'btn-primary'}}" onclick="saveQuizMastery('${{qKey}}', ${{!isMastered}})">
                                 ${{isMastered ? '✓ Mastered' : '★ I Knew This'}}
@@ -3170,7 +3261,8 @@ function closePdfModal() {{
     }}
 }}
 
-let vivaAnswersVisible = true;
+let vivaAnswersVisible = false; // Always hidden by default!
+
 function toggleVivaAnswers() {{
     const container = document.getElementById('vivaContainer');
     const btn = document.getElementById('btnVivaAnswersToggle');
@@ -3178,10 +3270,24 @@ function toggleVivaAnswers() {{
         vivaAnswersVisible = !vivaAnswersVisible;
         if (vivaAnswersVisible) {{
             container.classList.remove('answers-hidden');
-            if (btn) btn.innerText = 'Hide Answers';
+            if (btn) btn.innerText = 'Hide';
         }} else {{
             container.classList.add('answers-hidden');
-            if (btn) btn.innerText = 'Show Answers';
+            container.querySelectorAll('.viva-qa-block.revealed').forEach(el => el.classList.remove('revealed'));
+            if (btn) btn.innerText = 'Show';
+        }}
+    }}
+}}
+
+function toggleSingleVivaAnswer(el) {{
+    const container = document.getElementById('vivaContainer');
+    if (!container) return;
+    if (container.classList.contains('answers-hidden')) {{
+        el.classList.toggle('revealed');
+    }} else {{
+        const row = el.querySelector('.viva-a-row');
+        if (row) {{
+            row.style.display = row.style.display === 'none' ? 'block' : 'none';
         }}
     }}
 }}
