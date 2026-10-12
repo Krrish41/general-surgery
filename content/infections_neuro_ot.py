@@ -250,7 +250,27 @@ CHAPTERS = [
   1. **Hypertension with Widened Pulse Pressure** (vasomotor response to maintain cerebral perfusion pressure).
   2. **Bradycardia** (baroreceptor response to soaring systemic BP).
   3. **Irregular Respiration / Cheyne-Stokes Breathing** (brainstem compression).
-            """
+            """,
+            "skull_fractures_and_base_of_skull": """
+**Classification of Skull Fractures & Base of Skull Signs:**
+1. **Vault Fractures:**
+   - *Fissured (Linear) Fracture:* Hairline crack in skull vault; most common; requires observation for underlying extradural hematoma.
+   - *Depressed Fracture:* Inner table displaced inward by more than the full thickness of the skull bone; requires surgical elevation and debridement if compound, dirty, or associated with neurological deficit.
+   - *Pond Fracture:* Shallow greenstick-type depressed indentation of the pliable, malleable skull vault in neonates and young infants (like an indentation in a Ping-Pong ball).
+   - *Pott's Puffy Tumor (Box 17.3A):* Circumscribed, tender, doughy subperiosteal abscess of the frontal bone associated with underlying frontal osteomyelitis secondary to suppurative frontal sinusitis.
+2. **Fractures of the Base of the Skull (Basilar Skull Fractures):**
+   - *Anterior Cranial Fossa Fracture:*
+     - **Panda / Racoon Eyes (Periorbital Ecchymosis):** Bilateral dark purpuric rings around the eyes.
+     - **Subconjunctival Hemorrhage with NO Posterior Limit:** Blood tracks forward from the orbital roof under Tenon's capsule; the posterior boundary of the hemorrhage cannot be visualized on ocular exam (pathognomonic sign distinguishing it from direct eye trauma).
+     - **CSF Rhinorrhea:** Fracture of the cribriform plate of the ethmoid tears the adherent dura mater, producing clear cerebrospinal fluid discharge from the nose.
+     - Anosmia due to olfactory nerve (CN I) avulsion.
+   - *Middle Cranial Fossa Fracture:*
+     - **Battle's Sign:** Postauricular ecchymosis and bruising over the mastoid process, appearing 24 to 48 hours post-trauma due to blood tracking along the posterior auricular artery.
+     - **CSF Otorrhea:** Fracture of the petrous temporal bone with tympanic membrane rupture allows CSF to drain from the external auditory meatus.
+     - Lower motor neuron Facial Nerve (CN VII) palsy and Vestibulocochlear Nerve (CN VIII) deafness.
+   - *Posterior Cranial Fossa Fracture:*
+     - Ecchymosis over the posterior pharyngeal wall and neck; risk of compression of lower cranial nerves (CN IX, X, XI, XII) and brainstem.
+"""
         },
         "viva_pearls": [
             "What is a Lucid Interval? A temporary period of clear consciousness between the initial concussive loss of consciousness and the subsequent neurological collapse caused by an expanding extradural hematoma.",
