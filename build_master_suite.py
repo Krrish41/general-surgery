@@ -1997,7 +1997,7 @@ body.dark .diagram-item img {{
     letter-spacing: 0.5px;
 }}
 
-/* Modal */
+/* Enhanced Diagram Lightbox Modal */
 #modal {{
     display: none;
     position: fixed;
@@ -2005,18 +2005,147 @@ body.dark .diagram-item img {{
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0,0,0,0.85);
-    z-index: 1000;
+    background-color: rgba(10, 6, 24, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1200;
     justify-content: center;
     align-items: center;
-    cursor: zoom-out;
+    padding: 12px;
+    box-sizing: border-box;
 }}
 
-#modal img {{
-    max-width: 92vw;
-    max-height: 92vh;
+.modal-dialog-box {{
+    width: 96vw;
+    max-width: 1320px;
+    height: 94vh;
+    background: #0f0d1b;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+}}
+
+.modal-dialog-header {{
+    padding: 10px 16px;
+    background: #17132a;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}}
+
+.modal-dialog-title {{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}}
+
+.modal-diagram-badge {{
+    background: #7c3aed;
+    color: #ffffff;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}}
+
+#modalTitleText {{
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: #f3f4f6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}}
+
+.modal-dialog-actions {{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}}
+
+.modal-tool-btn {{
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 8pt;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}}
+
+.modal-tool-btn:hover {{
+    background: #7c3aed;
+    color: #ffffff;
+    border-color: #7c3aed;
+}}
+
+.modal-tool-btn.modal-close-btn {{
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4);
+    padding: 5px 12px;
+}}
+
+.modal-tool-btn.modal-close-btn:hover {{
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+}}
+
+.modal-image-viewport {{
+    flex: 1;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background: #090714;
+    -webkit-overflow-scrolling: touch;
+}}
+
+#modalImg {{
     border-radius: var(--radius-sm);
-    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.5);
+    transition: transform 0.15s ease-out;
+}}
+
+#modalImg.modal-fit-mode {{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}}
+
+#modalImg.modal-actual-mode {{
+    max-width: none;
+    max-height: none;
+    object-fit: initial;
+}}
+
+.modal-dialog-footer {{
+    padding: 6px 16px;
+    background: #120e22;
+    border-top: 1px solid rgba(139, 92, 246, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 7.5pt;
+    color: #94a3b8;
 }}
 
 /* Mobile Drawer Overlay */
@@ -2203,8 +2332,29 @@ body.dark .diagram-item img {{
     <div class="content-body" id="contentArea"></div>
 </div>
 
-<div id="modal" onclick="closeModal()">
-    <img id="modalImg" src="" alt="Enlarged Diagram">
+<div id="modal" onclick="onModalBackdropClick(event)">
+    <div class="modal-dialog-box" onclick="event.stopPropagation()">
+        <div class="modal-dialog-header">
+            <div class="modal-dialog-title">
+                <span class="modal-diagram-badge">HD Diagram</span>
+                <span id="modalTitleText">Medical Diagram Viewer</span>
+            </div>
+            <div class="modal-dialog-actions">
+                <button class="modal-tool-btn" onclick="zoomModalImg(1.25)" title="Zoom In">Zoom In ＋</button>
+                <button class="modal-tool-btn" onclick="zoomModalImg(0.8)" title="Zoom Out">Zoom Out －</button>
+                <button class="modal-tool-btn" onclick="toggleModalFit()" id="btnModalFit" title="Toggle 100% / Fit to Viewport">100% Size</button>
+                <button class="modal-tool-btn" onclick="openModalImgTab()" title="Open Original Diagram in New Tab">⤢ New Tab</button>
+                <button class="modal-tool-btn modal-close-btn" onclick="closeModal()" title="Close Viewer">✕ Close</button>
+            </div>
+        </div>
+        <div class="modal-image-viewport" id="modalViewport">
+            <img id="modalImg" class="modal-fit-mode" src="" alt="Enlarged Diagram">
+        </div>
+        <div class="modal-dialog-footer">
+            <span>💡 <strong>Zero Cutoff Guarantee:</strong> Use 100% Size or Zoom buttons to inspect intricate details and wide matrices. Scroll horizontally or vertically freely.</span>
+            <span style="font-size: 7pt; color: #a855f7;">Press Esc to Exit</span>
+        </div>
+    </div>
 </div>
 
 <div id="pdfModal" class="pdf-modal-overlay" style="display: none;">
@@ -2726,10 +2876,11 @@ function renderTopicView() {{
                     const badgeHtml = isOrig
                         ? '<span class="diagram-type-badge badge-original">Original Handwritten Note</span>'
                         : '<span class="diagram-type-badge badge-hd">High-Res 300 DPI Medical Schematic</span>';
+                    const safeTitle = (d.title || '').replace(/'/g, "\\'");
                     html += `
                         <div class="diagram-item">
                             <div class="diagram-header-badge">${{badgeHtml}}</div>
-                            <img src="${{b64}}" onclick="openModal('${{b64}}')" alt="${{d.title}}">
+                            <img src="${{b64}}" onclick="openModal('${{b64}}', '${{safeTitle}}')" alt="${{d.title}}">
                             <div class="diagram-item-caption">${{d.title}}</div>
                         </div>
                     `;
@@ -2922,15 +3073,84 @@ function toggleCard(el) {{
     }}
 }}
 
-function openModal(src) {{
+let modalCurrentScale = 1.0;
+let modalIsFitMode = true;
+
+function openModal(src, title) {{
     const m = document.getElementById('modal');
-    document.getElementById('modalImg').src = src;
+    const img = document.getElementById('modalImg');
+    const titleEl = document.getElementById('modalTitleText');
+    const fitBtn = document.getElementById('btnModalFit');
+    
+    img.src = src;
+    modalCurrentScale = 1.0;
+    modalIsFitMode = true;
+    img.className = 'modal-fit-mode';
+    img.style.transform = 'scale(1)';
+    if (fitBtn) fitBtn.innerText = '100% Size';
+    if (titleEl) titleEl.innerText = title || 'Medical Diagram Viewer';
+    
     m.style.display = 'flex';
 }}
 
 function closeModal() {{
-    document.getElementById('modal').style.display = 'none';
+    const m = document.getElementById('modal');
+    if (m) m.style.display = 'none';
 }}
+
+function onModalBackdropClick(event) {{
+    if (event.target.id === 'modal') {{
+        closeModal();
+    }}
+}}
+
+function zoomModalImg(factor) {{
+    const img = document.getElementById('modalImg');
+    if (!img) return;
+    if (modalIsFitMode) {{
+        modalIsFitMode = false;
+        img.className = 'modal-actual-mode';
+        const fitBtn = document.getElementById('btnModalFit');
+        if (fitBtn) fitBtn.innerText = 'Fit View';
+    }}
+    modalCurrentScale = Math.max(0.4, Math.min(3.5, modalCurrentScale * factor));
+    img.style.transform = `scale(${{modalCurrentScale}})`;
+}}
+
+function toggleModalFit() {{
+    const img = document.getElementById('modalImg');
+    const fitBtn = document.getElementById('btnModalFit');
+    if (!img) return;
+    
+    if (modalIsFitMode) {{
+        modalIsFitMode = false;
+        modalCurrentScale = 1.0;
+        img.className = 'modal-actual-mode';
+        img.style.transform = 'scale(1)';
+        if (fitBtn) fitBtn.innerText = 'Fit View';
+    }} else {{
+        modalIsFitMode = true;
+        modalCurrentScale = 1.0;
+        img.className = 'modal-fit-mode';
+        img.style.transform = 'scale(1)';
+        if (fitBtn) fitBtn.innerText = '100% Size';
+    }}
+}}
+
+function openModalImgTab() {{
+    const img = document.getElementById('modalImg');
+    if (img && img.src) {{
+        const win = window.open();
+        win.document.write('<body style="margin:0; background:#0f0d1b; display:flex; justify-content:center; align-items:center; min-height:100vh;"><img src="' + img.src + '" style="max-width:100%; height:auto;"></body>');
+    }}
+}}
+
+window.addEventListener('keydown', (e) => {{
+    if (e.key === 'Escape') {{
+        closeModal();
+        closePdfModal();
+    }}
+}});
 
 function openPdfModal() {{
     const modal = document.getElementById('pdfModal');
