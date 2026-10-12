@@ -220,3 +220,175 @@ CLASSIFICATION_PRESETS = {
         ]
     }
 }
+
+SPOTTER_HOTSPOTS = {
+    "thyroid_vessels_nerves_hd.png": [
+        {"top": 12, "left": 28, "width": 22, "height": 8, "hint": "Nerve at superior pole", "label": "External Branch of Superior Laryngeal Nerve (EBSLN)"},
+        {"top": 18, "left": 58, "width": 20, "height": 8, "hint": "Superior Pole Artery", "label": "Superior Thyroid Artery (Ligate close to gland)"},
+        {"top": 48, "left": 62, "width": 22, "height": 9, "hint": "Posterolateral fixation", "label": "Ligament of Berry (Adherent to cricoid)"},
+        {"top": 62, "left": 16, "width": 24, "height": 9, "hint": "Lower pole artery", "label": "Inferior Thyroid Artery (Ligate far from gland)"},
+        {"top": 72, "left": 45, "width": 25, "height": 9, "hint": "Nerve in TE groove", "label": "Recurrent Laryngeal Nerve (RLN)"},
+        {"top": 42, "left": 18, "width": 20, "height": 8, "hint": "Dorsal endocrine gland", "label": "Superior Parathyroid Gland"}
+    ],
+    "thyroglossal_cyst_tract_hd.png": [
+        {"top": 10, "left": 35, "width": 30, "height": 9, "hint": "Origin in tongue", "label": "Foramen Cecum (Base of Tongue)"},
+        {"top": 28, "left": 32, "width": 36, "height": 10, "hint": "Bone resected in Sistrunk", "label": "Body of Hyoid Bone (Central 1-2 cm Resected)"},
+        {"top": 45, "left": 30, "width": 40, "height": 10, "hint": "Membrane traversed", "label": "Thyrohyoid Membrane & Duct Core"},
+        {"top": 65, "left": 34, "width": 32, "height": 11, "hint": "Midline cystic mass", "label": "Thyroglossal Cyst (Moves on Tongue Protrusion)"}
+    ],
+    "cervical_neck_triangles.jpg": [
+        {"top": 16, "left": 30, "width": 28, "height": 10, "hint": "Under mandible", "label": "Submandibular (Digastric) Triangle"},
+        {"top": 32, "left": 16, "width": 24, "height": 11, "hint": "Vascular sheath area", "label": "Carotid Triangle (Carotid Artery, IJV, Vagus)"},
+        {"top": 44, "left": 45, "width": 24, "height": 11, "hint": "Infrahyoid muscle area", "label": "Muscular Triangle"},
+        {"top": 42, "left": 68, "width": 24, "height": 12, "hint": "Behind SCM", "label": "Posterior Triangle (Accessory Nerve CN XI)"},
+        {"top": 25, "left": 52, "width": 20, "height": 10, "hint": "Dividing muscular strap", "label": "Sternocleidomastoid Muscle (SCM)"}
+    ],
+    "head_injury_diagram_hd.png": [
+        {"top": 20, "left": 12, "width": 35, "height": 12, "hint": "Biconvex bleed", "label": "Epidural Hematoma (EDH - Middle Meningeal Artery)"},
+        {"top": 20, "left": 54, "width": 35, "height": 12, "hint": "Crescentic bleed", "label": "Subdural Hematoma (SDH - Bridging Cortical Veins)"},
+        {"top": 58, "left": 15, "width": 32, "height": 11, "hint": "Dural border relation", "label": "Limited by Skull Sutures (Periosteal Dura)"},
+        {"top": 58, "left": 55, "width": 32, "height": 11, "hint": "Subdural spread", "label": "Crosses Suture Lines Freely"}
+    ],
+    "mandible_fractures_hd.png": [
+        {"top": 18, "left": 18, "width": 26, "height": 11, "hint": "Most common site (~35%)", "label": "Condylar Neck Fracture"},
+        {"top": 52, "left": 12, "width": 28, "height": 11, "hint": "Angle & Masseter pull", "label": "Mandibular Angle (Favorable / Unfavorable)"},
+        {"top": 68, "left": 42, "width": 28, "height": 11, "hint": "Midline anterior", "label": "Parasymphysis / Symphysis Fracture"},
+        {"top": 35, "left": 48, "width": 34, "height": 10, "hint": "Biomechanic fixation", "label": "Champy's Lines of Ideal Osteosynthesis"}
+    ],
+    "shock_cardiac_circuit_hd.png": [
+        {"top": 22, "left": 16, "width": 30, "height": 12, "hint": "Venous return / Preload", "label": "Central Venous Pressure (CVP) / Right Atrial Preload"},
+        {"top": 55, "left": 24, "width": 32, "height": 11, "hint": "Ventricular performance", "label": "Left Ventricle Stroke Volume (Frank-Starling)"},
+        {"top": 32, "left": 62, "width": 30, "height": 11, "hint": "Arteriolar tone", "label": "Systemic Vascular Resistance (SVR / Afterload)"},
+        {"top": 70, "left": 58, "width": 34, "height": 11, "hint": "Nutrient exchange zone", "label": "Capillary Microcirculation & Perfusion"}
+    ],
+    "hiltons_method_abscess_hd.png": [
+        {"top": 15, "left": 28, "width": 44, "height": 12, "hint": "Step 1: Incision placement", "label": "Skin Incision along Langer's Cleavage Lines"},
+        {"top": 40, "left": 26, "width": 48, "height": 12, "hint": "Step 2: Instrument entry", "label": "Blunt Sinus Forceps Introduced Closed into Cavity"},
+        {"top": 65, "left": 24, "width": 52, "height": 12, "hint": "Step 3: Cavity opening", "label": "Forceps Jaws Opened Horizontally to Drain & Break Loculi"}
+    ],
+    "mallampati_airway_hd.png": [
+        {"top": 25, "left": 6, "width": 20, "height": 15, "hint": "Full visualization", "label": "Mallampati Class I: Soft Palate, Uvula & Pillars visible"},
+        {"top": 25, "left": 29, "width": 20, "height": 15, "hint": "Partial visualization", "label": "Mallampati Class II: Soft Palate, Fauces & Uvula visible"},
+        {"top": 25, "left": 52, "width": 20, "height": 15, "hint": "Base uvula only", "label": "Mallampati Class III: Soft Palate and Base of Uvula visible"},
+        {"top": 25, "left": 75, "width": 20, "height": 15, "hint": "Hard palate only", "label": "Mallampati Class IV: Hard Palate Only (Difficult Airway Risk)"}
+    ],
+    "scrofula_collar_stud_stages_hd.png": [
+        {"top": 12, "left": 24, "width": 52, "height": 12, "hint": "Stage 1", "label": "Stage 1: Lymphadenitis (Firm discrete enlarged nodes)"},
+        {"top": 32, "left": 24, "width": 52, "height": 12, "hint": "Stage 2 & 3", "label": "Stage 2 & 3: Periadenitis (Matted) -> Cold Abscess"},
+        {"top": 54, "left": 20, "width": 60, "height": 13, "hint": "Stage 4: Classic sign", "label": "Stage 4: Collar-Stud Abscess (Through Deep Cervical Fascia)"},
+        {"top": 76, "left": 24, "width": 52, "height": 12, "hint": "Stage 5", "label": "Stage 5: Chronic Discharging Sinus (Undermined Bluish Margins)"}
+    ],
+    "grafts_flaps_reconstructive_ladder_hd.png": [
+        {"top": 18, "left": 15, "width": 34, "height": 14, "hint": "Thin skin graft", "label": "Split-Thickness Skin Graft (STSG: Epidermis + Partial Dermis)"},
+        {"top": 18, "left": 52, "width": 34, "height": 14, "hint": "Thick skin graft", "label": "Full-Thickness Skin Graft (FTSG: Epidermis + Complete Dermis)"},
+        {"top": 58, "left": 20, "width": 60, "height": 16, "hint": "Surgical hierarchy", "label": "Reconstructive Ladder: Direct Closure -> Graft -> Local Flap -> Regional Flap -> Free Microvascular Flap"}
+    ],
+    "cellulitis_erysipelas_depth.jpg": [
+        {"top": 22, "left": 18, "width": 64, "height": 15, "hint": "Superficial dermis", "label": "Erysipelas: Superficial Dermal Lymphatics (Raised, well-demarcated margin)"},
+        {"top": 58, "left": 18, "width": 64, "height": 15, "hint": "Deep subcutaneous plane", "label": "Cellulitis: Subcutaneous Fat & Deep Fascia (Diffuse, ill-defined margin)"}
+    ],
+    "ssi_cdc_classification_hd.png": [
+        {"top": 20, "left": 25, "width": 50, "height": 14, "hint": "Skin & subcutaneous fat", "label": "Superficial Incisional SSI (Skin and subcutaneous tissue within 30 days)"},
+        {"top": 48, "left": 25, "width": 50, "height": 14, "hint": "Fascia and muscle", "label": "Deep Incisional SSI (Deep fascia and muscle layers)"},
+        {"top": 74, "left": 25, "width": 50, "height": 14, "hint": "Cavity or organ", "label": "Organ / Space SSI (Body cavity or operated organ)"}
+    ]
+}
+
+COMPARISON_PAIRS = {
+    "chap1": [
+        {
+            "title": "Cardiac Circuit Dynamics & Hemodynamic Pressures",
+            "orig_file": "shock_cardiac_circuit.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "shock_cardiac_circuit_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        },
+        {
+            "title": "Cellular Hypoxia & Lactic Acid Pathway",
+            "orig_file": "shock_cellular_metabolism.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "shock_cellular_metabolism_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        }
+    ],
+    "chap7": [
+        {
+            "title": "Thyroglossal Cyst Tract & Sistrunk Rationale",
+            "orig_file": "thyroglossal_cyst_tract.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "thyroglossal_cyst_tract_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        },
+        {
+            "title": "Lipoma Pathology: Encapsulated vs Diffuse Adipose",
+            "orig_file": "lipoma_types.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "lipoma_pathology_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        },
+        {
+            "title": "Comprehensive Diagnostic Comparison of 10 Neck Swellings",
+            "orig_file": "neck_swellings_master_table.png",
+            "orig_label": "Original Handwritten Table",
+            "hd_file": "neck_swellings_master_matrix_hd.png",
+            "hd_label": "High-Res 300 DPI Clinical Matrix"
+        }
+    ],
+    "chap11": [
+        {
+            "title": "Mandible Fractures & Muscle Vectors",
+            "orig_file": "mandible_fractures.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "mandible_fractures_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        },
+        {
+            "title": "Le Fort Midface Fractures",
+            "orig_file": "lefort_1_diagram.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "lefort_fractures_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        }
+    ],
+    "chap15": [
+        {
+            "title": "Epidural (EDH) vs Subdural (SDH) Hematoma",
+            "orig_file": "head_injury_diagram.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "head_injury_diagram_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        }
+    ],
+    "chap19": [
+        {
+            "title": "Laser Resonant Cavity & Wavelength Absorption",
+            "orig_file": "laser_cavity_diagram.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "laser_cavity_diagram_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        }
+    ],
+    "chap23": [
+        {
+            "title": "Thyroid Vessels & Safe Ligation Rules for RLN / EBSLN",
+            "orig_file": "thyroid_vessels_nerves.png",
+            "orig_label": "Original Lecture Sketch",
+            "hd_file": "thyroid_vessels_nerves_hd.png",
+            "hd_label": "High-Res 300 DPI Medical Schematic"
+        }
+    ]
+}
+
+EXAM_RUBRIC_CRITERIA = [
+    {"num": 1, "title": "Definition, Classification & Epidemiology", "marks": 1.5, "desc": "Formal clinical definition, subtypes, incidence & peak demographics"},
+    {"num": 2, "title": "Surgical Anatomy & Applied Embryology", "marks": 2.0, "desc": "Fascial compartments, landmarks, triangle boundaries & embryonic remnants"},
+    {"num": 3, "title": "Etiopathogenesis & Microbiology", "marks": 1.5, "desc": "Cellular injury mechanism, causative organisms, toxins & molecular triggers"},
+    {"num": 4, "title": "Clinical Presentation & Named Physical Signs", "marks": 2.0, "desc": "Chronological symptoms, inspection, palpation (temperature, transillumination, movement)"},
+    {"num": 5, "title": "Structured Differential Diagnosis Table", "marks": 1.0, "desc": "Structured comparative table contrasting close surgical conditions"},
+    {"num": 6, "title": "Diagnostic Workup & Staging Protocols", "marks": 1.5, "desc": "Gold-standard investigations (Biopsy/FNAC, CT/MRI, ultrasound & staging classifications)"},
+    {"num": 7, "title": "Resuscitation & Preoperative Optimization Bundle", "marks": 1.0, "desc": "ATLS ABCDE, fluid resuscitation, cross-matching, prophylactic antibiotics & glycemic control"},
+    {"num": 8, "title": "Surgical Technique & Dissection Landmarks", "marks": 2.5, "desc": "Position, incision, exposure steps, neurovascular preservation & anatomical closure"},
+    {"num": 9, "title": "Complications Management (Immediate, Early, Late)", "marks": 1.0, "desc": "Post-op hemorrhage, airway compromise, wound infection, nerve palsy & definitive remedies"},
+    {"num": 10, "title": "Viva Pearls & Must-Draw Schematics", "marks": 1.0, "desc": "Examiner cross-examination points, high-yield numbers & clear labeled diagram outlines"}
+]
+

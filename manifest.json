@@ -1,0 +1,19 @@
+{
+  "name": "SURGERY PRO - General Surgery Master Monograph",
+  "short_name": "Surgery Pro",
+  "description": "Comprehensive General Surgery University Exam Preparation Suite: 15-Mark Essays, HD Diagrams, Spotter Mode & Viva Simulator",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0c071e",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -31,3 +31,9 @@ extracted_preview/
 # Raw source lecture PDFs (Preserve only the compiled master monograph General_Surgery_Master_Notes.pdf)
 *.pdf
 !General_Surgery_Master_Notes.pdf
+
+# Browser test screenshots & scratch test artifacts
+test_screen_*.png
+test_*.mjs
+scratch/
+

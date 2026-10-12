@@ -20,7 +20,7 @@ from content.infections_neuro_ot import CHAPTERS as c3
 from content.advanced_and_thyroid import CHAPTERS as c4
 from content.cheat_sheet import CHAPTERS as c5
 from content.formatter import ICONS, FAVICON_SVG, clean_latex, parse_markdown_to_html, format_inline_markdown
-from content.interactive_data import CLASSIFICATION_PRESETS
+from content.interactive_data import CLASSIFICATION_PRESETS, SPOTTER_HOTSPOTS, COMPARISON_PAIRS, EXAM_RUBRIC_CRITERIA
 
 ALL_CHAPTERS = c1 + c2 + c3 + c4 + c5
 
@@ -513,6 +513,9 @@ def generate_interactive_website(chapters, b64_images):
     chapters_json = json.dumps(cleaned_chapters)
     images_json = json.dumps(b64_images)
     presets_json = json.dumps(CLASSIFICATION_PRESETS)
+    spotters_json = json.dumps(SPOTTER_HOTSPOTS)
+    pairs_json = json.dumps(COMPARISON_PAIRS)
+    rubric_json = json.dumps(EXAM_RUBRIC_CRITERIA)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -520,6 +523,12 @@ def generate_interactive_website(chapters, b64_images):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <link rel="icon" type="image/svg+xml" href="{FAVICON_SVG}">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Surgery Pro">
+<meta name="theme-color" content="#7c3aed">
+<link rel="apple-touch-icon" href="{FAVICON_SVG}">
 <title>General Surgery Master Portal - University Exam Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2142,6 +2151,7 @@ body.dark .diagram-item img {{
 .modal-image-viewport {{
     flex: 1;
     width: 100%;
+    min-height: 0;
     overflow: auto;
     display: flex;
     justify-content: center;
@@ -2149,17 +2159,21 @@ body.dark .diagram-item img {{
     padding: 16px;
     background: #090714;
     -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
 }}
 
 #modalImg {{
     border-radius: var(--radius-sm);
     box-shadow: 0 4px 25px rgba(0,0,0,0.5);
     transition: transform 0.15s ease-out;
+    display: block;
 }}
 
 #modalImg.modal-fit-mode {{
     max-width: 100%;
-    max-height: 100%;
+    max-height: calc(94vh - 130px);
+    width: auto;
+    height: auto;
     object-fit: contain;
 }}
 
@@ -2279,6 +2293,643 @@ body.dark .diagram-item img {{
         justify-content: center;
     }}
 }}
+
+    /* ========================================================== */
+    /* Sticky Section Table of Contents (Mini-Map) on Desktop     */
+    /* ========================================================== */
+    .master-answer-wrapper {{
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        position: relative;
+    }}
+    .master-essay-content {{
+        flex: 1;
+        min-width: 0;
+    }}
+    .sticky-minimap-rail {{
+        width: 200px;
+        position: sticky;
+        top: 20px;
+        flex-shrink: 0;
+        display: block;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+    }}
+    @media (max-width: 960px) {{
+        .sticky-minimap-rail {{
+            display: none;
+        }}
+    }}
+    .sticky-minimap-card {{
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 12px;
+        box-shadow: var(--shadow-sm);
+    }}
+    .minimap-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+    }}
+    .minimap-title {{
+        font-size: 8pt;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--primary);
+    }}
+    .minimap-badge {{
+        font-size: 6.5pt;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+    }}
+    .minimap-nav {{
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }}
+    .minimap-link {{
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 8px;
+        border-radius: 6px;
+        font-size: 7.8pt;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        line-height: 1.3;
+    }}
+    .minimap-link:hover {{
+        color: var(--primary);
+        background: var(--primary-light);
+    }}
+    .minimap-link.active {{
+        color: var(--primary);
+        font-weight: 600;
+        background: var(--primary-light);
+        border-left: 3px solid var(--primary);
+    }}
+    .minimap-dot {{
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.6;
+        flex-shrink: 0;
+    }}
+
+    /* ========================================================== */
+    /* 15-Mark Timed Exam Simulator & Marking Rubric              */
+    /* ========================================================== */
+    .exam-simulator-banner {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 12px 18px;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%);
+        border: 1.5px dashed var(--primary-border);
+        border-radius: var(--radius-md);
+        margin-bottom: 20px;
+    }}
+    .exam-simulator-view {{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+    }}
+    .exam-sim-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px 18px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+    }}
+    .exam-status-badge {{
+        font-size: 7.5pt;
+        font-weight: 800;
+        letter-spacing: 1px;
+        background: rgba(239, 68, 68, 0.12);
+        color: #ef4444;
+        padding: 3px 8px;
+        border-radius: 4px;
+    }}
+    .exam-clock {{
+        font-family: 'Cinzel', monospace, serif;
+        font-size: 20pt;
+        font-weight: 700;
+        color: #ef4444;
+        letter-spacing: 2px;
+        padding: 0 10px;
+    }}
+    .exam-clock.warning {{
+        color: #f59e0b;
+    }}
+    .exam-clock.urgent {{
+        color: #ef4444;
+        animation: pulseClock 1s infinite;
+    }}
+    @keyframes pulseClock {{
+        0% {{ opacity: 1; }}
+        50% {{ opacity: 0.35; }}
+        100% {{ opacity: 1; }}
+    }}
+    .exam-clock-controls {{
+        display: flex;
+        gap: 6px;
+    }}
+    .exam-clock-controls button {{
+        padding: 4px 10px;
+        font-size: 8pt;
+    }}
+    .exam-workspace-split {{
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 20px;
+    }}
+    @media (max-width: 992px) {{
+        .exam-workspace-split {{
+            grid-template-columns: 1fr;
+        }}
+    }}
+    .exam-editor-pane {{
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 18px;
+        box-shadow: var(--shadow-sm);
+    }}
+    .exam-draft-textarea {{
+        width: 100%;
+        min-height: 480px;
+        background: var(--bg-main);
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        font-family: 'Inter', monospace, sans-serif;
+        font-size: 9.5pt;
+        line-height: 1.7;
+        resize: vertical;
+        outline: none;
+        transition: border 0.2s ease;
+    }}
+    .exam-draft-textarea:focus {{
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    }}
+    .exam-rubric-pane {{
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 18px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        flex-direction: column;
+    }}
+    .rubric-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }}
+    .rubric-total-badge {{
+        font-size: 13pt;
+        font-weight: 800;
+        color: var(--primary);
+        background: var(--primary-light);
+        padding: 4px 12px;
+        border-radius: 8px;
+    }}
+    .rubric-items-list {{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 520px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }}
+    .rubric-item {{
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+    }}
+    .rubric-item input[type="checkbox"] {{
+        margin-top: 3px;
+        accent-color: var(--primary);
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+    }}
+    .rubric-item-content {{
+        flex: 1;
+    }}
+    .rubric-item-title {{
+        font-size: 8.5pt;
+        font-weight: 700;
+        color: var(--text-main);
+        display: flex;
+        justify-content: space-between;
+    }}
+    .rubric-item-desc {{
+        font-size: 7.5pt;
+        color: var(--text-muted);
+        margin-top: 3px;
+        line-height: 1.4;
+    }}
+    .rubric-item-score-select {{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+    }}
+    .rubric-item-score-select input[type="range"] {{
+        flex: 1;
+        accent-color: var(--primary);
+    }}
+    .rubric-item-score-select span {{
+        font-size: 8pt;
+        font-weight: 700;
+        color: var(--primary);
+        min-width: 36px;
+        text-align: right;
+    }}
+
+    /* ========================================================== */
+    /* Side-by-Side Comparison Slider                             */
+    /* ========================================================== */
+    .split-comparison-card {{
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-sm);
+    }}
+    .split-comparison-header {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+    }}
+    .split-pair-buttons {{
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }}
+    .split-pair-btn {{
+        padding: 4px 10px;
+        font-size: 7.5pt;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--bg-main);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }}
+    .split-pair-btn.active {{
+        background: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+    }}
+    .before-after-container {{
+        position: relative;
+        width: 100%;
+        height: 460px;
+        max-height: 65vh;
+        overflow: hidden;
+        border-radius: var(--radius-md);
+        background: #0a0618;
+        user-select: none;
+        -webkit-user-select: none;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }}
+    .before-after-layer {{
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-sizing: border-box;
+    }}
+    .before-after-layer img {{
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        pointer-events: none;
+        padding: 10px;
+        box-sizing: border-box;
+    }}
+    .before-after-layer.after-layer {{
+        background: #110c28;
+        z-index: 1;
+    }}
+    .before-after-layer.before-layer {{
+        background: #070412;
+        z-index: 2;
+        clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+    }}
+    .before-after-badge {{
+        position: absolute;
+        top: 12px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 7.5pt;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        z-index: 4;
+        backdrop-filter: blur(6px);
+    }}
+    .before-after-badge.badge-left {{
+        left: 12px;
+        background: rgba(245, 158, 11, 0.9);
+        color: #ffffff;
+    }}
+    .before-after-badge.badge-right {{
+        right: 12px;
+        background: rgba(124, 58, 237, 0.9);
+        color: #ffffff;
+    }}
+    .before-after-divider {{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--primary);
+        z-index: 5;
+        transform: translateX(-50%);
+        pointer-events: none;
+        box-shadow: 0 0 12px rgba(124, 58, 237, 0.8);
+    }}
+    .before-after-handle {{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 38px;
+        height: 38px;
+        background: #ffffff;
+        color: var(--primary-dark);
+        border: 3px solid var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 8.5pt;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }}
+    .before-after-range {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: ew-resize;
+        z-index: 10;
+        margin: 0;
+    }}
+
+    /* ========================================================== */
+    /* Spotter / Image Occlusion Mode ("Anki Mode")               */
+    /* ========================================================== */
+    .diagram-mode-bar {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--primary-light);
+        border: 1px solid var(--primary-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 16px;
+    }}
+    .spotter-interactive-container {{
+        position: relative;
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+        line-height: 0;
+    }}
+    .spotter-interactive-container img {{
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: initial !important;
+        cursor: zoom-in;
+    }}
+    .spotter-box {{
+        position: absolute;
+        cursor: pointer;
+        border-radius: 6px;
+        z-index: 10;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.45);
+        transform-style: preserve-3d;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        overflow: hidden;
+    }}
+    .spotter-box .spotter-front,
+    .spotter-box .spotter-back {{
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 3px;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 6px;
+    }}
+    .spotter-box .spotter-front {{
+        background: rgba(124, 58, 237, 0.94);
+        border: 1.5px solid #ddd6fe;
+        color: #ffffff;
+    }}
+    .spotter-box .spotter-front .spotter-num {{
+        font-size: 7.5pt;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }}
+    .spotter-box .spotter-front .spotter-hint-text {{
+        font-size: 6.5pt;
+        opacity: 0.9;
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 90%;
+    }}
+    .spotter-box .spotter-back {{
+        background: rgba(16, 185, 129, 0.96);
+        border: 1.5px solid #a7f3d0;
+        color: #ffffff;
+        transform: rotateY(180deg);
+    }}
+    .spotter-box .spotter-back .spotter-label-text {{
+        font-size: 7.5pt;
+        font-weight: 700;
+        line-height: 1.2;
+    }}
+    .spotter-box.revealed {{
+        transform: rotateY(180deg);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.45);
+    }}
+
+    /* Modal Spotter Overlay */
+    .modal-diagram-stage {{
+        position: relative;
+        display: inline-block;
+        max-width: 100%;
+        max-height: 100%;
+        line-height: 0;
+    }}
+    .modal-spotter-overlay {{
+        position: absolute;
+        inset: 0;
+        pointer-events: auto;
+        z-index: 15;
+    }}
+
+    /* ========================================================== */
+    /* Speech Synthesis Viva Buttons                              */
+    /* ========================================================== */
+    .viva-audio-speak-btn {{
+        background: var(--primary-light);
+        border: 1px solid var(--primary-border);
+        color: var(--primary);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9pt;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }}
+    .viva-audio-speak-btn:hover {{
+        background: var(--primary);
+        color: #ffffff;
+        transform: scale(1.1);
+    }}
+    .viva-audio-speak-btn.speaking {{
+        background: #ef4444;
+        color: #ffffff;
+        border-color: #ef4444;
+        animation: speakPulse 1s infinite alternate;
+    }}
+    @keyframes speakPulse {{
+        from {{ transform: scale(1); box-shadow: 0 0 4px rgba(239, 68, 68, 0.4); }}
+        to {{ transform: scale(1.15); box-shadow: 0 0 12px rgba(239, 68, 68, 0.8); }}
+    }}
+
+    /* ========================================================== */
+    /* Mobile Floating Bottom Bar                                 */
+    /* ========================================================== */
+    .mobile-floating-bottom-bar {{
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(22, 13, 51, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(139, 92, 246, 0.25);
+        z-index: 950;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 8px;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+    }}
+    body:not(.dark) .mobile-floating-bottom-bar {{
+        background: rgba(255, 255, 255, 0.94);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -4px 20px rgba(124, 58, 237, 0.1);
+    }}
+    @media (max-width: 768px) {{
+        .mobile-floating-bottom-bar.in-chapter {{
+            display: flex !important;
+        }}
+        .content-body.with-bottom-bar {{
+            padding-bottom: 78px !important;
+        }}
+    }}
+    .mobile-bottom-tab {{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 6px 4px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }}
+    .mobile-bottom-tab .bottom-tab-icon {{
+        font-size: 13pt;
+        line-height: 1;
+    }}
+    .mobile-bottom-tab .bottom-tab-text {{
+        font-size: 7.5pt;
+        font-weight: 600;
+    }}
+    .mobile-bottom-tab.active {{
+        color: var(--primary);
+        background: var(--primary-light);
+    }}
+    .mobile-bottom-tab.active .bottom-tab-text {{
+        font-weight: 700;
+        color: var(--primary);
+    }}
 </style>
 </head>
 <body>
@@ -2362,6 +3013,29 @@ body.dark .diagram-item img {{
     </div>
 
     <div class="content-body" id="contentArea"></div>
+
+    <nav class="mobile-floating-bottom-bar" id="mobileFloatingBottomBar">
+    <button class="mobile-bottom-tab active" data-tab="master" onclick="switchTopicTab('master')">
+        <span class="bottom-tab-icon">📝</span>
+        <span class="bottom-tab-text">Answer</span>
+    </button>
+    <button class="mobile-bottom-tab" data-tab="diagrams" onclick="switchTopicTab('diagrams')">
+        <span class="bottom-tab-icon">🖼️</span>
+        <span class="bottom-tab-text">Diagrams</span>
+    </button>
+    <button class="mobile-bottom-tab" data-tab="viva" onclick="switchTopicTab('viva')">
+        <span class="bottom-tab-icon">💡</span>
+        <span class="bottom-tab-text">Viva</span>
+    </button>
+    <button class="mobile-bottom-tab" data-tab="quiz" onclick="switchTopicTab('quiz')">
+        <span class="bottom-tab-icon">🗂️</span>
+        <span class="bottom-tab-text">Quiz</span>
+    </button>
+    <button class="mobile-bottom-tab" data-tab="notes" onclick="switchTopicTab('notes')">
+        <span class="bottom-tab-icon">📓</span>
+        <span class="bottom-tab-text">Notes</span>
+    </button>
+    </nav>
 </div>
 
 <div id="modal" onclick="onModalBackdropClick(event)">
@@ -2372,6 +3046,7 @@ body.dark .diagram-item img {{
                 <span id="modalTitleText">Medical Diagram Viewer</span>
             </div>
             <div class="modal-dialog-actions">
+                <button class="modal-tool-btn" onclick="toggleModalSpotter()" id="btnModalSpotter" title="Spotter Testing Mode">🎯 Spotter Mode</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(1.25)" title="Zoom In">Zoom In ＋</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(0.8)" title="Zoom Out">Zoom Out －</button>
                 <button class="modal-tool-btn" onclick="toggleModalFit()" id="btnModalFit" title="Toggle 100% / Fit to Viewport">100% Size</button>
@@ -2380,7 +3055,10 @@ body.dark .diagram-item img {{
             </div>
         </div>
         <div class="modal-image-viewport" id="modalViewport">
-            <img id="modalImg" class="modal-fit-mode" src="" alt="Enlarged Diagram">
+            <div class="modal-diagram-stage" id="modalDiagramStage">
+                <img id="modalImg" class="modal-fit-mode" src="" alt="Enlarged Diagram">
+                <div id="modalSpotterOverlay" class="modal-spotter-overlay" style="display: none;"></div>
+            </div>
         </div>
         <div class="modal-dialog-footer">
             <span>💡 <strong>Zero Cutoff Guarantee:</strong> Use 100% Size or Zoom buttons to inspect intricate details and wide matrices. Scroll horizontally or vertically freely.</span>
@@ -2414,6 +3092,9 @@ body.dark .diagram-item img {{
 const CHAPTERS = {chapters_json};
 const DIAGRAMS = {images_json};
 const PRESETS = {presets_json};
+const SPOTTERS = {spotters_json};
+const COMPARISON_PAIRS = {pairs_json};
+const RUBRIC_CRITERIA = {rubric_json};
 const SVG_ICONS = {{
     check: '{ICONS["check_circle"]}',
     circle: '{ICONS["circle"]}',
@@ -2430,6 +3111,28 @@ let quizCardIdx = 0;
 let quizViewMode = 'carousel';
 let quizAnswerRevealed = false;
 let quizMastered = JSON.parse(localStorage.getItem('surgery_quiz_mastered') || '{{}}');
+
+// Exam Simulator State
+let isExamSimActive = false;
+let examTimerSeconds = 25 * 60;
+let examTimerInterval = null;
+let examIsRunning = false;
+let rubricScores = {{}};
+let examSubmitted = false;
+
+// Spotter & Comparison State
+let spotterModeActive = false;
+let revealedSpotters = {{}};
+let activeComparePairIdx = 0;
+let modalCurrentFilename = '';
+let modalSpotterActive = false;
+
+// Audio & Speech State
+let currentSpeakingBtn = null;
+let currentUtterance = null;
+let playlistRunning = false;
+let playlistIdx = 0;
+
 
 function saveQuizMastery(qKey, isMastered) {{
     if (isMastered) {{
@@ -2531,10 +3234,13 @@ function renderSidebar(filterText = '') {{
 
 function openDashboardView() {{
     currentChapterIdx = -1;
+    stopCurrentSpeech();
     document.getElementById('btnNavDash').classList.add('active');
     document.getElementById('topicTabsNav').style.display = 'none';
     const mobNav = document.getElementById('mobileSectionNav');
     if (mobNav) mobNav.classList.remove('active');
+    const bottomBar = document.getElementById('mobileFloatingBottomBar');
+    if (bottomBar) bottomBar.classList.remove('in-chapter');
     document.getElementById('dashTitleBar').style.display = 'flex';
     renderSidebar(document.getElementById('searchInput').value);
     renderDashboard();
@@ -2578,6 +3284,8 @@ function updateTabScrollButtons() {{
 
 function selectChapter(idx) {{
     currentChapterIdx = idx;
+    isExamSimActive = false;
+    stopCurrentSpeech();
     quizCardIdx = 0;
     quizAnswerRevealed = false;
     vivaAnswersVisible = false;
@@ -2585,6 +3293,8 @@ function selectChapter(idx) {{
     document.getElementById('topicTabsNav').style.display = 'flex';
     const mobNav = document.getElementById('mobileSectionNav');
     if (mobNav) mobNav.classList.add('active');
+    const bottomBar = document.getElementById('mobileFloatingBottomBar');
+    if (bottomBar) bottomBar.classList.add('in-chapter');
     document.getElementById('dashTitleBar').style.display = 'none';
     
     // Check if preset exists for Types tab
@@ -2605,6 +3315,7 @@ function selectChapter(idx) {{
 
 function switchTopicTab(tab) {{
     currentTopicTab = tab;
+    stopCurrentSpeech();
 
     // Highlight top bar tab & auto-scroll into view
     document.querySelectorAll('.tab-btn').forEach(btn => {{
@@ -2623,6 +3334,15 @@ function switchTopicTab(tab) {{
             pill.scrollIntoView({{ behavior: 'smooth', block: 'nearest', inline: 'center' }});
         }} else {{
             pill.classList.remove('active');
+        }}
+    }});
+
+    // Highlight mobile floating bottom bar
+    document.querySelectorAll('.mobile-bottom-tab').forEach(btab => {{
+        if (btab.getAttribute('data-tab') === tab) {{
+            btab.classList.add('active');
+        }} else {{
+            btab.classList.remove('active');
         }}
     }});
 
@@ -2769,6 +3489,436 @@ function setDashFilter(filter) {{
     renderDashboard();
 }}
 
+// --- Speech Synthesis for Viva ---
+function stopCurrentSpeech() {{
+    if ('speechSynthesis' in window) {{
+        window.speechSynthesis.cancel();
+    }}
+    if (currentSpeakingBtn) {{
+        currentSpeakingBtn.innerHTML = '🔊';
+        currentSpeakingBtn.classList.remove('speaking');
+        currentSpeakingBtn = null;
+    }}
+    currentUtterance = null;
+}}
+
+function speakVivaPearl(btn, pearlIdx) {{
+    if (!('speechSynthesis' in window)) {{
+        alert('Web Speech API is not supported on this browser.');
+        return;
+    }}
+
+    if (window.speechSynthesis.speaking && currentSpeakingBtn === btn) {{
+        stopCurrentSpeech();
+        return;
+    }}
+
+    stopCurrentSpeech();
+
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch || !ch.viva_pearls || !ch.viva_pearls[pearlIdx]) return;
+    const pearl = ch.viva_pearls[pearlIdx];
+
+    let textToSpeak = "";
+    if (pearl.includes('?')) {{
+        const qEnd = pearl.indexOf('?') + 1;
+        const q = pearl.substring(0, qEnd).trim();
+        const a = pearl.substring(qEnd).trim();
+        textToSpeak = `Question: ${{q}}. Examiner Model Answer: ${{a}}`;
+    }} else {{
+        textToSpeak = `Clinical Pearl: ${{pearl}}`;
+    }}
+
+    btn.innerHTML = '⏹️';
+    btn.classList.add('speaking');
+    currentSpeakingBtn = btn;
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.onend = () => {{
+        btn.innerHTML = '🔊';
+        btn.classList.remove('speaking');
+        currentSpeakingBtn = null;
+        currentUtterance = null;
+        if (playlistRunning) {{
+            playNextInPlaylist();
+        }}
+    }};
+    utterance.onerror = () => {{
+        btn.innerHTML = '🔊';
+        btn.classList.remove('speaking');
+        currentSpeakingBtn = null;
+        currentUtterance = null;
+    }};
+
+    currentUtterance = utterance;
+    window.speechSynthesis.speak(utterance);
+}}
+
+function toggleAudioPlaylist() {{
+    const plBtn = document.getElementById('btnAudioPlaylist');
+    if (playlistRunning) {{
+        playlistRunning = false;
+        stopCurrentSpeech();
+        if (plBtn) plBtn.innerText = '🎧 Audio Walk Mode (Play All)';
+    }} else {{
+        playlistRunning = true;
+        playlistIdx = 0;
+        if (plBtn) plBtn.innerText = '⏹️ Stop Audio Walk';
+        playNextInPlaylist();
+    }}
+}}
+
+function playNextInPlaylist() {{
+    if (!playlistRunning) return;
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch || !ch.viva_pearls || playlistIdx >= ch.viva_pearls.length) {{
+        playlistRunning = false;
+        const plBtn = document.getElementById('btnAudioPlaylist');
+        if (plBtn) plBtn.innerText = '🎧 Audio Walk Mode (Play All)';
+        return;
+    }}
+    const targetIdx = playlistIdx;
+    playlistIdx++;
+    const btns = document.querySelectorAll('.viva-audio-speak-btn');
+    const targetBtn = btns[targetIdx] || null;
+    speakVivaPearl(targetBtn, targetIdx);
+}}
+
+// --- 15-Mark Timed Exam Simulator ---
+function toggleExamSimulator(active) {{
+    isExamSimActive = active;
+    if (active) {{
+        resetExamTimer();
+    }} else {{
+        pauseExamTimer();
+    }}
+    renderTopicView();
+}}
+
+function startExamTimer() {{
+    if (examIsRunning) return;
+    examIsRunning = true;
+    const btnStart = document.getElementById('btnExamStart');
+    const btnPause = document.getElementById('btnExamPause');
+    if (btnStart) btnStart.classList.add('active');
+    if (btnPause) btnPause.classList.remove('active');
+
+    examTimerInterval = setInterval(() => {{
+        if (examTimerSeconds > 0) {{
+            examTimerSeconds--;
+            updateExamClockDisplay();
+        }} else {{
+            pauseExamTimer();
+            alert('⏱️ Time Up! 25 minutes allocated for this 15-Mark University Essay have concluded. Submit your draft to self-grade against the university rubric.');
+        }}
+    }}, 1000);
+}}
+
+function pauseExamTimer() {{
+    examIsRunning = false;
+    if (examTimerInterval) {{
+        clearInterval(examTimerInterval);
+        examTimerInterval = null;
+    }}
+    const btnStart = document.getElementById('btnExamStart');
+    const btnPause = document.getElementById('btnExamPause');
+    if (btnStart) btnStart.classList.remove('active');
+    if (btnPause) btnPause.classList.add('active');
+}}
+
+function resetExamTimer() {{
+    pauseExamTimer();
+    examTimerSeconds = 25 * 60;
+    updateExamClockDisplay();
+}}
+
+function updateExamClockDisplay() {{
+    const clock = document.getElementById('examCountdownClock');
+    if (!clock) return;
+    const mins = Math.floor(examTimerSeconds / 60);
+    const secs = examTimerSeconds % 60;
+    clock.innerText = `${{mins.toString().padStart(2, '0')}}:${{secs.toString().padStart(2, '0')}}`;
+
+    if (examTimerSeconds < 120) {{
+        clock.className = 'exam-clock urgent';
+    }} else if (examTimerSeconds < 300) {{
+        clock.className = 'exam-clock warning';
+    }} else {{
+        clock.className = 'exam-clock';
+    }}
+}}
+
+function onExamDraftInput(chId, textarea) {{
+    const val = textarea.value;
+    localStorage.setItem('surgery_exam_draft_' + chId, val);
+    updateExamWordCount(val);
+}}
+
+function updateExamWordCount(text) {{
+    const counter = document.getElementById('examWordCount');
+    if (!counter) return;
+    const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
+    const chars = text.length;
+    counter.innerText = `${{words}} words | ${{chars}} characters`;
+}}
+
+function insertRubricTemplate() {{
+    const area = document.getElementById('examDraftArea');
+    if (!area) return;
+    const template = `1. DEFINITION, CLASSIFICATION & EPIDEMIOLOGY:
+- Formal Definition:
+- Classification / Subtypes:
+- Incidence & Demographics:
+
+2. SURGICAL ANATOMY & RELATIONS:
+- Key Fascial Planes:
+- Vital Neurovascular Relations:
+- Embryological Landmarks:
+
+3. ETIOPATHOGENESIS & PATHOPHYSIOLOGY:
+- Pathogen / Molecular Driver:
+- Cellular Mechanism / Microcirculation:
+- Progression Cascade:
+
+4. CLINICAL PRESENTATION & NAMED SIGNS:
+- Cardinal Symptoms:
+- Physical Examination (Inspection & Palpation):
+- Pathognomonic Named Clinical Signs:
+
+5. DIFFERENTIAL DIAGNOSIS:
+- Comparative Distinction Table:
+
+6. DIAGNOSTIC WORKUP:
+- Laboratory / Biochemical:
+- Radiologic Imaging (USG / Contrast CT):
+- Cytopathology / Histology / Staging:
+
+7. PREOPERATIVE RESUSCITATION & OPTIMIZATION:
+- Hemodynamic Stabilization:
+- Antibiotic & Fluid Protocol:
+- Risk Stratification:
+
+8. STEP-BY-STEP SURGICAL TECHNIQUE:
+- Position & Incision:
+- Landmark Exposure:
+- Neurovascular Preservation & Dissection:
+- Hemostasis & Closure:
+
+9. POSTOPERATIVE CARE & COMPLICATIONS:
+- Immediate & Early Complications:
+- Late Sequelae & Strictures:
+- Definitive Salvage Protocol:
+
+10. VIVA PEARLS & SCHEMATICS:
+- Examiner Traps & High-Yield Values:
+- Labeled Diagram Outline:
+`;
+    if (!area.value.trim()) {{
+        area.value = template;
+    }} else {{
+        area.value += `\n\n` + template;
+    }}
+    const ch = CHAPTERS[currentChapterIdx];
+    if (ch) onExamDraftInput(ch.id, area);
+}}
+
+function updateRubricScore(num, val, isChecked) {{
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch) return;
+    if (!rubricScores[ch.id]) rubricScores[ch.id] = {{}};
+
+    if (isChecked !== undefined) {{
+        const crit = RUBRIC_CRITERIA.find(c => c.num === num);
+        const slider = document.getElementById('rubric_range_' + num);
+        const valDisp = document.getElementById('rubric_val_' + num);
+        if (isChecked) {{
+            const score = crit ? crit.marks : 1.0;
+            rubricScores[ch.id][num] = score;
+            if (slider) slider.value = score;
+            if (valDisp) valDisp.innerText = score.toFixed(1);
+        }} else {{
+            rubricScores[ch.id][num] = 0;
+            if (slider) slider.value = 0;
+            if (valDisp) valDisp.innerText = '0.0';
+        }}
+    }} else {{
+        const score = parseFloat(val) || 0;
+        rubricScores[ch.id][num] = score;
+        const chk = document.getElementById('rubric_chk_' + num);
+        const valDisp = document.getElementById('rubric_val_' + num);
+        if (chk) chk.checked = score > 0;
+        if (valDisp) valDisp.innerText = score.toFixed(1);
+    }}
+
+    calculateTotalRubricScore();
+}}
+
+function calculateTotalRubricScore() {{
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch) return 0;
+    const scores = rubricScores[ch.id] || {{}};
+    let total = 0;
+    for (const [k, v] of Object.entries(scores)) {{
+        total += parseFloat(v) || 0;
+    }}
+    const disp = document.getElementById('rubricScoreDisplay');
+    if (disp) {{
+        let grade = '';
+        if (total >= 12.0) grade = ' (Distinction)';
+        else if (total >= 10.0) grade = ' (First Class)';
+        else if (total >= 7.5) grade = ' (Pass)';
+        else grade = ' (Needs Revision)';
+        disp.innerText = `${{total.toFixed(1)}} / 15.0${{grade}}`;
+    }}
+    return total;
+}}
+
+function submitExamForReview() {{
+    pauseExamTimer();
+    examSubmitted = true;
+    const reviewSlot = document.getElementById('examModelEssaySlot');
+    if (reviewSlot) {{
+        reviewSlot.style.display = 'block';
+        reviewSlot.scrollIntoView({{ behavior: 'smooth' }});
+    }}
+}}
+
+// --- Spotter Mode & Label Occlusion ---
+function toggleSpotterMode() {{
+    spotterModeActive = !spotterModeActive;
+    renderTopicView();
+}}
+
+function toggleSpotterHotspot(filename, hIdx) {{
+    const key = filename + '_' + hIdx;
+    revealedSpotters[key] = !revealedSpotters[key];
+    renderTopicView();
+}}
+
+function revealAllSpotters() {{
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch || !ch.diagrams) return;
+    ch.diagrams.forEach(d => {{
+        const spots = SPOTTERS[d.filename] || [];
+        spots.forEach((h, hIdx) => {{
+            revealedSpotters[d.filename + '_' + hIdx] = true;
+        }});
+    }});
+    renderTopicView();
+}}
+
+function resetAllSpotters() {{
+    revealedSpotters = {{}};
+    renderTopicView();
+}}
+
+function toggleModalSpotter() {{
+    modalSpotterActive = !modalSpotterActive;
+    const btn = document.getElementById('btnModalSpotter');
+    const overlay = document.getElementById('modalSpotterOverlay');
+    if (btn) {{
+        btn.innerText = modalSpotterActive ? '🎯 Spotter Mode: ON' : '🎯 Spotter Mode';
+        btn.style.background = modalSpotterActive ? 'var(--primary)' : '';
+        btn.style.color = modalSpotterActive ? '#fff' : '';
+    }}
+    if (overlay) {{
+        overlay.style.display = modalSpotterActive ? 'block' : 'none';
+        renderModalSpotters();
+    }}
+}}
+
+function renderModalSpotters() {{
+    const overlay = document.getElementById('modalSpotterOverlay');
+    if (!overlay || !modalCurrentFilename) return;
+    const spots = SPOTTERS[modalCurrentFilename] || [];
+    if (!spots.length) {{
+        overlay.innerHTML = '<div style="position: absolute; top: 12px; left: 12px; background: rgba(124,58,237,0.9); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 8pt; font-weight: 600;">🎯 No labeled landmarks registered for this diagram.</div>';
+        return;
+    }}
+    let html = '';
+    spots.forEach((h, hIdx) => {{
+        const isRev = !!revealedSpotters[modalCurrentFilename + '_' + hIdx];
+        html += `
+            <div class="spotter-box ${{isRev ? 'revealed' : ''}}" style="top: ${{h.top}}%; left: ${{h.left}}%; width: ${{h.width}}%; height: ${{h.height}}%;" onclick="toggleModalSpotterHotspot('${{modalCurrentFilename}}', ${{hIdx}})" title="Tap to flip">
+                <div class="spotter-front">
+                    <span class="spotter-num">? ${{hIdx + 1}}</span>
+                    <span class="spotter-hint-text">${{h.hint || 'Tap to reveal'}}</span>
+                </div>
+                <div class="spotter-back">
+                    <span class="spotter-label-text">${{h.label}}</span>
+                </div>
+            </div>
+        `;
+    }});
+    overlay.innerHTML = html;
+}}
+
+function toggleModalSpotterHotspot(filename, hIdx) {{
+    const key = filename + '_' + hIdx;
+    revealedSpotters[key] = !revealedSpotters[key];
+    renderModalSpotters();
+}}
+
+// --- Side-by-Side Comparison Slider ---
+function switchComparePair(idx) {{
+    activeComparePairIdx = idx;
+    renderTopicView();
+}}
+
+function updateSplitSlider(val) {{
+    const beforeWrap = document.getElementById('splitBeforeWrap');
+    const divider = document.getElementById('splitDivider');
+    if (beforeWrap) beforeWrap.style.clipPath = `polygon(0 0, ${{val}}% 0, ${{val}}% 100%, 0 100%)`;
+    if (divider) divider.style.left = val + '%';
+}}
+
+// --- Sticky Table of Contents Mini-Map & Scrollspy ---
+function scrollToSection(secId) {{
+    const el = document.getElementById(secId);
+    if (el) {{
+        el.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+    }}
+}}
+
+function initScrollspy() {{
+    const container = document.getElementById('contentArea');
+    if (!container) return;
+
+    const onScroll = () => {{
+        const sections = document.querySelectorAll('.essay-section-card');
+        const links = document.querySelectorAll('.minimap-link');
+        if (!sections.length || !links.length) return;
+
+        let activeId = '';
+        const offset = 140;
+        sections.forEach(sec => {{
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= offset) {{
+                activeId = sec.id;
+            }}
+        }});
+
+        if (!activeId && sections.length > 0) {{
+            activeId = sections[0].id;
+        }}
+
+        links.forEach(l => {{
+            if (l.getAttribute('href') === '#' + activeId) {{
+                l.classList.add('active');
+            }} else {{
+                l.classList.remove('active');
+            }}
+        }});
+    }};
+
+    container.removeEventListener('scroll', onScroll);
+    container.addEventListener('scroll', onScroll, {{ passive: true }});
+    window.removeEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll, {{ passive: true }});
+}}
+
 function renderTopicView() {{
     const ch = CHAPTERS[currentChapterIdx];
     const isDone = !!completedTopics[ch.id];
@@ -2790,83 +3940,267 @@ function renderTopicView() {{
     `;
 
     if (currentTopicTab === 'master') {{
+        // Banner for 15-Mark University Essay Exam Simulator
         html += `
-            <div class="prompt-box">
-                <div style="font-weight: 700; text-transform: uppercase; font-size: 8pt; margin-bottom: 4px;">University 15-Mark Examination Prompt</div>
-                <div>${{ch.essay_prompt}}</div>
-            </div>
-
-            <div class="layman-box">
-                <div style="font-weight: 700; text-transform: uppercase; font-size: 8pt; margin-bottom: 4px;">Layman's Intuitive Analogy</div>
-                <div>${{ch.layman_explanation}}</div>
+            <div class="exam-simulator-banner">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span style="font-size: 18pt;">⏱️</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 10pt; color: var(--text-main);">15-Mark University Essay Exam Simulator</div>
+                        <div style="font-size: 8pt; color: var(--text-muted);">Timed 25-minute mock test environment with standard 10-point university marking rubric</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="toggleExamSimulator(${{!isExamSimActive}})" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 600;">
+                    ${{isExamSimActive ? '✕ Exit Timed Simulator' : 'Launch 25-Min Timed Exam'}}
+                </button>
             </div>
         `;
 
-        // Render sections with cleaned formatting
-        for (const [secName, secHtml] of Object.entries(ch.sections)) {{
-            const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
-            html += `
-                <div class="card">
-                    <div class="card-title">${{titleFormatted}}</div>
-                    <div style="line-height: 1.7;">${{secHtml}}</div>
-                </div>
-            `;
-        }}
+        if (isExamSimActive) {{
+            // Render University Exam Simulator Workspace
+            const draftText = localStorage.getItem('surgery_exam_draft_' + ch.id) || '';
+            const wordsCount = draftText.trim() ? draftText.trim().split(/\\s+/).length : 0;
+            const currentScores = rubricScores[ch.id] || {{}};
+            let scoreSum = 0;
+            for (const v of Object.values(currentScores)) scoreSum += parseFloat(v) || 0;
 
-        if (ch.viva_pearls && ch.viva_pearls.length > 0) {{
             html += `
-                <div class="viva-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-                        <h4 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 11pt; color: #b45309;">
-                            {ICONS["viva"]} High-Yield Clinical & Viva Examiner Pearls
-                        </h4>
+                <div class="exam-simulator-view">
+                    <div class="exam-sim-header">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span class="exam-status-badge">🔴 LIVE UNIVERSITY EXAM SIMULATOR</span>
+                            <div class="exam-clock" id="examCountdownClock">25:00</div>
+                            <div class="exam-clock-controls">
+                                <button class="btn btn-secondary" onclick="startExamTimer()" id="btnExamStart">▶ Start</button>
+                                <button class="btn btn-secondary" onclick="pauseExamTimer()" id="btnExamPause">⏸ Pause</button>
+                                <button class="btn btn-secondary" onclick="resetExamTimer()">🔄 Reset 25m</button>
+                            </div>
+                        </div>
                         <div style="display: flex; gap: 8px; align-items: center;">
-                            <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 4px 14px; font-size: 8pt; font-weight: 600; min-width: 65px;">
-                                ${{vivaAnswersVisible ? 'Hide' : 'Show'}}
-                            </button>
-                            <button class="btn btn-primary" onclick="switchTopicTab('quiz')" style="padding: 4px 12px; font-size: 8pt;">
-                                Practice Flashcards →
-                            </button>
+                            <span class="exam-word-count" id="examWordCount">${{wordsCount}} words | ${{draftText.length}} characters</span>
+                            <button class="btn btn-secondary" onclick="toggleExamSimulator(false)" style="padding: 5px 12px; font-size: 8pt;">✕ Exit</button>
                         </div>
                     </div>
-                    <div class="viva-pearls-container ${{vivaAnswersVisible ? '' : 'answers-hidden'}}" id="vivaContainer">
+
+                    <div class="prompt-box" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); margin-bottom: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                            <span style="font-weight: 800; text-transform: uppercase; font-size: 8pt; color: #dc2626; letter-spacing: 1px;">
+                                University 15-Mark Examination Paper
+                            </span>
+                            <span style="font-size: 8pt; font-weight: 700; color: #dc2626;">Time Allowed: 25 Minutes | Maximum Marks: 15</span>
+                        </div>
+                        <div style="font-size: 11pt; font-weight: 600; color: var(--text-main); line-height: 1.6;">${{ch.essay_prompt}}</div>
+                    </div>
+
+                    <div class="exam-workspace-split">
+                        <div class="exam-editor-pane">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                                <label style="font-size: 8.5pt; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                    Student Essay Draft Area
+                                </label>
+                                <button class="btn btn-secondary" onclick="insertRubricTemplate()" style="padding: 3px 10px; font-size: 7.5pt;">
+                                    Insert 10-Heading Outline
+                                </button>
+                            </div>
+                            <textarea class="exam-draft-textarea" id="examDraftArea" oninput="onExamDraftInput('${{ch.id}}', this)" placeholder="Begin drafting your university answer here... Follow the standard 10 university subheadings (Definition, Anatomy, Pathophysiology, Clinical Signs, Differential, Workup, Pre-op, Surgical Technique, Complications, Viva Pearls)...">${{draftText}}</textarea>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
+                                <span style="font-size: 7.5pt; color: var(--text-muted);">💾 Draft saved locally to your device</span>
+                                <button class="btn btn-primary" onclick="submitExamForReview()" style="padding: 7px 18px; font-size: 8.5pt; font-weight: 600;">
+                                    Submit Draft & Self-Grade against Rubric
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="exam-rubric-pane">
+                            <div class="rubric-header">
+                                <div>
+                                    <div style="font-weight: 700; font-size: 9.5pt; color: var(--text-main);">University Marking Rubric (15 Marks)</div>
+                                    <div style="font-size: 7.5pt; color: var(--text-muted);">Self-grade each section against gold-standard university criteria</div>
+                                </div>
+                                <div class="rubric-total-badge" id="rubricScoreDisplay">${{scoreSum.toFixed(1)}} / 15.0</div>
+                            </div>
+                            <div class="rubric-items-list" id="rubricItemsList">
             `;
-            ch.viva_pearls.forEach((p, pIdx) => {{
-                let qText = p;
-                let aText = "";
-                if (p.includes('?')) {{
-                    const qEnd = p.indexOf('?') + 1;
-                    qText = p.substring(0, qEnd).trim();
-                    aText = p.substring(qEnd).trim();
-                }}
-                if (aText) {{
-                    html += `
-                        <div class="viva-qa-block" onclick="toggleSingleVivaAnswer(this)">
-                            <div style="display: flex; align-items: flex-start; gap: 8px;">
-                                <span class="viva-badge-q">Q${{pIdx + 1}}</span>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
-                                    <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
-                                        💡 Tap question to reveal model answer
+
+            RUBRIC_CRITERIA.forEach(crit => {{
+                const assigned = currentScores[crit.num] !== undefined ? currentScores[crit.num] : 0;
+                const isChecked = assigned > 0;
+                html += `
+                    <div class="rubric-item">
+                        <input type="checkbox" id="rubric_chk_${{crit.num}}" ${{isChecked ? 'checked' : ''}} onchange="updateRubricScore(${{crit.num}}, null, this.checked)">
+                        <div class="rubric-item-content">
+                            <div class="rubric-item-title">
+                                <span>${{crit.num}}. ${{crit.title}}</span>
+                                <span style="color: var(--primary); font-weight: 800;">${{crit.marks}} Marks</span>
+                            </div>
+                            <div class="rubric-item-desc">${{crit.desc}}</div>
+                            <div class="rubric-item-score-select">
+                                <input type="range" id="rubric_range_${{crit.num}}" min="0" max="${{crit.marks}}" step="0.5" value="${{assigned}}" oninput="updateRubricScore(${{crit.num}}, this.value)">
+                                <span id="rubric_val_${{crit.num}}">${{assigned.toFixed(1)}}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }});
+
+            html += `
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="examModelEssaySlot" style="display: ${{examSubmitted ? 'block' : 'none'}}; margin-top: 24px;">
+                        <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <h3 style="font-size: 12pt; color: var(--primary); margin: 0; font-weight: 700;">
+                                    Benchmark Your Draft Against the Master Monograph
+                                </h3>
+                                <button class="btn btn-secondary" onclick="document.getElementById('examModelEssaySlot').style.display='none'" style="padding: 4px 10px; font-size: 8pt;">Hide Model Answer</button>
+                            </div>
+                            <p style="font-size: 8.5pt; color: var(--text-muted); margin: 0;">Compare your essay response against the 10 university gold-standard sections below to refine your knowledge and precision.</p>
+                        </div>
+            `;
+
+            // Append the master essay below for direct comparison
+            for (const [secName, secHtml] of Object.entries(ch.sections)) {{
+                const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
+                html += `
+                    <div class="card">
+                        <div class="card-title">${{titleFormatted}}</div>
+                        <div style="line-height: 1.7;">${{secHtml}}</div>
+                    </div>
+                `;
+            }}
+
+            html += `</div></div>`;
+        }} else {{
+            // Render standard essay with Sticky Section Table of Contents Mini-Map
+            html += `
+                <div class="master-answer-wrapper">
+                    <div class="master-essay-content">
+                        <div class="prompt-box">
+                            <div style="font-weight: 700; text-transform: uppercase; font-size: 8pt; margin-bottom: 4px;">University 15-Mark Examination Prompt</div>
+                            <div>${{ch.essay_prompt}}</div>
+                        </div>
+
+                        <div class="layman-box">
+                            <div style="font-weight: 700; text-transform: uppercase; font-size: 8pt; margin-bottom: 4px;">Layman's Intuitive Analogy</div>
+                            <div>${{ch.layman_explanation}}</div>
+                        </div>
+            `;
+
+            // Render sections with cleaned formatting and section IDs for mini-map scrollspy
+            for (const [secName, secHtml] of Object.entries(ch.sections)) {{
+                const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
+                const secId = 'sec_' + secName.toLowerCase();
+                html += `
+                    <div class="card essay-section-card" id="${{secId}}" data-sec="${{secName}}">
+                        <div class="card-title">${{titleFormatted}}</div>
+                        <div style="line-height: 1.7;">${{secHtml}}</div>
+                    </div>
+                `;
+            }}
+
+            if (ch.viva_pearls && ch.viva_pearls.length > 0) {{
+                html += `
+                    <div class="viva-card essay-section-card" id="sec_viva_pearls">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                            <h4 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 11pt; color: #b45309;">
+                                {ICONS["viva"]} High-Yield Clinical & Viva Examiner Pearls
+                            </h4>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 4px 14px; font-size: 8pt; font-weight: 600; min-width: 65px;">
+                                    ${{vivaAnswersVisible ? 'Hide' : 'Show'}}
+                                </button>
+                                <button class="btn btn-primary" onclick="switchTopicTab('quiz')" style="padding: 4px 12px; font-size: 8pt;">
+                                    Practice Flashcards →
+                                </button>
+                            </div>
+                        </div>
+                        <div class="viva-pearls-container ${{vivaAnswersVisible ? '' : 'answers-hidden'}}" id="vivaContainer">
+                `;
+                ch.viva_pearls.forEach((p, pIdx) => {{
+                    let qText = p;
+                    let aText = "";
+                    if (p.includes('?')) {{
+                        const qEnd = p.indexOf('?') + 1;
+                        qText = p.substring(0, qEnd).trim();
+                        aText = p.substring(qEnd).trim();
+                    }}
+                    if (aText) {{
+                        html += `
+                            <div class="viva-qa-block" onclick="toggleSingleVivaAnswer(this)">
+                                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                    <span class="viva-badge-q">Q${{pIdx + 1}}</span>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
+                                        <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
+                                            💡 Tap question to reveal model answer
+                                        </div>
                                     </div>
+                                    <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to question & answer hands-free">
+                                        🔊
+                                    </button>
+                                </div>
+                                <div class="viva-a-row">
+                                    <strong class="viva-model-label">Model Answer: </strong>
+                                    <span>${{aText}}</span>
                                 </div>
                             </div>
-                            <div class="viva-a-row">
-                                <strong class="viva-model-label">Model Answer: </strong>
-                                <span>${{aText}}</span>
+                        `;
+                    }} else {{
+                        html += `
+                            <div class="viva-qa-block" style="padding: 10px 14px; background: rgba(245, 158, 11, 0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 9pt; line-height: 1.6; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: #b45309;">Clinical Pearl ${{pIdx + 1}}: </strong>
+                                    <span>${{p}}</span>
+                                </div>
+                                <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to pearl hands-free">
+                                    🔊
+                                </button>
                             </div>
+                        `;
+                    }}
+                }});
+                html += `</div></div>`;
+            }}
+
+            html += `
+                    </div>
+                    <aside class="sticky-minimap-rail" id="stickyMinimapRail">
+                        <div class="sticky-minimap-card">
+                            <div class="minimap-header">
+                                <span class="minimap-title">15-Mark Essay Map</span>
+                                <span class="minimap-badge">10 Sections</span>
+                            </div>
+                            <nav class="minimap-nav">
+            `;
+
+            for (const secName of Object.keys(ch.sections)) {{
+                const titleFormatted = secName.replace(/_/g, ' ');
+                const secId = 'sec_' + secName.toLowerCase();
+                html += `
+                    <a class="minimap-link" href="#${{secId}}" onclick="event.preventDefault(); scrollToSection('${{secId}}')">
+                        <span class="minimap-dot"></span>
+                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${{titleFormatted}}</span>
+                    </a>
+                `;
+            }}
+
+            if (ch.viva_pearls && ch.viva_pearls.length > 0) {{
+                html += `
+                    <a class="minimap-link" href="#sec_viva_pearls" onclick="event.preventDefault(); scrollToSection('sec_viva_pearls')">
+                        <span class="minimap-dot"></span>
+                        <span>Viva Examiner Pearls</span>
+                    </a>
+                `;
+            }}
+
+            html += `
+                            </nav>
                         </div>
-                    `;
-                }} else {{
-                    html += `
-                        <div class="viva-qa-block" style="padding: 10px 14px; background: rgba(245, 158, 11, 0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 9pt; line-height: 1.6;">
-                            <strong style="color: #b45309;">Clinical Pearl ${{pIdx + 1}}: </strong>
-                            <span>${{p}}</span>
-                        </div>
-                    `;
-                }}
-            }});
-            html += `</div></div>`;
+                    </aside>
+                </div>
+            `;
         }}
     }} else if (currentTopicTab === 'layman') {{
         html += `
@@ -2904,10 +4238,77 @@ function renderTopicView() {{
             html += `<p style="color: var(--text-muted);">No separate interactive presets for this chapter.</p>`;
         }}
     }} else if (currentTopicTab === 'diagrams') {{
-        html += `<div class="card"><div class="card-title">Original Schematics & Anatomical Diagrams</div>`;
+        const pairs = COMPARISON_PAIRS[ch.id] || [];
+        if (pairs.length > 0) {{
+            const pIdx = activeComparePairIdx < pairs.length ? activeComparePairIdx : 0;
+            const pair = pairs[pIdx];
+            const b64_hd = DIAGRAMS[pair.hd_file] || '';
+            const b64_orig = DIAGRAMS[pair.orig_file] || '';
+
+            let pairBtnsHtml = '';
+            if (pairs.length > 1) {{
+                pairBtnsHtml += '<div class="split-pair-buttons">';
+                pairs.forEach((p, idx) => {{
+                    pairBtnsHtml += `<button class="split-pair-btn ${{idx === pIdx ? 'active' : ''}}" onclick="switchComparePair(${{idx}})">${{p.title}}</button>`;
+                }});
+                pairBtnsHtml += '</div>';
+            }}
+
+            html += `
+                <div class="split-comparison-card">
+                    <div class="split-comparison-header">
+                        <div>
+                            <div style="font-weight: 700; font-size: 10.5pt; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                <span>🔄</span> Side-by-Side Split Comparison Slider
+                            </div>
+                            <div style="font-size: 8pt; color: var(--text-muted); margin-top: 2px;">
+                                Drag the divider handle to see how lecture notes translate into clean 300 DPI schematics: <strong>${{pair.title}}</strong>
+                            </div>
+                        </div>
+                        ${{pairBtnsHtml}}
+                    </div>
+
+                    <div class="before-after-container" id="splitCompareBox">
+                        <div class="before-after-layer after-layer">
+                            <img src="${{b64_hd}}" alt="${{pair.hd_label}}">
+                            <span class="before-after-badge badge-right">${{pair.hd_label}}</span>
+                        </div>
+                        <div class="before-after-layer before-layer" id="splitBeforeWrap">
+                            <img src="${{b64_orig}}" alt="${{pair.orig_label}}">
+                            <span class="before-after-badge badge-left">${{pair.orig_label}}</span>
+                        </div>
+                        <div class="before-after-divider" id="splitDivider" style="left: 50%;">
+                            <div class="before-after-handle">⮜ ⮞</div>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="before-after-range" id="splitRangeInput" oninput="updateSplitSlider(this.value)">
+                    </div>
+                </div>
+            `;
+        }}
+
+        html += `
+            <div class="card">
+                <div class="card-title">Original Schematics & Anatomical Diagrams</div>
+                <div class="diagram-mode-bar">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span style="font-size: 9.5pt; font-weight: 700; color: var(--text-main);">Interactive Spotter Test:</span>
+                        <button class="btn ${{spotterModeActive ? 'btn-primary' : 'btn-secondary'}}" onclick="toggleSpotterMode()" style="padding: 5px 14px; font-size: 8.5pt; font-weight: 600;">
+                            ${{spotterModeActive ? '🎯 Spotter Mode: ON' : '🎯 Spotter / Test Me Mode: OFF'}}
+                        </button>
+                        ${{spotterModeActive ? `
+                            <button class="btn btn-secondary" onclick="revealAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">👁️ Reveal All</button>
+                            <button class="btn btn-secondary" onclick="resetAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">🔄 Hide All</button>
+                        ` : ''}}
+                    </div>
+                    <div style="font-size: 8pt; color: var(--text-muted);">
+                        ${{spotterModeActive ? '💡 Tap purple masks to flip and reveal anatomical structure names' : 'Active Viva Spotter Mode available — tap button to hide labels and test recall'}}
+                    </div>
+                </div>
+        `;
+
         if (ch.diagrams && ch.diagrams.length > 0) {{
             html += `<div class="diagram-gallery">`;
-            ch.diagrams.forEach(d => {{
+            ch.diagrams.forEach((d, dIdx) => {{
                 const b64 = DIAGRAMS[d.filename] || '';
                 if (b64) {{
                     const isOrig = d.filename.startsWith('ch') || d.title.toLowerCase().includes('handwritten') || d.title.toLowerCase().includes('notebook');
@@ -2915,11 +4316,41 @@ function renderTopicView() {{
                         ? '<span class="diagram-type-badge badge-original">Original Handwritten Note</span>'
                         : '<span class="diagram-type-badge badge-hd">High-Res 300 DPI Medical Schematic</span>';
                     const safeTitle = (d.title || '').replace(/'/g, "\\'");
+                    const spots = SPOTTERS[d.filename] || [];
+
+                    let spotterOverlaysHtml = '';
+                    if (spotterModeActive && spots.length > 0) {{
+                        spots.forEach((h, hIdx) => {{
+                            const isRev = !!revealedSpotters[d.filename + '_' + hIdx];
+                            spotterOverlaysHtml += `
+                                <div class="spotter-box ${{isRev ? 'revealed' : ''}}" style="top: ${{h.top}}%; left: ${{h.left}}%; width: ${{h.width}}%; height: ${{h.height}}%;" onclick="event.stopPropagation(); toggleSpotterHotspot('${{d.filename}}', ${{hIdx}})" title="Tap to flip">
+                                    <div class="spotter-front">
+                                        <span class="spotter-num">? ${{hIdx + 1}}</span>
+                                        <span class="spotter-hint-text">${{h.hint || 'Tap to reveal'}}</span>
+                                    </div>
+                                    <div class="spotter-back">
+                                        <span class="spotter-label-text">${{h.label}}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }});
+                    }}
+
                     html += `
                         <div class="diagram-item">
                             <div class="diagram-header-badge">${{badgeHtml}}</div>
-                            <img src="${{b64}}" onclick="openModal('${{b64}}', '${{safeTitle}}')" alt="${{d.title}}">
-                            <div class="diagram-item-caption">${{d.title}}</div>
+                            <div class="spotter-interactive-container">
+                                <img src="${{b64}}" onclick="openModal('${{b64}}', '${{safeTitle}}', '${{d.filename}}')" alt="${{d.title}}">
+                                ${{spotterOverlaysHtml}}
+                            </div>
+                            <div class="diagram-item-caption">
+                                ${{spotterModeActive && spots.length === 0 ? `
+                                    <div style="background: rgba(124, 58, 237, 0.1); border: 1px dashed var(--primary); padding: 6px; border-radius: 6px; margin-bottom: 4px; font-size: 7.5pt; color: var(--primary); cursor: pointer;" onclick="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                                        🎯 Spotter Challenge: Test yourself! Tap to reveal schematic caption.
+                                    </div>
+                                    <div style="display: none;">${{d.title}}</div>
+                                ` : d.title}}
+                            </div>
                         </div>
                     `;
                 }}
@@ -2939,10 +4370,13 @@ function renderTopicView() {{
                             {ICONS["viva"]} High-Yield Clinical & Viva Examiner Pearls
                         </h3>
                         <div style="font-size: 8.5pt; color: var(--text-muted); margin-top: 3px;">
-                            Active Test-Yourself Mode — Answers are hidden by default. Tap any question or use toggle button.
+                            Active Test-Yourself Mode — Answers hidden by default. Tap question or use speaker to listen hands-free.
                         </div>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="toggleAudioPlaylist()" id="btnAudioPlaylist" style="padding: 5px 14px; font-size: 8.5pt; font-weight: 600;">
+                            ${{playlistRunning ? '⏹️ Stop Audio Walk' : '🎧 Audio Walk Mode (Play All)'}}
+                        </button>
                         <button class="btn btn-secondary" onclick="toggleVivaAnswers()" id="btnVivaAnswersToggle" style="padding: 5px 16px; font-size: 8.5pt; font-weight: 600; min-width: 65px;">
                             ${{vivaAnswersVisible ? 'Hide' : 'Show'}}
                         </button>
@@ -2972,6 +4406,9 @@ function renderTopicView() {{
                                     💡 Tap question to reveal model answer
                                 </div>
                             </div>
+                            <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to question & model answer hands-free">
+                                🔊
+                            </button>
                         </div>
                         <div class="viva-a-row">
                             <strong class="viva-model-label">Model Answer: </strong>
@@ -2981,9 +4418,14 @@ function renderTopicView() {{
                 `;
             }} else {{
                 html += `
-                    <div class="viva-qa-block" style="padding: 10px 14px; background: rgba(245, 158, 11, 0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 9pt; line-height: 1.6;">
-                        <strong style="color: #b45309;">Clinical Pearl ${{pIdx + 1}}: </strong>
-                        <span>${{p}}</span>
+                    <div class="viva-qa-block" style="padding: 10px 14px; background: rgba(245, 158, 11, 0.06); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 9pt; line-height: 1.6; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #b45309;">Clinical Pearl ${{pIdx + 1}}: </strong>
+                            <span>${{p}}</span>
+                        </div>
+                        <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to pearl hands-free">
+                            🔊
+                        </button>
                     </div>
                 `;
             }}
@@ -3066,6 +4508,7 @@ function renderTopicView() {{
                         <button class="btn btn-secondary" onclick="prevQuizCard()" ${{quizCardIdx === 0 ? 'disabled' : ''}} style="min-width: 105px;">
                             ← Previous
                         </button>
+                        <div style="display: flex; gap: 8px;">
                             <button class="btn btn-secondary" onclick="toggleQuizReveal()" style="min-width: 80px; font-weight: 600;">
                                 ${{quizAnswerRevealed ? 'Hide' : 'Show'}}
                             </button>
@@ -3128,6 +4571,10 @@ function renderTopicView() {{
             }});
         }}
     }}
+
+    if (currentTopicTab === 'master' && !isExamSimActive) {{
+        setTimeout(initScrollspy, 100);
+    }}
 }}
 
 function showTypeDetail(chId, tIdx) {{
@@ -3167,12 +4614,15 @@ function toggleCard(el) {{
 let modalCurrentScale = 1.0;
 let modalIsFitMode = true;
 
-function openModal(src, title) {{
+function openModal(src, title, filename) {{
     const m = document.getElementById('modal');
     const img = document.getElementById('modalImg');
     const titleEl = document.getElementById('modalTitleText');
     const fitBtn = document.getElementById('btnModalFit');
+    const spotBtn = document.getElementById('btnModalSpotter');
+    const spotOverlay = document.getElementById('modalSpotterOverlay');
     
+    modalCurrentFilename = filename || '';
     img.src = src;
     modalCurrentScale = 1.0;
     modalIsFitMode = true;
@@ -3180,6 +4630,19 @@ function openModal(src, title) {{
     img.style.transform = 'scale(1)';
     if (fitBtn) fitBtn.innerText = '100% Size';
     if (titleEl) titleEl.innerText = title || 'Medical Diagram Viewer';
+    
+    modalSpotterActive = false;
+    if (spotOverlay) {{
+        spotOverlay.style.display = 'none';
+        spotOverlay.innerHTML = '';
+    }}
+    if (spotBtn) {{
+        const hasSpots = !!(SPOTTERS[modalCurrentFilename] && SPOTTERS[modalCurrentFilename].length);
+        spotBtn.style.display = hasSpots ? 'inline-block' : 'none';
+        spotBtn.innerText = '🎯 Spotter Mode';
+        spotBtn.style.background = '';
+        spotBtn.style.color = '';
+    }}
     
     m.style.display = 'flex';
 }}
@@ -3303,6 +4766,13 @@ document.getElementById('searchInput').addEventListener('input', (e) => {{
 // Initialize on Dashboard view
 renderSidebar();
 renderDashboard();
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {{
+    window.addEventListener('load', () => {{
+        navigator.serviceWorker.register('./sw.js').catch(() => {{}});
+    }});
+}}
 </script>
 </body>
 </html>
