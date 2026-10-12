@@ -19,7 +19,7 @@ from content.neck_and_face import CHAPTERS as c2
 from content.infections_neuro_ot import CHAPTERS as c3
 from content.advanced_and_thyroid import CHAPTERS as c4
 from content.cheat_sheet import CHAPTERS as c5
-from content.formatter import ICONS, FAVICON_SVG, clean_latex, parse_markdown_to_html
+from content.formatter import ICONS, FAVICON_SVG, clean_latex, parse_markdown_to_html, format_inline_markdown
 from content.interactive_data import CLASSIFICATION_PRESETS
 
 ALL_CHAPTERS = c1 + c2 + c3 + c4 + c5
@@ -435,12 +435,12 @@ p.content-para {{
 
     <div class="callout callout-prompt">
         <div class="callout-title">15-Mark Examination Prompt</div>
-        <div>{clean_latex(ch['essay_prompt'])}</div>
+        <div>{format_inline_markdown(ch['essay_prompt'])}</div>
     </div>
 
     <div class="callout callout-layman">
         <div class="callout-title">Layman's Intuitive Explanation & Analogy</div>
-        <div>{clean_latex(ch['layman_explanation'])}</div>
+        <div>{format_inline_markdown(ch['layman_explanation'])}</div>
     </div>
 """)
 
@@ -478,7 +478,7 @@ p.content-para {{
         <ul class="viva-list">
 """)
             for p in ch["viva_pearls"]:
-                html_parts.append(f"<li>{clean_latex(p)}</li>")
+                html_parts.append(f"<li>{format_inline_markdown(p)}</li>")
             html_parts.append("""
         </ul>
     </div>
@@ -500,10 +500,10 @@ def generate_interactive_website(chapters, b64_images):
             "id": ch["id"],
             "title": ch["title"],
             "source": ch["source"],
-            "essay_prompt": clean_latex(ch["essay_prompt"]),
-            "layman_explanation": clean_latex(ch["layman_explanation"]),
+            "essay_prompt": format_inline_markdown(ch["essay_prompt"]),
+            "layman_explanation": format_inline_markdown(ch["layman_explanation"]),
             "diagrams": ch.get("diagrams", []),
-            "viva_pearls": [clean_latex(p) for p in ch.get("viva_pearls", [])],
+            "viva_pearls": [format_inline_markdown(p) for p in ch.get("viva_pearls", [])],
             "sections": {}
         }
         for s_k, s_v in ch["sections"].items():

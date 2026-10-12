@@ -105,13 +105,48 @@ def clean_latex(text: str) -> str:
     text = re.sub(r'SV([^SV\n\r]+?)SV', r'\1', text)
     text = text.replace('SVSV', '')
 
-    # Clean any \text{...}
-    text = re.sub(r'\\text\{\s*([^\}]+)\s*\}', r'\1', text)
+    # Clean any \text{...} while preserving proper spacing before units
+    text = re.sub(r'\\text\{\s*([^\}]+)\s*\}', r' \1', text)
 
     # Strip math dollar signs
     text = text.replace('$$', '')
     text = text.replace('$', '')
 
+    # Spacing around inequality operators: < 180, > 36, ≥ 4, ≤ 5
+    text = re.sub(r'(?<![a-zA-Z0-9_\<\>])([<>=≤≥])(\d)', r'\1 \2', text)
+
+    # Spacing between numbers and clinical units: 4 weeks, 180 mg, 60 mins, 4 hours
+    text = re.sub(r'(\d+)(weeks|week|days|day|hours|hour|mins|min|months|month|years|year|mg|mL|mmol|mEq|mmHg|cm|mm|kg|gm)\b', r'\1 \2', text)
+
+    # Collapse multiple spaces (except newlines)
+    text = re.sub(r'[ \t]{2,}', ' ', text)
+
+    return text.strip()
+
+def format_inline_markdown(text: str) -> str:
+    """Parses inline markdown (**bold**, *italics*, medical subscripts, unit spacing) into clean semantic HTML."""
+    if not text:
+        return ""
+    text = clean_latex(text)
+    # Parse bold: **text**
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    # Parse italics: *text* (excluding newlines and empty)
+    text = re.sub(r'(?<!\*)\*([^\*\n\r]+?)\*(?!\*)', r'<em>\1</em>', text)
+    # Medical terms and subscripts
+    text = re.sub(r'\bHbA1[cC]\b', 'HbA<sub>1c</sub>', text)
+    text = re.sub(r'HbA_\{1[cC]\}', 'HbA<sub>1c</sub>', text)
+    text = re.sub(r'HbA₁[cC]', 'HbA<sub>1c</sub>', text)
+    text = re.sub(r'\bFiO_?2\b', 'FiO<sub>2</sub>', text)
+    text = re.sub(r'\bPaO_?2\b', 'PaO<sub>2</sub>', text)
+    text = re.sub(r'\bPaCO_?2\b', 'PaCO<sub>2</sub>', text)
+    text = re.sub(r'\bSpO_?2\b', 'SpO<sub>2</sub>', text)
+    text = re.sub(r'\bEtCO_?2\b', 'EtCO<sub>2</sub>', text)
+    text = re.sub(r'\bCO_?2\b', 'CO<sub>2</sub>', text)
+    text = re.sub(r'\bO_?2\b', 'O<sub>2</sub>', text)
+    text = re.sub(r'\bN_?2O\b', 'N<sub>2</sub>O', text)
+    text = re.sub(r'\bH_?2O\b', 'H<sub>2</sub>O', text)
+    text = re.sub(r'\bH_?2\b', 'H<sub>2</sub>', text)
+    text = re.sub(r'\bHCO_?3\^?-?\b', 'HCO<sub>3</sub><sup>⁻</sup>', text)
     return text
 
 def parse_markdown_to_html(md_text: str) -> str:
@@ -157,8 +192,7 @@ def parse_markdown_to_html(md_text: str) -> str:
         
         t_html = ['<div class="table-responsive"><table class="data-table"><thead><tr>']
         for h in headers:
-            # parse bold inside header
-            h_clean = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', h)
+            h_clean = format_inline_markdown(h)
             t_html.append(f'<th>{h_clean}</th>')
         t_html.append('</tr></thead><tbody>')
 
@@ -168,8 +202,7 @@ def parse_markdown_to_html(md_text: str) -> str:
             cols = [c.strip() for c in r_line.split("|")[1:-1]]
             t_html.append('<tr>')
             for c in cols:
-                c_clean = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', c)
-                c_clean = re.sub(r'\*(.*?)\*', r'<em>\1</em>', c_clean)
+                c_clean = format_inline_markdown(c)
                 t_html.append(f'<td>{c_clean}</td>')
             t_html.append('</tr>')
 
@@ -207,17 +240,13 @@ def parse_markdown_to_html(md_text: str) -> str:
             if not in_ol:
                 output.append(f'<ol class="content-list-ordered" start="{num}">')
                 in_ol = True
-            content = ol_match.group(2).strip()
-            content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', content)
-            content = re.sub(r'\*(.*?)\*', r'<em>\1</em>', content)
+            content = format_inline_markdown(ol_match.group(2).strip())
             output.append(f'<li value="{num}">{content}</li>')
             continue
 
         # Check for unordered list: "- ", "* "
         if s_line.startswith("- ") or s_line.startswith("* "):
-            content = s_line[2:].strip()
-            content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', content)
-            content = re.sub(r'\*(.*?)\*', r'<em>\1</em>', content)
+            content = format_inline_markdown(s_line[2:].strip())
             if in_ol:
                 if not in_nested_ul:
                     output.append('<ul class="content-list nested-list" style="margin-top: 4px; margin-bottom: 8px; padding-left: 20px;">')
@@ -235,20 +264,16 @@ def parse_markdown_to_html(md_text: str) -> str:
         output.extend(close_lists())
 
         if s_line.startswith("### "):
-            h_text = s_line[4:].strip()
-            h_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', h_text)
+            h_text = format_inline_markdown(s_line[4:].strip())
             output.append(f'<h4 class="sub-heading">{h_text}</h4>')
             continue
         elif s_line.startswith("## "):
-            h_text = s_line[3:].strip()
-            h_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', h_text)
+            h_text = format_inline_markdown(s_line[3:].strip())
             output.append(f'<h3 class="section-title">{h_text}</h3>')
             continue
 
         # Normal paragraph
-        p_text = s_line
-        p_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', p_text)
-        p_text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', p_text)
+        p_text = format_inline_markdown(s_line)
         output.append(f'<p class="content-para">{p_text}</p>')
 
     if in_table:

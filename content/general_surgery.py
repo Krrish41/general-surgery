@@ -356,17 +356,17 @@ Infection occurring within **30 days** of an operative procedure (or within **90
             "prevention_bundle": """
 **Evidence-Based SSI Prevention Bundle:**
 1. **Preoperative Optimization:**
-   - Strict glycemic control (HbA1c optimization; perioperative blood glucose <180\\text{ mg/dL}).
-   - Smoking cessation \\ge 4\\text{ weeks} prior to surgery.
+   - Strict glycemic control: Target **HbA1c < 7.0–8.0%**; maintain perioperative blood glucose **< 180 mg/dL** (10 mmol/L) without hypoglycemia.
+   - Smoking cessation **≥ 4 weeks** prior to surgery.
    - Preoperative antiseptic bathing (chlorhexidine body wash).
    - *Hair Removal:* Do not use razors; clip hair immediately prior to surgery using electric clippers with disposable heads.
 2. **Intraoperative Measures:**
    - *Antimicrobial Prophylaxis:* Administer appropriate IV antibiotic within **60 minutes prior to surgical incision** (or within 120 mins for Vancomycin / Fluoroquinolones); redose if surgery exceeds two half-lives of the drug.
-   - *Skin Preparation:* Chlorhexidine gluconate in 70\\% isopropyl alcohol.
-   - *Normothermia:* Maintain core body temperature >36^\\circ\\text{C} with active warming blankets.
-   - *Hyperoxygenation:* Maintain intraoperative FiO_2 0.80 to promote oxidative neutrophil killing.
+   - *Skin Preparation:* Chlorhexidine gluconate in **70% isopropyl alcohol**.
+   - *Normothermia:* Maintain core body temperature **> 36°C** with active warming blankets.
+   - *Hyperoxygenation:* Maintain intraoperative **FiO₂ 0.80** to promote oxidative neutrophil killing.
 3. **Postoperative Care:**
-   - Sterile dressing maintained for 48 hours unless soiled; prompt suture/staple removal.
+   - Sterile dressing maintained for **48 hours** unless soiled; prompt suture/staple removal.
             """
         },
         "viva_pearls": [
