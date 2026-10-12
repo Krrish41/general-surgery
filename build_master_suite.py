@@ -2926,9 +2926,371 @@ body.dark .diagram-item img {{
         color: var(--primary);
         background: var(--primary-light);
     }}
-    .mobile-bottom-tab.active .bottom-tab-text {{
+    /* Hands-Free Walking Audio Mode Banner */
+    .hands-free-audio-bar {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(139, 92, 246, 0.16) 100%);
+        border: 1.5px solid var(--primary-border);
+        border-radius: var(--radius-md);
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+        flex-wrap: wrap;
+    }}
+    .audio-banner-left {{
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        min-width: 260px;
+    }}
+    .audio-banner-pulse-icon {{
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16pt;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+    }}
+    .audio-banner-title {{
+        font-size: 10.5pt;
+        font-weight: 700;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }}
+    .audio-badge-lock {{
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        font-size: 7pt;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }}
+    .audio-banner-sub {{
+        font-size: 8pt;
+        color: var(--text-muted);
+        margin-top: 2px;
+        line-height: 1.4;
+    }}
+    .btn-audio-play-all {{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 24px;
+        font-size: 9pt;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }}
+    .btn-audio-play-all:hover {{
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45);
+    }}
+    .btn-audio-play-all.is-playing {{
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    }}
+
+    /* Individual Section Talking Button */
+    .section-audio-pill {{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--bg-card);
+        border: 1.5px solid var(--primary-border);
+        color: var(--primary);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 8pt;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: var(--shadow-sm);
+    }}
+    .section-audio-pill:hover {{
+        background: var(--primary-light);
+        border-color: var(--primary);
+        transform: translateY(-1px);
+    }}
+    .section-audio-pill.speaking {{
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+        animation: pulseAudioPill 1.8s infinite;
+    }}
+    @keyframes pulseAudioPill {{
+        0% {{ transform: scale(1); box-shadow: 0 0 6px rgba(124, 58, 237, 0.4); }}
+        50% {{ transform: scale(1.03); box-shadow: 0 0 16px rgba(124, 58, 237, 0.6); }}
+        100% {{ transform: scale(1); box-shadow: 0 0 6px rgba(124, 58, 237, 0.4); }}
+    }}
+
+    .essay-section-card.audio-active-section {{
+        border: 2px solid var(--primary) !important;
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.25) !important;
+        position: relative;
+    }}
+    .essay-section-card.audio-active-section::before {{
+        content: '▶ PLAYING NOW';
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 6.5pt;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+    }}
+
+    /* Floating Bottom Audio Player Dock */
+    .audio-dock {{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1050;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 2px solid var(--primary);
+        box-shadow: 0 -8px 30px rgba(124, 58, 237, 0.22);
+        padding: 10px 20px;
+        display: block;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }}
+    body.dark .audio-dock {{
+        background: rgba(18, 10, 42, 0.96);
+        border-top: 2px solid #8b5cf6;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
+    }}
+    .audio-dock.hidden {{
+        transform: translateY(120%);
+        opacity: 0;
+        pointer-events: none;
+    }}
+    .audio-dock-inner {{
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }}
+    .audio-dock-meta {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 240px;
+        max-width: 340px;
+        flex-shrink: 0;
+    }}
+    .audio-dock-track-icon {{
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15pt;
+        flex-shrink: 0;
+        box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
+    }}
+    .audio-dock-text {{
+        overflow: hidden;
+    }}
+    .audio-dock-track-title {{
+        font-size: 9pt;
+        font-weight: 700;
+        color: var(--text-main);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }}
+    .audio-dock-chapter-title {{
+        font-size: 7.5pt;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }}
+    .audio-dock-controls-wrap {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 280px;
+    }}
+    .audio-dock-buttons {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }}
+    .audio-control-btn {{
+        background: transparent;
+        border: none;
+        color: var(--text-main);
+        font-size: 13pt;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}
+    .audio-control-btn:hover {{
+        background: var(--primary-light);
+        color: var(--primary);
+    }}
+    .audio-btn-playpause {{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: #ffffff !important;
+        font-size: 14pt;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+    }}
+    .audio-btn-playpause:hover {{
+        background: var(--primary-dark);
+        transform: scale(1.06);
+    }}
+    .audio-mode-indicator {{
+        background: var(--primary-light);
+        border: 1px solid var(--primary-border);
+        color: var(--primary);
+        font-size: 7pt;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 10px;
+        cursor: pointer;
+    }}
+    .audio-dock-progress-wrap {{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+    }}
+    .audio-time-label {{
+        font-size: 7.5pt;
+        font-weight: 600;
+        color: var(--text-muted);
+        min-width: 38px;
+        font-variant-numeric: tabular-nums;
+    }}
+    .audio-scrubber {{
+        flex: 1;
+        height: 5px;
+        border-radius: 3px;
+        accent-color: var(--primary);
+        cursor: pointer;
+    }}
+    .audio-dock-options {{
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-shrink: 0;
+    }}
+    .audio-speed-selector {{
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--primary-light);
+        padding: 3px 6px;
+        border-radius: 20px;
+        border: 1px solid var(--primary-border);
+    }}
+    .speed-label {{
+        font-size: 7pt;
         font-weight: 700;
         color: var(--primary);
+        text-transform: uppercase;
+        margin-right: 2px;
+    }}
+    .speed-pill {{
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 7.5pt;
+        font-weight: 600;
+        padding: 3px 7px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }}
+    .speed-pill:hover {{
+        color: var(--primary);
+    }}
+    .speed-pill.active {{
+        background: var(--primary);
+        color: #ffffff;
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+    }}
+    .audio-dock-close {{
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 13pt;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: all 0.15s ease;
+    }}
+    .audio-dock-close:hover {{
+        color: var(--danger);
+        background: rgba(239, 68, 68, 0.1);
+    }}
+
+    @media (max-width: 768px) {{
+        .audio-dock {{
+            padding: 8px 12px;
+            bottom: 60px; /* Dock right above mobile bottom bar */
+        }}
+        .audio-dock-meta {{
+            min-width: 100%;
+            max-width: 100%;
+            justify-content: space-between;
+        }}
+        .audio-dock-controls-wrap {{
+            width: 100%;
+        }}
+        .audio-dock-options {{
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 4px;
+        }}
     }}
 </style>
 </head>
@@ -3127,7 +3489,14 @@ let activeComparePairIdx = 0;
 let modalCurrentFilename = '';
 let modalSpotterActive = false;
 
-// Audio & Speech State
+// --- Continuous Studio Audio & Lock-Screen Playback Engine ---
+let masterAudio = new Audio();
+let audioTrack = null; // (chId, secKey, title, chapterTitle)
+let audioPlaybackSpeed = parseFloat(localStorage.getItem('surgery_audio_speed') || '1.0');
+let isAudioPlaying = false;
+let isChapterAutoAdvance = false;
+let chapterAudioQueue = [];
+let chapterQueueIdx = 0;
 let currentSpeakingBtn = null;
 let currentUtterance = null;
 let playlistRunning = false;
@@ -3315,7 +3684,9 @@ function selectChapter(idx) {{
 
 function switchTopicTab(tab) {{
     currentTopicTab = tab;
-    stopCurrentSpeech();
+    if ('speechSynthesis' in window && window.speechSynthesis.speaking) {{
+        window.speechSynthesis.cancel();
+    }}
 
     // Highlight top bar tab & auto-scroll into view
     document.querySelectorAll('.tab-btn').forEach(btn => {{
@@ -3489,8 +3860,357 @@ function setDashFilter(filter) {{
     renderDashboard();
 }}
 
-// --- Speech Synthesis for Viva ---
+// --- Continuous Background Audio Engine (Lock-Screen & Mobile/Tablet Pocket Playback) ---
+function initMasterAudio() {{
+    masterAudio.preload = 'auto';
+    masterAudio.playbackRate = audioPlaybackSpeed;
+
+    masterAudio.addEventListener('play', () => {{
+        isAudioPlaying = true;
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+    }});
+
+    masterAudio.addEventListener('pause', () => {{
+        isAudioPlaying = false;
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+    }});
+
+    masterAudio.addEventListener('loadedmetadata', () => {{
+        updateAudioScrubberUI();
+    }});
+
+    masterAudio.addEventListener('timeupdate', () => {{
+        updateAudioScrubberUI();
+    }});
+
+    masterAudio.addEventListener('ended', () => {{
+        handleAudioEnded();
+    }});
+
+    masterAudio.addEventListener('error', (e) => {{
+        console.warn('Audio stream error, falling back if needed:', e);
+        if (isChapterAutoAdvance) {{
+            handleAudioEnded();
+        }}
+    }});
+
+    // Native MediaSession for Samsung One UI Lock-Screen, Tablet Pocket Playback, & Earbuds
+    if ('mediaSession' in navigator) {{
+        try {{
+            navigator.mediaSession.setActionHandler('play', () => {{
+                masterAudio.play();
+            }});
+            navigator.mediaSession.setActionHandler('pause', () => {{
+                masterAudio.pause();
+            }});
+            navigator.mediaSession.setActionHandler('previoustrack', () => {{
+                prevAudioTrack();
+            }});
+            navigator.mediaSession.setActionHandler('nexttrack', () => {{
+                nextAudioTrack();
+            }});
+            navigator.mediaSession.setActionHandler('seekto', (details) => {{
+                if (details.seekTime && masterAudio.duration) {{
+                    masterAudio.currentTime = details.seekTime;
+                }}
+            }});
+            navigator.mediaSession.setActionHandler('seekbackward', (details) => {{
+                const skip = details.seekOffset || 15;
+                masterAudio.currentTime = Math.max(0, masterAudio.currentTime - skip);
+            }});
+            navigator.mediaSession.setActionHandler('seekforward', (details) => {{
+                const skip = details.seekOffset || 15;
+                masterAudio.currentTime = Math.min(masterAudio.duration || 0, masterAudio.currentTime + skip);
+            }});
+        }} catch (err) {{
+            console.warn('MediaSession handler registration error:', err);
+        }}
+    }}
+}}
+
+function updateMediaSessionMetadata(trackTitle, chapterTitle) {{
+    if ('mediaSession' in navigator) {{
+        try {{
+            navigator.mediaSession.metadata = new MediaMetadata({{
+                title: trackTitle,
+                artist: 'General Surgery Pro • Sanjay Marwah Monograph',
+                album: chapterTitle,
+                artwork: [
+                    {{ src: 'favicon.svg', sizes: '96x96', type: 'image/svg+xml' }}
+                ]
+            }});
+            navigator.mediaSession.playbackState = isAudioPlaying ? 'playing' : 'paused';
+        }} catch (e) {{}}
+    }}
+}}
+
+function playSectionAudio(chId, secKey, secTitle, autoAdvance = false) {{
+    const ch = CHAPTERS.find(c => c.id === chId) || CHAPTERS[currentChapterIdx];
+    const chTitle = ch ? ch.title : 'Chapter ' + (currentChapterIdx + 1);
+    const audioSrc = 'assets/audio/' + chId + '_' + secKey + '.mp3';
+
+    audioTrack = {{
+        chId: chId,
+        secKey: secKey,
+        title: secTitle,
+        chapterTitle: chTitle
+    }};
+    isChapterAutoAdvance = autoAdvance;
+
+    const dock = document.getElementById('masterAudioDock');
+    if (dock) dock.classList.remove('hidden');
+
+    if (!masterAudio.src.endsWith(audioSrc)) {{
+        masterAudio.src = audioSrc;
+    }}
+    masterAudio.playbackRate = audioPlaybackSpeed;
+
+    masterAudio.play().then(() => {{
+        isAudioPlaying = true;
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+        highlightActiveAudioSection(secKey);
+        updateMediaSessionMetadata(secTitle, chTitle);
+    }}).catch(err => {{
+        console.warn('Playback request error:', err);
+    }});
+}}
+
+function toggleSectionAudio(chId, secKey, secTitle) {{
+    if (audioTrack && audioTrack.chId === chId && audioTrack.secKey === secKey) {{
+        if (isAudioPlaying) {{
+            masterAudio.pause();
+        }} else {{
+            masterAudio.play();
+        }}
+    }} else {{
+        const ch = CHAPTERS.find(c => c.id === chId) || CHAPTERS[currentChapterIdx];
+        if (ch && ch.sections) {{
+            const keys = Object.keys(ch.sections);
+            chapterAudioQueue = keys.map(k => ({{
+                chId: ch.id,
+                secKey: k,
+                title: k.replace(/_/g, ' ').toUpperCase()
+            }}));
+            chapterQueueIdx = keys.indexOf(secKey);
+            if (chapterQueueIdx === -1) chapterQueueIdx = 0;
+        }}
+        playSectionAudio(chId, secKey, secTitle, false);
+    }}
+}}
+
+function playContinuousChapterAudio() {{
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch || !ch.sections) return;
+
+    if (isAudioPlaying && isChapterAutoAdvance && audioTrack && audioTrack.chId === ch.id) {{
+        masterAudio.pause();
+        return;
+    }}
+
+    const keys = Object.keys(ch.sections);
+    if (keys.length === 0) return;
+
+    chapterAudioQueue = keys.map(k => ({{
+        chId: ch.id,
+        secKey: k,
+        title: k.replace(/_/g, ' ').toUpperCase()
+    }}));
+    chapterQueueIdx = 0;
+    isChapterAutoAdvance = true;
+
+    const first = chapterAudioQueue[0];
+    playSectionAudio(first.chId, first.secKey, first.title, true);
+}}
+
+function handleAudioEnded() {{
+    if (isChapterAutoAdvance && chapterAudioQueue.length > 0 && chapterQueueIdx + 1 < chapterAudioQueue.length) {{
+        chapterQueueIdx++;
+        const nextTrack = chapterAudioQueue[chapterQueueIdx];
+        playSectionAudio(nextTrack.chId, nextTrack.secKey, nextTrack.title, true);
+    }} else {{
+        isChapterAutoAdvance = false;
+        isAudioPlaying = false;
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+        clearActiveAudioSectionHighlight();
+    }}
+}}
+
+function togglePlayPauseAudio() {{
+    if (masterAudio.src) {{
+        if (masterAudio.paused) {{
+            masterAudio.play();
+        }} else {{
+            masterAudio.pause();
+        }}
+    }} else if (currentChapterIdx >= 0) {{
+        playContinuousChapterAudio();
+    }}
+}}
+
+function prevAudioTrack() {{
+    if (chapterAudioQueue.length > 0 && chapterQueueIdx > 0) {{
+        chapterQueueIdx--;
+        const prevTrack = chapterAudioQueue[chapterQueueIdx];
+        playSectionAudio(prevTrack.chId, prevTrack.secKey, prevTrack.title, isChapterAutoAdvance);
+    }} else if (masterAudio.currentTime > 3) {{
+        masterAudio.currentTime = 0;
+    }}
+}}
+
+function nextAudioTrack() {{
+    if (chapterAudioQueue.length > 0 && chapterQueueIdx + 1 < chapterAudioQueue.length) {{
+        chapterQueueIdx++;
+        const nextTrack = chapterAudioQueue[chapterQueueIdx];
+        playSectionAudio(nextTrack.chId, nextTrack.secKey, nextTrack.title, isChapterAutoAdvance);
+    }}
+}}
+
+function setAudioPlaybackRate(rate) {{
+    audioPlaybackSpeed = rate;
+    masterAudio.playbackRate = rate;
+    localStorage.setItem('surgery_audio_speed', rate.toString());
+
+    document.querySelectorAll('.speed-pill').forEach(pill => {{
+        const pSpeed = parseFloat(pill.getAttribute('data-speed'));
+        if (pSpeed === rate) {{
+            pill.classList.add('active');
+        }} else {{
+            pill.classList.remove('active');
+        }}
+    }});
+}}
+
+function onAudioScrub(val) {{
+    if (masterAudio.duration) {{
+        masterAudio.currentTime = (val / 100) * masterAudio.duration;
+    }}
+}}
+
+function updateAudioScrubberUI() {{
+    const curTimeEl = document.getElementById('audioCurrentTime');
+    const durEl = document.getElementById('audioDuration');
+    const scrubber = document.getElementById('audioProgressScrubber');
+
+    if (masterAudio.duration && !isNaN(masterAudio.duration)) {{
+        const pct = (masterAudio.currentTime / masterAudio.duration) * 100;
+        if (scrubber) scrubber.value = pct;
+        if (curTimeEl) curTimeEl.innerText = formatAudioTime(masterAudio.currentTime);
+        if (durEl) durEl.innerText = formatAudioTime(masterAudio.duration);
+    }} else {{
+        if (curTimeEl) curTimeEl.innerText = formatAudioTime(masterAudio.currentTime || 0);
+    }}
+}}
+
+function formatAudioTime(secs) {{
+    if (isNaN(secs) || !isFinite(secs) || secs < 0) return '00:00';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}}
+
+function updateAudioDockUI() {{
+    const playPauseBtn = document.getElementById('audioDockPlayPauseBtn');
+    const trackTitleEl = document.getElementById('audioDockTrackTitle');
+    const chTitleEl = document.getElementById('audioDockChapterTitle');
+    const modeBadge = document.getElementById('audioModeBadge');
+    const playAllBtn = document.getElementById('btnPlayAllChapter');
+
+    if (playPauseBtn) {{
+        playPauseBtn.innerHTML = isAudioPlaying ? '⏸️' : '▶️';
+    }}
+    if (playAllBtn) {{
+        if (isAudioPlaying && isChapterAutoAdvance) {{
+            playAllBtn.innerHTML = '⏸️ Pause Chapter Audio Walk';
+            playAllBtn.classList.add('is-playing');
+        }} else {{
+            playAllBtn.innerHTML = '▶️ Play Full Chapter (All Sections)';
+            playAllBtn.classList.remove('is-playing');
+        }}
+    }}
+    if (trackTitleEl && audioTrack) {{
+        trackTitleEl.innerText = audioTrack.title;
+    }}
+    if (chTitleEl && audioTrack) {{
+        chTitleEl.innerText = audioTrack.chapterTitle;
+    }}
+    if (modeBadge) {{
+        if (isChapterAutoAdvance) {{
+            modeBadge.innerText = 'Walk Mode ⮂ (Section ' + (chapterQueueIdx + 1) + '/' + chapterAudioQueue.length + ')';
+            modeBadge.style.display = 'inline-block';
+        }} else {{
+            modeBadge.innerText = 'Single Section';
+            modeBadge.style.display = 'inline-block';
+        }}
+    }}
+
+    document.querySelectorAll('.speed-pill').forEach(pill => {{
+        const pSpeed = parseFloat(pill.getAttribute('data-speed'));
+        if (pSpeed === audioPlaybackSpeed) {{
+            pill.classList.add('active');
+        }} else {{
+            pill.classList.remove('active');
+        }}
+    }});
+}}
+
+function updateSectionButtonsUI() {{
+    document.querySelectorAll('.section-audio-pill').forEach(btn => {{
+        const secId = btn.id.replace('btn_sec_audio_', '');
+        const isThis = audioTrack && audioTrack.secKey === secId && isAudioPlaying;
+        const iconSpan = btn.querySelector('.sec-audio-icon');
+        const labelSpan = btn.querySelector('.sec-audio-label');
+
+        if (isThis) {{
+            btn.classList.add('speaking');
+            if (iconSpan) iconSpan.innerText = '⏸️';
+            if (labelSpan) labelSpan.innerText = 'Pause Audio';
+        }} else {{
+            btn.classList.remove('speaking');
+            if (iconSpan) iconSpan.innerText = '🎧';
+            if (labelSpan) labelSpan.innerText = 'Listen Section';
+        }}
+    }});
+}}
+
+function highlightActiveAudioSection(secKey) {{
+    document.querySelectorAll('.essay-section-card').forEach(c => {{
+        c.classList.remove('audio-active-section');
+    }});
+    const target = document.getElementById('sec_' + secKey.toLowerCase());
+    if (target) {{
+        target.classList.add('audio-active-section');
+        try {{
+            target.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+        }} catch (e) {{}}
+    }}
+}}
+
+function clearActiveAudioSectionHighlight() {{
+    document.querySelectorAll('.essay-section-card').forEach(c => {{
+        c.classList.remove('audio-active-section');
+    }});
+}}
+
+function closeAudioDock() {{
+    masterAudio.pause();
+    isAudioPlaying = false;
+    isChapterAutoAdvance = false;
+    const dock = document.getElementById('masterAudioDock');
+    if (dock) dock.classList.add('hidden');
+    clearActiveAudioSectionHighlight();
+    updateSectionButtonsUI();
+    updateAudioDockUI();
+}}
+
 function stopCurrentSpeech() {{
+    if (masterAudio && !masterAudio.paused) {{
+        masterAudio.pause();
+        isAudioPlaying = false;
+    }}
     if ('speechSynthesis' in window) {{
         window.speechSynthesis.cancel();
     }}
@@ -3500,9 +4220,14 @@ function stopCurrentSpeech() {{
         currentSpeakingBtn = null;
     }}
     currentUtterance = null;
+    updateAudioDockUI();
+    updateSectionButtonsUI();
 }}
 
 function speakVivaPearl(btn, pearlIdx) {{
+    if (masterAudio && !masterAudio.paused) {{
+        masterAudio.pause();
+    }}
     if (!('speechSynthesis' in window)) {{
         alert('Web Speech API is not supported on this browser.');
         return;
@@ -3534,7 +4259,7 @@ function speakVivaPearl(btn, pearlIdx) {{
     currentSpeakingBtn = btn;
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.rate = 1.0;
+    utterance.rate = audioPlaybackSpeed || 1.0;
     utterance.pitch = 1.0;
     utterance.onend = () => {{
         btn.innerHTML = '🔊';
@@ -4077,6 +4802,26 @@ function renderTopicView() {{
             html += `
                 <div class="master-answer-wrapper">
                     <div class="master-essay-content">
+                        <div class="hands-free-audio-bar">
+                            <div class="audio-banner-left">
+                                <div class="audio-banner-pulse-icon">🎧</div>
+                                <div>
+                                    <div class="audio-banner-title">
+                                        Hands-Free Walking Audio Mode (15-Mark Master Essay)
+                                        <span class="audio-badge-lock">🔒 Pocket & Lock-Screen Ready</span>
+                                    </div>
+                                    <div class="audio-banner-sub">
+                                        Lock your Samsung tablet, put it in your pocket, and listen to all sections sequentially with human studio AI narration.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hands-free-audio-actions">
+                                <button class="btn-audio-play-all" onclick="playContinuousChapterAudio()" id="btnPlayAllChapter">
+                                    ▶️ Play Full Chapter (All Sections)
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="prompt-box">
                             <div style="font-weight: 700; text-transform: uppercase; font-size: 8pt; margin-bottom: 4px;">University 15-Mark Examination Prompt</div>
                             <div>${{ch.essay_prompt}}</div>
@@ -4088,13 +4833,20 @@ function renderTopicView() {{
                         </div>
             `;
 
-            // Render sections with cleaned formatting and section IDs for mini-map scrollspy
+            // Render sections with cleaned formatting, individual audio buttons, and section IDs for mini-map scrollspy
             for (const [secName, secHtml] of Object.entries(ch.sections)) {{
                 const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
                 const secId = 'sec_' + secName.toLowerCase();
+                const isPlayingThis = (audioTrack && audioTrack.chId === ch.id && audioTrack.secKey === secName && isAudioPlaying);
                 html += `
-                    <div class="card essay-section-card" id="${{secId}}" data-sec="${{secName}}">
-                        <div class="card-title">${{titleFormatted}}</div>
+                    <div class="card essay-section-card ${{isPlayingThis ? 'audio-active-section' : ''}}" id="${{secId}}" data-sec="${{secName}}">
+                        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            <span>${{titleFormatted}}</span>
+                            <button class="section-audio-pill ${{isPlayingThis ? 'speaking' : ''}}" onclick="toggleSectionAudio('${{ch.id}}', '${{secName}}', '${{titleFormatted.replace(/'/g, "\\'")}}')" id="btn_sec_audio_${{secName}}" title="Listen to this section">
+                                <span class="sec-audio-icon">${{isPlayingThis ? '⏸️' : '🎧'}}</span>
+                                <span class="sec-audio-label">${{isPlayingThis ? 'Pause Audio' : 'Listen Section'}}</span>
+                            </button>
+                        </div>
                         <div style="line-height: 1.7;">${{secHtml}}</div>
                     </div>
                 `;
@@ -4766,6 +5518,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {{
 // Initialize on Dashboard view
 renderSidebar();
 renderDashboard();
+initMasterAudio();
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {{
@@ -4774,6 +5527,47 @@ if ('serviceWorker' in navigator) {{
     }});
 }}
 </script>
+
+<!-- Floating Background Audio Dock -->
+<div id="masterAudioDock" class="audio-dock hidden">
+    <div class="audio-dock-inner">
+        <!-- Track & Chapter Info -->
+        <div class="audio-dock-meta">
+            <div class="audio-dock-track-icon">🎧</div>
+            <div class="audio-dock-text">
+                <div class="audio-dock-track-title" id="audioDockTrackTitle">Section Audio</div>
+                <div class="audio-dock-chapter-title" id="audioDockChapterTitle">General Surgery Monograph</div>
+            </div>
+        </div>
+
+        <!-- Central Player Controls -->
+        <div class="audio-dock-controls-wrap">
+            <div class="audio-dock-buttons">
+                <button class="audio-control-btn" onclick="prevAudioTrack()" title="Previous Section">⏮️</button>
+                <button class="audio-control-btn audio-btn-playpause" onclick="togglePlayPauseAudio()" id="audioDockPlayPauseBtn" title="Play / Pause">▶️</button>
+                <button class="audio-control-btn" onclick="nextAudioTrack()" title="Next Section">⏭️</button>
+                <button class="audio-mode-indicator" id="audioModeBadge" title="Playback Mode">Walk Mode ⮂</button>
+            </div>
+            <div class="audio-dock-progress-wrap">
+                <span class="audio-time-label" id="audioCurrentTime">00:00</span>
+                <input type="range" class="audio-scrubber" id="audioProgressScrubber" min="0" max="100" value="0" oninput="onAudioScrub(this.value)">
+                <span class="audio-time-label" id="audioDuration">00:00</span>
+            </div>
+        </div>
+
+        <!-- Right Side: Speed Selector (1x, 1.25x, 1.5x, 2x) & Dismiss -->
+        <div class="audio-dock-options">
+            <div class="audio-speed-selector">
+                <span class="speed-label">Speed:</span>
+                <button class="speed-pill active" onclick="setAudioPlaybackRate(1.0)" data-speed="1.0">1x</button>
+                <button class="speed-pill" onclick="setAudioPlaybackRate(1.25)" data-speed="1.25">1.25x</button>
+                <button class="speed-pill" onclick="setAudioPlaybackRate(1.5)" data-speed="1.5">1.5x</button>
+                <button class="speed-pill" onclick="setAudioPlaybackRate(2.0)" data-speed="2.0">2x</button>
+            </div>
+            <button class="audio-dock-close" onclick="closeAudioDock()" title="Stop and Close Player">✕</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 """
