@@ -599,6 +599,41 @@ body {{
 }}
 
 
+/* Global Modern Thin Surgical Scrollbars */
+* {{
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 23, 42, 0.16) transparent;
+}}
+body.dark * {{
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}}
+::-webkit-scrollbar {{
+    width: 6px;
+    height: 6px;
+}}
+::-webkit-scrollbar-track {{
+    background: transparent;
+}}
+::-webkit-scrollbar-thumb {{
+    background: rgba(15, 23, 42, 0.16);
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+}}
+::-webkit-scrollbar-thumb:hover {{
+    background: var(--primary);
+}}
+body.dark ::-webkit-scrollbar-thumb {{
+    background: rgba(255, 255, 255, 0.2);
+}}
+body.dark ::-webkit-scrollbar-thumb:hover {{
+    background: var(--primary);
+}}
+
+/* Tactile Modern Buttons & Micro-Interactions */
+.btn:active, .nav-btn:active, .icon-btn:active, .tab-btn:active, .section-audio-pill:active, .speed-pill:active, .pill-shortcut:active, .mobile-bottom-tab:active {{
+    transform: scale(0.96) translateY(1px) !important;
+}}
+
 /* Accessibility Focus Rings & Keyboard Navigation */
 :focus-visible {{
     outline: 2px solid var(--primary);
@@ -3454,12 +3489,45 @@ body.dark .diagram-item img {{
         transform: rotate(90deg);
     }}
 
+    .audio-voice-wrap {{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }}
+    .audio-voice-select {{
+        background: var(--bg-surface);
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 4px 8px;
+        font-size: 7.5pt;
+        font-family: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        max-width: 140px;
+        text-overflow: ellipsis;
+        transition: all 0.2s ease;
+    }}
+    .audio-voice-select:hover, .audio-voice-select:focus {{
+        border-color: var(--primary);
+        outline: none;
+    }}
+    .btn-audio-quick {{
+        padding: 5px 12px;
+        font-size: 8pt;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }}
+
     @media (max-width: 768px) {{
         .audio-dock {{
             padding: 10px 14px;
             bottom: 74px; /* Dock gracefully above mobile bottom bar */
-            width: calc(100% - 20px);
-            border-radius: 20px;
+            width: calc(100% - 16px);
+            border-radius: 18px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
         }}
         .audio-dock-meta {{
             min-width: 100%;
@@ -3473,6 +3541,20 @@ body.dark .diagram-item img {{
             width: 100%;
             justify-content: space-between;
             margin-top: 4px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }}
+        .audio-voice-select {{
+            max-width: 110px;
+        }}
+        .btn-audio-quick .audio-quick-text {{
+            display: none;
+        }}
+    }}
+    @media (min-width: 769px) and (max-width: 1024px) {{
+        .audio-dock {{
+            width: calc(100% - 32px);
+            bottom: 24px;
         }}
     }}
 </style>
@@ -3534,6 +3616,7 @@ body.dark .diagram-item img {{
         </div>
 
         <div class="top-right-tools">
+            <button class="btn btn-secondary btn-audio-quick" onclick="togglePlayPauseAudio()" title="Play Chapter Audio Walk" aria-label="Toggle Chapter Audio Walk">{ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span></button>
             <button class="btn btn-secondary" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">{ICONS["pdf"]} PDF Reader</button>
             <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">{ICONS["moon"]}</button>
         </div>
@@ -3565,6 +3648,10 @@ body.dark .diagram-item img {{
         <span class="bottom-tab-icon">📝</span>
         <span class="bottom-tab-text">Answer</span>
     </button>
+    <button class="mobile-bottom-tab" data-tab="audio" onclick="togglePlayPauseAudio()" title="Audio Walk" aria-label="Toggle Audio Walk">
+        <span class="bottom-tab-icon">🎧</span>
+        <span class="bottom-tab-text">Audio</span>
+    </button>
     <button class="mobile-bottom-tab" data-tab="diagrams" onclick="switchTopicTab('diagrams')">
         <span class="bottom-tab-icon">🖼️</span>
         <span class="bottom-tab-text">Diagrams</span>
@@ -3576,10 +3663,6 @@ body.dark .diagram-item img {{
     <button class="mobile-bottom-tab" data-tab="quiz" onclick="switchTopicTab('quiz')">
         <span class="bottom-tab-icon">🗂️</span>
         <span class="bottom-tab-text">Quiz</span>
-    </button>
-    <button class="mobile-bottom-tab" data-tab="notes" onclick="switchTopicTab('notes')">
-        <span class="bottom-tab-icon">📓</span>
-        <span class="bottom-tab-text">Notes</span>
     </button>
     </nav>
 </div>
@@ -4056,10 +4139,116 @@ function setDashFilter(filter) {{
     renderDashboard();
 }}
 
-// --- Continuous Background Audio Engine (Lock-Screen & Mobile/Tablet Pocket Playback) ---
+// --- Continuous Background Audio & Neural Speech Synthesis Engine ---
+let availableVoices = [];
+let selectedVoice = null;
+let currentSpeakingMode = 'audio'; // 'audio' or 'speech'
+let speechProgressInterval = null;
+
+function initVoiceList() {{
+    if (!('speechSynthesis' in window)) return;
+    const updateVoices = () => {{
+        availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('en'));
+        const select = document.getElementById('audioVoiceSelect');
+        if (!select) return;
+
+        const currentVal = select.value || localStorage.getItem('surgery_selected_voice') || '';
+        select.innerHTML = '<option value="">Auto (Natural Studio)</option>';
+
+        const sorted = [...availableVoices].sort((a, b) => {{
+            const aNat = a.name.includes('Natural') || a.name.includes('Online') || a.name.includes('Enhanced');
+            const bNat = b.name.includes('Natural') || b.name.includes('Online') || b.name.includes('Enhanced');
+            if (aNat && !bNat) return -1;
+            if (!aNat && bNat) return 1;
+            return a.name.localeCompare(b.name);
+        }});
+
+        sorted.forEach(v => {{
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = v.name.replace(/Microsoft |Google |English \(United States\)|English \(United Kingdom\)/g, '').trim();
+            if (v.name === currentVal) opt.selected = true;
+            select.appendChild(opt);
+        }});
+
+        if (currentVal) {{
+            selectedVoice = availableVoices.find(v => v.name === currentVal) || null;
+        }} else {{
+            selectedVoice = availableVoices.find(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Enhanced')) || null;
+        }}
+    }};
+
+    updateVoices();
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {{
+        window.speechSynthesis.onvoiceschanged = updateVoices;
+    }}
+}}
+
+function onVoiceSelected(voiceName) {{
+    if (!voiceName) {{
+        selectedVoice = availableVoices.find(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Enhanced')) || null;
+        localStorage.removeItem('surgery_selected_voice');
+    }} else {{
+        selectedVoice = availableVoices.find(v => v.name === voiceName) || null;
+        localStorage.setItem('surgery_selected_voice', voiceName);
+    }}
+    if ('speechSynthesis' in window && window.speechSynthesis.speaking && currentSpeakingMode === 'speech') {{
+        const trk = audioTrack;
+        stopCurrentSpeech();
+        if (trk) {{
+            const ch = CHAPTERS.find(c => c.id === trk.chId) || CHAPTERS[currentChapterIdx];
+            fallbackSpeechSynthesis(ch, trk.secKey, trk.title, isChapterAutoAdvance);
+        }}
+    }}
+}}
+
+function cleanMedicalTextForSpeech(htmlOrText) {{
+    if (!htmlOrText) return '';
+    const tmp = document.createElement('div');
+    tmp.innerHTML = htmlOrText;
+    let text = tmp.textContent || tmp.innerText || '';
+
+    return text
+        .replace(/\bEBSLN\b/g, 'E B S L N')
+        .replace(/\bRLN\b/g, 'R L N')
+        .replace(/\bTNM\b/g, 'T N M')
+        .replace(/\bERCP\b/g, 'E R C P')
+        .replace(/\bMRCP\b/g, 'M R C P')
+        .replace(/\bMEN\s*1\b/gi, 'M E N 1')
+        .replace(/\bMEN\s*2A\b/gi, 'M E N 2 A')
+        .replace(/\bMEN\s*2B\b/gi, 'M E N 2 B')
+        .replace(/\bmg\/kg\b/gi, 'milligrams per kilogram')
+        .replace(/\bml\/kg\b/gi, 'millilitres per kilogram')
+        .replace(/\bmmol\/L\b/gi, 'millimoles per litre')
+        .replace(/\bmEq\/L\b/gi, 'milliequivalents per litre')
+        .replace(/\bIV\b/g, 'intravenous')
+        .replace(/\bIM\b/g, 'intramuscular')
+        .replace(/\bPO\b/g, 'by mouth')
+        .replace(/\bPRN\b/g, 'as needed')
+        .replace(/\bTDS\b/gi, 'three times daily')
+        .replace(/\bBD\b/gi, 'twice daily')
+        .replace(/\bQDS\b/gi, 'four times daily')
+        .replace(/\bBP\b/g, 'blood pressure')
+        .replace(/\bHR\b/g, 'heart rate')
+        .replace(/\bCVP\b/g, 'central venous pressure')
+        .replace(/\bGCS\b/g, 'Glasgow Coma Scale')
+        .replace(/\bHb\b/g, 'hemoglobin')
+        .replace(/\bWBC\b/g, 'white blood cell count')
+        .replace(/\bCT\b/g, 'C T scan')
+        .replace(/\bMRI\b/g, 'M R I')
+        .replace(/\bUSG\b/g, 'ultrasound')
+        .replace(/\bFNAC\b/g, 'fine needle aspiration cytology')
+        .replace(/&[a-z]+;/gi, ' ')
+        .replace(/[*_#|]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}}
+
 function initMasterAudio() {{
     masterAudio.preload = 'auto';
     masterAudio.playbackRate = audioPlaybackSpeed;
+
+    initVoiceList();
 
     masterAudio.addEventListener('play', () => {{
         isAudioPlaying = true;
@@ -4086,20 +4275,21 @@ function initMasterAudio() {{
     }});
 
     masterAudio.addEventListener('error', (e) => {{
-        console.warn('Audio stream error, falling back if needed:', e);
-        if (isChapterAutoAdvance) {{
-            handleAudioEnded();
+        console.warn('Audio stream error, falling back to speech synthesis:', e);
+        if (audioTrack) {{
+            const ch = CHAPTERS.find(c => c.id === audioTrack.chId) || CHAPTERS[currentChapterIdx];
+            fallbackSpeechSynthesis(ch, audioTrack.secKey, audioTrack.title, isChapterAutoAdvance);
         }}
     }});
 
-    // Native MediaSession for Samsung One UI Lock-Screen, Tablet Pocket Playback, & Earbuds
+    // Native MediaSession for Lock-Screen, Tablet Pocket Playback, & Earbuds
     if ('mediaSession' in navigator) {{
         try {{
             navigator.mediaSession.setActionHandler('play', () => {{
-                masterAudio.play();
+                togglePlayPauseAudio();
             }});
             navigator.mediaSession.setActionHandler('pause', () => {{
-                masterAudio.pause();
+                togglePlayPauseAudio();
             }});
             navigator.mediaSession.setActionHandler('previoustrack', () => {{
                 prevAudioTrack();
@@ -4114,11 +4304,15 @@ function initMasterAudio() {{
             }});
             navigator.mediaSession.setActionHandler('seekbackward', (details) => {{
                 const skip = details.seekOffset || 15;
-                masterAudio.currentTime = Math.max(0, masterAudio.currentTime - skip);
+                if (masterAudio.currentTime) {{
+                    masterAudio.currentTime = Math.max(0, masterAudio.currentTime - skip);
+                }}
             }});
             navigator.mediaSession.setActionHandler('seekforward', (details) => {{
                 const skip = details.seekOffset || 15;
-                masterAudio.currentTime = Math.min(masterAudio.duration || 0, masterAudio.currentTime + skip);
+                if (masterAudio.currentTime && masterAudio.duration) {{
+                    masterAudio.currentTime = Math.min(masterAudio.duration, masterAudio.currentTime + skip);
+                }}
             }});
         }} catch (err) {{
             console.warn('MediaSession handler registration error:', err);
@@ -4131,7 +4325,7 @@ function updateMediaSessionMetadata(trackTitle, chapterTitle) {{
         try {{
             navigator.mediaSession.metadata = new MediaMetadata({{
                 title: trackTitle,
-                artist: 'General Surgery Pro • Sanjay Marwah Monograph',
+                artist: 'General Surgery Master Exam Monograph',
                 album: chapterTitle,
                 artwork: [
                     {{ src: 'favicon.svg', sizes: '96x96', type: 'image/svg+xml' }}
@@ -4140,6 +4334,85 @@ function updateMediaSessionMetadata(trackTitle, chapterTitle) {{
             navigator.mediaSession.playbackState = isAudioPlaying ? 'playing' : 'paused';
         }} catch (e) {{}}
     }}
+}}
+
+function fallbackSpeechSynthesis(ch, secKey, secTitle, autoAdvance) {{
+    if (!('speechSynthesis' in window)) {{
+        console.warn('Speech synthesis not available.');
+        return;
+    }}
+    stopCurrentSpeech();
+    currentSpeakingMode = 'speech';
+    isAudioPlaying = true;
+
+    const rawSec = ch && ch.sections ? ch.sections[secKey] : '';
+    const cleanText = cleanMedicalTextForSpeech(rawSec || secTitle);
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = audioPlaybackSpeed || 1.0;
+    utterance.pitch = 1.0;
+
+    if (selectedVoice) {{
+        utterance.voice = selectedVoice;
+    }} else if (availableVoices.length > 0) {{
+        const best = availableVoices.find(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Enhanced')) || availableVoices[0];
+        if (best) utterance.voice = best;
+    }}
+
+    const wordCount = cleanText.split(/\s+/).length;
+    const estDurationSec = Math.max(5, (wordCount / (150 * (audioPlaybackSpeed || 1.0))) * 60);
+    let elapsedSec = 0;
+
+    const durEl = document.getElementById('audioDuration');
+    const curTimeEl = document.getElementById('audioCurrentTime');
+    const scrubber = document.getElementById('audioProgressScrubber');
+    if (durEl) durEl.innerText = formatAudioTime(estDurationSec);
+
+    clearInterval(speechProgressInterval);
+    speechProgressInterval = setInterval(() => {{
+        if (isAudioPlaying && currentSpeakingMode === 'speech') {{
+            elapsedSec += 0.5;
+            if (curTimeEl) curTimeEl.innerText = formatAudioTime(elapsedSec);
+            if (scrubber && estDurationSec > 0) {{
+                const pct = Math.min(100, (elapsedSec / estDurationSec) * 100);
+                scrubber.value = pct;
+                scrubber.style.setProperty('--scrub-percent', pct + '%');
+            }}
+            // Keepalive heartbeat for Chromium 15s cutoff
+            if (elapsedSec % 10 < 0.6 && window.speechSynthesis.speaking) {{
+                window.speechSynthesis.pause();
+                window.speechSynthesis.resume();
+            }}
+        }}
+    }}, 500);
+
+    utterance.onend = () => {{
+        clearInterval(speechProgressInterval);
+        isAudioPlaying = false;
+        currentSpeakingMode = 'audio';
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+        clearActiveAudioSectionHighlight();
+        if (autoAdvance) {{
+            handleAudioEnded();
+        }}
+    }};
+
+    utterance.onerror = () => {{
+        clearInterval(speechProgressInterval);
+        isAudioPlaying = false;
+        currentSpeakingMode = 'audio';
+        updateAudioDockUI();
+        updateSectionButtonsUI();
+    }};
+
+    currentUtterance = utterance;
+    updateAudioDockUI();
+    updateSectionButtonsUI();
+    highlightActiveAudioSection(secKey);
+    updateMediaSessionMetadata(secTitle, ch ? ch.title : 'General Surgery');
+    window.speechSynthesis.speak(utterance);
 }}
 
 function playSectionAudio(chId, secKey, secTitle, autoAdvance = false) {{
@@ -4164,23 +4437,21 @@ function playSectionAudio(chId, secKey, secTitle, autoAdvance = false) {{
     masterAudio.playbackRate = audioPlaybackSpeed;
 
     masterAudio.play().then(() => {{
+        currentSpeakingMode = 'audio';
         isAudioPlaying = true;
         updateAudioDockUI();
         updateSectionButtonsUI();
         highlightActiveAudioSection(secKey);
         updateMediaSessionMetadata(secTitle, chTitle);
     }}).catch(err => {{
-        console.warn('Playback request error:', err);
+        console.warn('Pre-rendered MP3 not available, switching to Neural Speech Synthesis:', err);
+        fallbackSpeechSynthesis(ch, secKey, secTitle, autoAdvance);
     }});
 }}
 
 function toggleSectionAudio(chId, secKey, secTitle) {{
     if (audioTrack && audioTrack.chId === chId && audioTrack.secKey === secKey) {{
-        if (isAudioPlaying) {{
-            masterAudio.pause();
-        }} else {{
-            masterAudio.play();
-        }}
+        togglePlayPauseAudio();
     }} else {{
         const ch = CHAPTERS.find(c => c.id === chId) || CHAPTERS[currentChapterIdx];
         if (ch && ch.sections) {{
@@ -4198,11 +4469,18 @@ function toggleSectionAudio(chId, secKey, secTitle) {{
 }}
 
 function playContinuousChapterAudio() {{
+    if (currentChapterIdx < 0) {{
+        selectChapter(0);
+    }}
     const ch = CHAPTERS[currentChapterIdx];
     if (!ch || !ch.sections) return;
 
     if (isAudioPlaying && isChapterAutoAdvance && audioTrack && audioTrack.chId === ch.id) {{
-        masterAudio.pause();
+        if (currentSpeakingMode === 'speech') {{
+            stopCurrentSpeech();
+        }} else {{
+            masterAudio.pause();
+        }}
         return;
     }}
 
@@ -4229,6 +4507,7 @@ function handleAudioEnded() {{
     }} else {{
         isChapterAutoAdvance = false;
         isAudioPlaying = false;
+        currentSpeakingMode = 'audio';
         updateAudioDockUI();
         updateSectionButtonsUI();
         clearActiveAudioSectionHighlight();
@@ -4236,14 +4515,44 @@ function handleAudioEnded() {{
 }}
 
 function togglePlayPauseAudio() {{
-    if (masterAudio.src) {{
+    const dock = document.getElementById('masterAudioDock');
+    if (dock) dock.classList.remove('hidden');
+
+    if (currentSpeakingMode === 'speech') {{
+        if ('speechSynthesis' in window) {{
+            if (window.speechSynthesis.paused) {{
+                window.speechSynthesis.resume();
+                isAudioPlaying = true;
+                updateAudioDockUI();
+                updateSectionButtonsUI();
+            }} else if (window.speechSynthesis.speaking) {{
+                window.speechSynthesis.pause();
+                isAudioPlaying = false;
+                updateAudioDockUI();
+                updateSectionButtonsUI();
+            }} else if (currentChapterIdx >= 0) {{
+                playContinuousChapterAudio();
+            }} else {{
+                selectChapter(0);
+                setTimeout(playContinuousChapterAudio, 300);
+            }}
+        }}
+    }} else if (masterAudio.src && !isNaN(masterAudio.duration) && masterAudio.duration > 0) {{
         if (masterAudio.paused) {{
-            masterAudio.play();
+            masterAudio.play().catch(() => {{
+                if (audioTrack) {{
+                    const ch = CHAPTERS.find(c => c.id === audioTrack.chId) || CHAPTERS[currentChapterIdx];
+                    fallbackSpeechSynthesis(ch, audioTrack.secKey, audioTrack.title, isChapterAutoAdvance);
+                }}
+            }});
         }} else {{
             masterAudio.pause();
         }}
     }} else if (currentChapterIdx >= 0) {{
         playContinuousChapterAudio();
+    }} else {{
+        selectChapter(0);
+        setTimeout(playContinuousChapterAudio, 300);
     }}
 }}
 
@@ -4272,16 +4581,22 @@ function setAudioPlaybackRate(rate) {{
 
     document.querySelectorAll('.speed-pill').forEach(pill => {{
         const pSpeed = parseFloat(pill.getAttribute('data-speed'));
-        if (pSpeed === rate) {{
+        if (Math.abs(pSpeed - rate) < 0.01) {{
             pill.classList.add('active');
         }} else {{
             pill.classList.remove('active');
         }}
     }});
+
+    // Seamlessly re-apply rate if speaking via SpeechSynthesis
+    if (currentSpeakingMode === 'speech' && window.speechSynthesis.speaking && audioTrack) {{
+        const ch = CHAPTERS.find(c => c.id === audioTrack.chId) || CHAPTERS[currentChapterIdx];
+        fallbackSpeechSynthesis(ch, audioTrack.secKey, audioTrack.title, isChapterAutoAdvance);
+    }}
 }}
 
 function onAudioScrub(val) {{
-    if (masterAudio.duration) {{
+    if (masterAudio.duration && currentSpeakingMode === 'audio') {{
         masterAudio.currentTime = (val / 100) * masterAudio.duration;
     }}
     const scrubber = document.getElementById('audioProgressScrubber');
@@ -4294,6 +4609,8 @@ function updateAudioScrubberUI() {{
     const curTimeEl = document.getElementById('audioCurrentTime');
     const durEl = document.getElementById('audioDuration');
     const scrubber = document.getElementById('audioProgressScrubber');
+
+    if (currentSpeakingMode === 'speech') return; // Handled by speech progress ticker
 
     if (masterAudio.duration && !isNaN(masterAudio.duration)) {{
         const pct = (masterAudio.currentTime / masterAudio.duration) * 100;
@@ -4357,13 +4674,13 @@ function updateAudioDockUI() {{
         if (isChapterAutoAdvance) {{
             modeBadgeText.innerText = 'Auto Walk (' + (chapterQueueIdx + 1) + '/' + chapterAudioQueue.length + ')';
         }} else {{
-            modeBadgeText.innerText = 'Single Section';
+            modeBadgeText.innerText = currentSpeakingMode === 'speech' ? 'Neural Voice' : 'Studio Master';
         }}
     }}
 
     document.querySelectorAll('.speed-pill').forEach(pill => {{
         const pSpeed = parseFloat(pill.getAttribute('data-speed'));
-        if (pSpeed === audioPlaybackSpeed) {{
+        if (Math.abs(pSpeed - audioPlaybackSpeed) < 0.01) {{
             pill.classList.add('active');
         }} else {{
             pill.classList.remove('active');
@@ -4410,8 +4727,7 @@ function clearActiveAudioSectionHighlight() {{
 }}
 
 function closeAudioDock() {{
-    masterAudio.pause();
-    isAudioPlaying = false;
+    stopCurrentSpeech();
     isChapterAutoAdvance = false;
     const dock = document.getElementById('masterAudioDock');
     if (dock) dock.classList.add('hidden');
@@ -4423,17 +4739,19 @@ function closeAudioDock() {{
 function stopCurrentSpeech() {{
     if (masterAudio && !masterAudio.paused) {{
         masterAudio.pause();
-        isAudioPlaying = false;
     }}
     if ('speechSynthesis' in window) {{
         window.speechSynthesis.cancel();
     }}
+    clearInterval(speechProgressInterval);
     if (currentSpeakingBtn) {{
         currentSpeakingBtn.innerHTML = SVG_ICONS.volume;
         currentSpeakingBtn.classList.remove('speaking');
         currentSpeakingBtn = null;
     }}
     currentUtterance = null;
+    isAudioPlaying = false;
+    currentSpeakingMode = 'audio';
     updateAudioDockUI();
     updateSectionButtonsUI();
 }}
@@ -4468,13 +4786,23 @@ function speakVivaPearl(btn, pearlIdx) {{
         textToSpeak = `Clinical Pearl: ${{pearl}}`;
     }}
 
+    const cleanText = cleanMedicalTextForSpeech(textToSpeak);
+
     btn.innerHTML = '<span class="modern-eq-bars"><span></span><span></span><span></span></span>';
     btn.classList.add('speaking');
     currentSpeakingBtn = btn;
 
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = audioPlaybackSpeed || 1.0;
     utterance.pitch = 1.0;
+
+    if (selectedVoice) {{
+        utterance.voice = selectedVoice;
+    }} else if (availableVoices.length > 0) {{
+        const best = availableVoices.find(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Enhanced')) || availableVoices[0];
+        if (best) utterance.voice = best;
+    }}
+
     utterance.onend = () => {{
         btn.innerHTML = SVG_ICONS.volume;
         btn.classList.remove('speaking');
@@ -5790,8 +6118,14 @@ if ('serviceWorker' in navigator) {{
             </div>
         </div>
 
-        <!-- Right Side: Speed Selector (1x, 1.25x, 1.5x, 2x) & Dismiss -->
+        <!-- Right Side: Voice Selector, Speed Selector (1x, 1.25x, 1.5x, 2x) & Dismiss -->
         <div class="audio-dock-options">
+            <div class="audio-voice-wrap" title="Narration Voice Engine">
+                <span class="speed-label">Voice:</span>
+                <select id="audioVoiceSelect" class="audio-voice-select" onchange="onVoiceSelected(this.value)" aria-label="Select Narration Voice">
+                    <option value="">Auto (Natural Studio)</option>
+                </select>
+            </div>
             <div class="audio-speed-selector">
                 <span class="speed-label">Speed:</span>
                 <button class="speed-pill active" onclick="setAudioPlaybackRate(1.0)" data-speed="1.0">1x</button>
