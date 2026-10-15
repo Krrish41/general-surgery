@@ -23,7 +23,7 @@ ICONS = {
     "moon": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>',
     "sun": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
     "medical_cross": '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>',
-    "modern_logo": '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 36 36"><defs><linearGradient id="logoG" x1="0" y1="0" x2="36" y2="36"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs><rect width="36" height="36" rx="9" fill="url(#logoG)"/><path d="M18 8v20M8 18h20" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/><circle cx="18" cy="18" r="3.5" fill="#e9d5ff"/></svg>',
+    "modern_logo": '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 36 36"><defs><linearGradient id="logoG" x1="0" y1="0" x2="36" y2="36"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient></defs><rect width="36" height="36" rx="9" fill="url(#logoG)"/><path d="M18 8v20M8 18h20" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/><circle cx="18" cy="18" r="3.5" fill="#bae6fd"/></svg>',
     "cheat_sheet": '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
     "chevron_down": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
     "chevron_right": '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
@@ -43,8 +43,8 @@ ICONS = {
     "lock_sm": '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
 }
 
-# Modern Purple SVG Favicon Data URL (Caduceus cross in violet gradient shield)
-FAVICON_SVG = """data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 6v20M6 16h20' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23e9d5ff'/%3E%3C/svg%3E"""
+# Modern Surgical Cobalt SVG Favicon Data URL (Caduceus cross in cobalt gradient shield)
+FAVICON_SVG = """data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%230369a1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 6v20M6 16h20' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23bae6fd'/%3E%3C/svg%3E"""
 
 def clean_latex(text: str) -> str:
     """Converts raw LaTeX math expressions and backslashes into clean readable Unicode."""
@@ -180,7 +180,7 @@ def parse_markdown_to_html(md_text: str) -> str:
         nonlocal in_ul, in_ol, in_nested_ul
         res = []
         if in_nested_ul:
-            res.append("</ul>")
+            res.append("</ul></li>")
             in_nested_ul = False
         if in_ul:
             res.append("</ul>")
@@ -244,7 +244,7 @@ def parse_markdown_to_html(md_text: str) -> str:
         if ol_match:
             num = ol_match.group(1)
             if in_nested_ul:
-                output.append("</ul>")
+                output.append("</ul></li>")
                 in_nested_ul = False
             if in_ul:
                 output.append("</ul>")
@@ -261,7 +261,7 @@ def parse_markdown_to_html(md_text: str) -> str:
             content = format_inline_markdown(s_line[2:].strip())
             if in_ol:
                 if not in_nested_ul:
-                    output.append('<ul class="content-list nested-list" style="margin-top: 4px; margin-bottom: 8px; padding-left: 20px;">')
+                    output.append('<li class="nested-list-container" style="list-style-type: none;"><ul class="content-list nested-list" style="margin-top: 4px; margin-bottom: 8px; padding-left: 20px;">')
                     in_nested_ul = True
                 output.append(f'<li>{content}</li>')
                 continue

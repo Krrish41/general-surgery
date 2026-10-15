@@ -38,4 +38,8 @@ test_*.mjs
 phone_*.png
 tablet_*.png
 scratch/
+node_modules/
+package-lock.json
+.playwright-cli/
+
 

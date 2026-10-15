@@ -118,7 +118,7 @@ def generate_html(chapters, b64_images):
 }}
 
 body {{
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1.6;
     color: #1e293b;
     background-color: #ffffff;
@@ -136,9 +136,9 @@ body {{
     align-items: center;
     text-align: center;
     padding: 40px 20px;
-    border: 3px double #7c3aed;
+    border: 3px double #0369a1;
     margin: 20px;
-    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }}
 
 .cover-title {{
@@ -153,7 +153,7 @@ body {{
 .cover-subtitle {{
     font-size: 13pt;
     font-weight: 600;
-    color: #7c3aed;
+    color: #0369a1;
     margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -180,9 +180,9 @@ body {{
     border-radius: 9999px;
     font-size: 8.5pt;
     font-weight: 600;
-    background-color: #f3e8ff;
-    color: #6d28d9;
-    border: 1px solid #ddd6fe;
+    background-color: #f0f9ff;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
 }}
 
 .toc-page {{
@@ -194,7 +194,7 @@ body {{
     font-family: 'Cinzel', serif;
     font-size: 18pt;
     color: #1e1b4b;
-    border-bottom: 2px solid #7c3aed;
+    border-bottom: 2px solid #0369a1;
     padding-bottom: 8px;
     margin-bottom: 20px;
 }}
@@ -222,7 +222,7 @@ body {{
 }}
 
 .chapter-header {{
-    border-bottom: 2px solid #7c3aed;
+    border-bottom: 2px solid #0369a1;
     padding-bottom: 8px;
     margin-bottom: 16px;
 }}
@@ -231,7 +231,7 @@ body {{
     font-size: 8.5pt;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #7c3aed;
+    color: #0369a1;
     font-weight: 700;
 }}
 
@@ -286,9 +286,9 @@ body {{
 .section-heading {{
     font-size: 11pt;
     font-weight: 700;
-    color: #6d28d9;
+    color: #0369a1;
     margin: 14px 0 6px 0;
-    border-left: 3px solid #7c3aed;
+    border-left: 3px solid #0369a1;
     padding-left: 8px;
     text-transform: capitalize;
 }}
@@ -453,7 +453,7 @@ p.content-para {{
                     badge_text = "Original Handwritten Notebook Sketch" if is_orig else "High-Resolution 300 DPI Medical Schematic"
                     html_parts.append(f"""
     <div class="diagram-card">
-        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #7c3aed; margin-bottom: 4px;">{badge_text}</div>
+        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #0369a1; margin-bottom: 4px;">{badge_text}</div>
         <img class="diagram-img" src="{b64_data}" alt="{d['title']}">
         <div class="diagram-caption">Figure {idx+1}.{ch['diagrams'].index(d)+1}: {d['title']}</div>
     </div>
@@ -527,49 +527,59 @@ def generate_interactive_website(chapters, b64_images):
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Surgery Pro">
-<meta name="theme-color" content="#7c3aed">
+<meta name="theme-color" content="#0369a1">
 <link rel="apple-touch-icon" href="{FAVICON_SVG}">
 <title>General Surgery Master Portal - University Exam Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {{
-    --primary: #7c3aed;
-    --primary-dark: #6d28d9;
-    --primary-light: #f5f3ff;
-    --primary-border: #ddd6fe;
-    --bg-main: #faf7fd;
+    --primary: #0369a1;
+    --primary-dark: #075985;
+    --primary-light: rgba(3, 105, 161, 0.08);
+    --primary-border: rgba(3, 105, 161, 0.22);
+    --bg-main: #fbfbfa;
     --bg-card: #ffffff;
-    --text-main: #1e1b4b;
-    --text-muted: #6b7280;
-    --border: #e9d5ff;
+    --bg-surface: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
     --sidebar-w: 320px;
-    --accent: #f59e0b;
-    --accent-purple: #8b5cf6;
+    --accent: #d97706;
+    --accent-light: rgba(217, 119, 6, 0.1);
+    --accent-crimson: #be123c;
     --danger: #ef4444;
-    --success: #10b981;
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --shadow-sm: 0 1px 3px rgba(124, 58, 237, 0.08);
-    --shadow-md: 0 4px 14px rgba(124, 58, 237, 0.12);
-    --shadow-lg: 0 10px 25px rgba(124, 58, 237, 0.18);
+    --success: #059669;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
 }}
 
 body.dark {{
-    --bg-main: #0c071e;
-    --bg-card: #160d33;
-    --text-main: #f5f3ff;
-    --text-muted: #c4b5fd;
-    --border: #2e1b5b;
-    --primary: #8b5cf6;
-    --primary-dark: #7c3aed;
-    --primary-light: rgba(139, 92, 246, 0.14);
-    --primary-border: rgba(139, 92, 246, 0.32);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+    --bg-main: #090d16;
+    --bg-card: #0f172a;
+    --bg-surface: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --border-strong: #334155;
+    --primary: #38bdf8;
+    --primary-dark: #0284c7;
+    --primary-light: rgba(56, 189, 248, 0.12);
+    --primary-border: rgba(56, 189, 248, 0.32);
+    --accent: #f59e0b;
+    --accent-light: rgba(245, 158, 11, 0.15);
+    --accent-crimson: #fb7185;
+    --danger: #f87171;
+    --success: #10b981;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
 }}
 
 * {{
@@ -579,13 +589,71 @@ body.dark {{
 }}
 
 body {{
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-main);
     color: var(--text-main);
     display: flex;
     height: 100vh;
     overflow: hidden;
     font-size: 14px;
+}}
+
+
+/* Accessibility Focus Rings & Keyboard Navigation */
+:focus-visible {{
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {{
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}}
+
+@media (prefers-reduced-motion: reduce) {{
+    *, *::before, *::after {{
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }}
+}}
+
+/* Editorial Medical Heading Typography */
+h1, h2, h3, .brand-title, .dash-hero-title, .topic-title-display, .card-title {{
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+}}
+
+/* Tabular Mono for Classifications, Scores & Dosages */
+code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .formula-box, table.data-table td, table.data-table th, .exam-clock {{
+    font-variant-numeric: tabular-nums;
+}}
+
+/* Reading Ergonomics (<80 Characters Line Length) */
+.master-essay-content {{
+    flex: 1;
+    min-width: 0;
+    max-width: 76ch;
+}}
+
+/* Keyboard hint badge next to search */
+.search-kbd-hint {{
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}}
+.search-kbd-hint kbd {{
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 7.5pt;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-weight: 600;
 }}
 
 /* Sidebar */
@@ -1034,14 +1102,14 @@ body {{
 }}
 
 .btn-primary {{
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
-    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.32);
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-primary:hover {{
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.48);
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.42);
     transform: translateY(-1px);
 }}
 
@@ -1063,14 +1131,14 @@ body {{
 }}
 
 .btn-accent {{
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
-    box-shadow: 0 2px 10px rgba(109, 40, 217, 0.35);
+    box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-accent:hover {{
-    background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
-    box-shadow: 0 4px 16px rgba(109, 40, 217, 0.5);
+    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
     transform: translateY(-1px);
 }}
 
@@ -1081,7 +1149,7 @@ body {{
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(12, 7, 30, 0.85);
+    background: rgba(9, 13, 22, 0.85);
     backdrop-filter: blur(4px);
     z-index: 1200;
     display: flex;
@@ -1171,13 +1239,13 @@ body {{
 }}
 
 .viva-qa-block:hover {{
-    border-color: rgba(124, 58, 237, 0.2);
-    background: rgba(124, 58, 237, 0.03);
+    border-color: rgba(2, 132, 199, 0.2);
+    background: rgba(2, 132, 199, 0.04);
 }}
 
 body.dark .viva-qa-block:hover {{
-    border-color: rgba(167, 139, 250, 0.3);
-    background: rgba(167, 139, 250, 0.06);
+    border-color: rgba(56, 189, 248, 0.3);
+    background: rgba(56, 189, 248, 0.06);
 }}
 
 .viva-pearls-container.answers-hidden .viva-qa-block:not(.revealed) .viva-a-row {{
@@ -1760,14 +1828,14 @@ body.dark .badge-original {{
 
 .badge-hd {{
     background: #ede9fe;
-    color: #6d28d9;
-    border: 1px solid #ddd6fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
 }}
 
 body.dark .badge-hd {{
-    background: rgba(139, 92, 246, 0.25);
-    color: #c4b5fd;
-    border-color: rgba(139, 92, 246, 0.45);
+    background: rgba(2, 132, 199, 0.25);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.35);
 }}
 
 .diagram-item img {{
@@ -1795,7 +1863,7 @@ body.dark .diagram-item img {{
 
 /* Dashboard Hero Card */
 .dash-hero-card {{
-    background: linear-gradient(135deg, #1e0b36 0%, #3b1261 50%, #4c1d95 100%);
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 60%, #1e293b 100%);
     border-radius: var(--radius-md);
     padding: 24px 28px;
     margin-bottom: 20px;
@@ -1804,8 +1872,8 @@ body.dark .diagram-item img {{
     justify-content: space-between;
     gap: 24px;
     color: #ffffff;
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.25);
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(56, 189, 248, 0.25);
 }}
 
 .dash-hero-badge {{
@@ -1814,8 +1882,8 @@ body.dark .diagram-item img {{
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    background: rgba(168, 85, 247, 0.25);
-    color: #c084fc;
+    background: rgba(56, 189, 248, 0.2);
+    color: #7dd3fc;
     padding: 4px 10px;
     border-radius: 9999px;
     margin-bottom: 10px;
@@ -1831,7 +1899,7 @@ body.dark .diagram-item img {{
 
 .dash-hero-sub {{
     font-size: 9.5pt;
-    color: #ddd6fe;
+    color: #bae6fd;
     margin: 0 0 16px 0;
     line-height: 1.5;
 }}
@@ -1847,7 +1915,7 @@ body.dark .diagram-item img {{
     background: rgba(255,255,255,0.12);
     padding: 5px 12px;
     border-radius: 9999px;
-    color: #f5f3ff;
+    color: #f8fafc;
 }}
 
 .dash-hero-image-box {{
@@ -1860,7 +1928,7 @@ body.dark .diagram-item img {{
 
 /* Dashboard Rapid Revision Cheat Sheet Card */
 .dash-cheat-sheet-card {{
-    background: linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #6d28d9 100%);
+    background: linear-gradient(135deg, #042f2e 0%, #0f172a 100%);
     border-radius: var(--radius-md);
     padding: 20px 24px;
     margin-bottom: 24px;
@@ -1869,8 +1937,8 @@ body.dark .diagram-item img {{
     justify-content: space-between;
     gap: 20px;
     color: #ffffff;
-    box-shadow: 0 4px 20px rgba(109, 40, 217, 0.25);
-    border: 1px solid rgba(168, 85, 247, 0.4);
+    box-shadow: 0 4px 20px rgba(4, 47, 46, 0.25);
+    border: 1px solid rgba(20, 184, 166, 0.35);
     flex-wrap: wrap;
 }}
 
@@ -1883,7 +1951,7 @@ body.dark .diagram-item img {{
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #f5f3ff;
+    color: #f8fafc;
 }}
 
 .dash-hero-img {{
@@ -2046,7 +2114,7 @@ body.dark .diagram-item img {{
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(10, 6, 24, 0.92);
+    background-color: rgba(9, 13, 22, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1200;
@@ -2061,7 +2129,7 @@ body.dark .diagram-item img {{
     max-width: 1320px;
     height: 94vh;
     background: #0f0d1b;
-    border: 1px solid rgba(139, 92, 246, 0.35);
+    border: 1px solid rgba(56, 189, 248, 0.25);
     border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
@@ -2072,7 +2140,7 @@ body.dark .diagram-item img {{
 .modal-dialog-header {{
     padding: 10px 16px;
     background: #17132a;
-    border-bottom: 1px solid rgba(139, 92, 246, 0.25);
+    border-bottom: 1px solid rgba(2, 132, 199, 0.25);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2087,7 +2155,7 @@ body.dark .diagram-item img {{
 }}
 
 .modal-diagram-badge {{
-    background: #7c3aed;
+    background: var(--primary);
     color: #ffffff;
     font-size: 7.5pt;
     font-weight: 700;
@@ -2130,9 +2198,9 @@ body.dark .diagram-item img {{
 }}
 
 .modal-tool-btn:hover {{
-    background: #7c3aed;
+    background: var(--primary);
     color: #ffffff;
-    border-color: #7c3aed;
+    border-color: #0369a1;
 }}
 
 .modal-tool-btn.modal-close-btn {{
@@ -2157,7 +2225,7 @@ body.dark .diagram-item img {{
     justify-content: center;
     align-items: center;
     padding: 16px;
-    background: #090714;
+    background: #090d16;
     -webkit-overflow-scrolling: touch;
     box-sizing: border-box;
 }}
@@ -2186,7 +2254,7 @@ body.dark .diagram-item img {{
 .modal-dialog-footer {{
     padding: 6px 16px;
     background: #120e22;
-    border-top: 1px solid rgba(139, 92, 246, 0.2);
+    border-top: 1px solid rgba(56, 189, 248, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2399,7 +2467,7 @@ body.dark .diagram-item img {{
         flex-wrap: wrap;
         gap: 12px;
         padding: 12px 18px;
-        background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%);
+        background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%);
         border: 1.5px dashed var(--primary-border);
         border-radius: var(--radius-md);
         margin-bottom: 20px;
@@ -2495,7 +2563,7 @@ body.dark .diagram-item img {{
     }}
     .exam-draft-textarea:focus {{
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
     }}
     .exam-rubric-pane {{
         background: var(--bg-card);
@@ -2681,7 +2749,7 @@ body.dark .diagram-item img {{
     }}
     .before-after-badge.badge-right {{
         right: 12px;
-        background: rgba(124, 58, 237, 0.9);
+        background: rgba(2, 132, 199, 0.9);
         color: #ffffff;
     }}
     .before-after-divider {{
@@ -2693,7 +2761,7 @@ body.dark .diagram-item img {{
         z-index: 5;
         transform: translateX(-50%);
         pointer-events: none;
-        box-shadow: 0 0 12px rgba(124, 58, 237, 0.8);
+        box-shadow: 0 0 12px rgba(2, 132, 199, 0.6);
     }}
     .before-after-handle {{
         position: absolute;
@@ -2761,7 +2829,7 @@ body.dark .diagram-item img {{
         cursor: pointer;
         border-radius: 6px;
         z-index: 10;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.45);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
         transform-style: preserve-3d;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         user-select: none;
@@ -2782,8 +2850,8 @@ body.dark .diagram-item img {{
         border-radius: 6px;
     }}
     .spotter-box .spotter-front {{
-        background: rgba(124, 58, 237, 0.94);
-        border: 1.5px solid #ddd6fe;
+        background: rgba(2, 132, 199, 0.94);
+        border: 1.5px solid #bae6fd;
         color: #ffffff;
     }}
     .spotter-box .spotter-front .spotter-num {{
@@ -2875,10 +2943,10 @@ body.dark .diagram-item img {{
         left: 0;
         right: 0;
         height: 60px;
-        background: rgba(22, 13, 51, 0.94);
+        background: rgba(15, 23, 42, 0.94);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(139, 92, 246, 0.25);
+        border-top: 1px solid rgba(2, 132, 199, 0.25);
         z-index: 950;
         justify-content: space-around;
         align-items: center;
@@ -2889,7 +2957,7 @@ body.dark .diagram-item img {{
     body:not(.dark) .mobile-floating-bottom-bar {{
         background: rgba(255, 255, 255, 0.94);
         border-top: 1px solid var(--border);
-        box-shadow: 0 -4px 20px rgba(124, 58, 237, 0.1);
+        box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
     }}
     @media (max-width: 768px) {{
         .mobile-floating-bottom-bar.in-chapter {{
@@ -2933,7 +3001,7 @@ body.dark .diagram-item img {{
         justify-content: space-between;
         align-items: center;
         gap: 16px;
-        background: linear-gradient(135deg, rgba(124, 58, 237, 0.07) 0%, rgba(139, 92, 246, 0.14) 100%);
+        background: linear-gradient(135deg, rgba(2, 132, 199, 0.06) 0%, rgba(56, 189, 248, 0.12) 100%);
         border: 1px solid var(--primary-border);
         border-radius: var(--radius-md);
         padding: 14px 20px;
@@ -2952,13 +3020,13 @@ body.dark .diagram-item img {{
         width: 44px;
         height: 44px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
     }}
     .audio-banner-title {{
         font-size: 10pt;
@@ -2993,7 +3061,7 @@ body.dark .diagram-item img {{
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #ffffff;
         border: none;
         padding: 9px 20px;
@@ -3001,13 +3069,13 @@ body.dark .diagram-item img {{
         font-size: 8.5pt;
         font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         white-space: nowrap;
     }}
     .btn-audio-play-all:hover {{
         transform: translateY(-1.5px);
-        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
     }}
     .btn-audio-play-all:active {{
         transform: translateY(0);
@@ -3064,32 +3132,32 @@ body.dark .diagram-item img {{
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 1px 3px rgba(124, 58, 237, 0.08);
+        box-shadow: 0 1px 3px rgba(2, 132, 199, 0.08);
     }}
     .section-audio-pill:hover {{
         background: var(--primary-light);
         border-color: var(--primary);
         transform: translateY(-1px);
-        box-shadow: 0 3px 10px rgba(124, 58, 237, 0.16);
+        box-shadow: 0 3px 10px rgba(2, 132, 199, 0.15);
     }}
     .section-audio-pill:active {{
         transform: translateY(0);
     }}
     .section-audio-pill.speaking {{
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #ffffff;
         border-color: transparent;
-        box-shadow: 0 3px 12px rgba(124, 58, 237, 0.45);
+        box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
         animation: pulseAudioGlow 2.5s infinite;
     }}
     @keyframes pulseAudioGlow {{
-        0%, 100% {{ box-shadow: 0 3px 12px rgba(124, 58, 237, 0.45); }}
-        50% {{ box-shadow: 0 6px 20px rgba(124, 58, 237, 0.7); }}
+        0%, 100% {{ box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35); }}
+        50% {{ box-shadow: 0 6px 20px rgba(2, 132, 199, 0.55); }}
     }}
 
     .essay-section-card.audio-active-section {{
         border: 2px solid var(--primary) !important;
-        box-shadow: 0 0 20px rgba(124, 58, 237, 0.22) !important;
+        box-shadow: 0 0 20px rgba(2, 132, 199, 0.25) !important;
         position: relative;
     }}
     .essay-section-card.audio-active-section::before {{
@@ -3097,14 +3165,14 @@ body.dark .diagram-item img {{
         position: absolute;
         top: -9px;
         right: 18px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #fff;
         font-size: 6.5pt;
         font-weight: 800;
         letter-spacing: 0.8px;
         padding: 2px 8px;
         border-radius: 9999px;
-        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
     }}
 
     /* Modern Floating Island Audio Player Dock */
@@ -3119,17 +3187,17 @@ body.dark .diagram-item img {{
         background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(28px) saturate(180%);
         -webkit-backdrop-filter: blur(28px) saturate(180%);
-        border: 1px solid rgba(221, 214, 254, 0.85);
+        border: 1px solid rgba(2, 132, 199, 0.25);
         border-radius: 22px;
-        box-shadow: 0 16px 42px -6px rgba(124, 58, 237, 0.22), 0 4px 16px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 16px 42px -6px rgba(15, 23, 42, 0.25), 0 4px 16px rgba(0, 0, 0, 0.05);
         padding: 12px 22px;
         display: block;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
     }}
     body.dark .audio-dock {{
-        background: rgba(18, 10, 44, 0.92);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        box-shadow: 0 20px 50px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(124, 58, 237, 0.18);
+        background: rgba(15, 23, 42, 0.94);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        box-shadow: 0 20px 50px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(2, 132, 199, 0.18);
     }}
     .audio-dock.hidden {{
         transform: translate(-50%, 150%);
@@ -3155,21 +3223,21 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.32);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
         transition: transform 0.2s ease;
     }}
     .audio-dock.is-playing .audio-dock-track-icon {{
         animation: pulseTrackIcon 2.4s ease-in-out infinite;
     }}
     @keyframes pulseTrackIcon {{
-        0%, 100% {{ transform: scale(1); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.32); }}
-        50% {{ transform: scale(1.05); box-shadow: 0 6px 18px rgba(124, 58, 237, 0.5); }}
+        0%, 100% {{ transform: scale(1); box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3); }}
+        50% {{ transform: scale(1.05); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45); }}
     }}
     .audio-dock-text {{
         overflow: hidden;
@@ -3230,9 +3298,9 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #ffffff !important;
-        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -3242,8 +3310,8 @@ body.dark .diagram-item img {{
     }}
     .audio-btn-playpause:hover {{
         transform: scale(1.08);
-        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.58);
-        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+        background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
     }}
     .audio-btn-playpause:active {{
         transform: scale(0.94);
@@ -3252,8 +3320,8 @@ body.dark .diagram-item img {{
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(124, 58, 237, 0.08);
-        border: 1px solid rgba(124, 58, 237, 0.2);
+        background: rgba(2, 132, 199, 0.08);
+        border: 1px solid rgba(2, 132, 199, 0.2);
         color: var(--primary);
         font-size: 7.5pt;
         font-weight: 700;
@@ -3264,7 +3332,7 @@ body.dark .diagram-item img {{
         letter-spacing: 0.2px;
     }}
     .audio-mode-indicator:hover {{
-        background: rgba(124, 58, 237, 0.15);
+        background: rgba(2, 132, 199, 0.15);
         border-color: var(--primary);
     }}
     .mode-pulse-dot {{
@@ -3301,7 +3369,7 @@ body.dark .diagram-item img {{
         flex: 1;
         height: 4px;
         border-radius: 9999px;
-        background: linear-gradient(to right, #8b5cf6 var(--scrub-percent, 0%), rgba(124, 58, 237, 0.16) var(--scrub-percent, 0%));
+        background: linear-gradient(to right, #0284c7 var(--scrub-percent, 0%), rgba(2, 132, 199, 0.16) var(--scrub-percent, 0%));
         cursor: pointer;
         outline: none;
         transition: height 0.15s ease;
@@ -3316,14 +3384,14 @@ body.dark .diagram-item img {{
         height: 13px;
         border-radius: 50%;
         background: #ffffff;
-        border: 2px solid #7c3aed;
-        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.45);
+        border: 2px solid #0284c7;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
         cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
     }}
     .audio-scrubber:hover::-webkit-slider-thumb {{
         transform: scale(1.25);
-        box-shadow: 0 3px 10px rgba(124, 58, 237, 0.65);
+        box-shadow: 0 3px 10px rgba(2, 132, 199, 0.5);
     }}
     .audio-dock-options {{
         display: flex;
@@ -3336,14 +3404,14 @@ body.dark .diagram-item img {{
         display: inline-flex;
         align-items: center;
         gap: 2px;
-        background: rgba(124, 58, 237, 0.08);
+        background: rgba(2, 132, 199, 0.08);
         padding: 3px;
         border-radius: 9999px;
-        border: 1px solid rgba(124, 58, 237, 0.18);
+        border: 1px solid rgba(2, 132, 199, 0.18);
     }}
     body.dark .audio-speed-selector {{
-        background: rgba(139, 92, 246, 0.12);
-        border: 1px solid rgba(139, 92, 246, 0.25);
+        background: rgba(2, 132, 199, 0.12);
+        border: 1px solid rgba(2, 132, 199, 0.25);
     }}
     .speed-pill {{
         background: transparent;
@@ -3361,10 +3429,10 @@ body.dark .diagram-item img {{
         color: var(--primary);
     }}
     .speed-pill.active {{
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: #ffffff;
         font-weight: 700;
-        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
     }}
     .audio-dock-close {{
         background: transparent;
@@ -3432,7 +3500,8 @@ body.dark .diagram-item img {{
 
     <div class="search-box">
         <span class="search-icon-pos">{ICONS["search"]}</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search topics, signs, procedures...">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
+        <span class="search-kbd-hint"><kbd>/</kbd></span>
     </div>
 
     <div class="topic-list" id="topicList"></div>
@@ -3440,7 +3509,7 @@ body.dark .diagram-item img {{
 
 <div id="main-view">
     <div class="top-bar">
-        <button class="mobile-menu-btn" onclick="toggleSidebar(true)">{ICONS["menu"]}</button>
+        <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
         
         <div class="tabs-nav-wrapper" id="topicTabsNav" style="display: none;">
             <button class="tabs-arrow-btn left" id="tabArrowLeft" onclick="scrollTabsNav(-150)" title="Scroll tabs left">
@@ -3466,7 +3535,7 @@ body.dark .diagram-item img {{
 
         <div class="top-right-tools">
             <button class="btn btn-secondary" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">{ICONS["pdf"]} PDF Reader</button>
-            <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode">{ICONS["moon"]}</button>
+            <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">{ICONS["moon"]}</button>
         </div>
     </div>
 
@@ -3539,7 +3608,7 @@ body.dark .diagram-item img {{
         </div>
         <div class="modal-dialog-footer">
             <span>💡 <strong>Zero Cutoff Guarantee:</strong> Use 100% Size or Zoom buttons to inspect intricate details and wide matrices. Scroll horizontally or vertically freely.</span>
-            <span style="font-size: 7pt; color: #a855f7;">Press Esc to Exit</span>
+            <span style="font-size: 7pt; color: var(--text-muted);">Press Esc to Exit</span>
         </div>
     </div>
 </div>
@@ -3555,7 +3624,7 @@ body.dark .diagram-item img {{
                 <a href="General_Surgery_Master_Notes.pdf" target="_blank" class="btn btn-secondary" style="padding: 4px 12px; font-size: 8pt;">Open in New Tab</a>
                 <a href="https://raw.githubusercontent.com/Krrish41/general-surgery/main/General_Surgery_Master_Notes.pdf" target="_blank" class="btn btn-primary" style="padding: 4px 12px; font-size: 8pt;">Online Mirror (For Tablets)</a>
                 <a href="General_Surgery_Master_Notes.pdf" download="General_Surgery_Master_Notes.pdf" class="btn btn-secondary" style="padding: 4px 12px; font-size: 8pt;">Download PDF</a>
-                <button class="icon-btn" onclick="closePdfModal()">{ICONS["close"]}</button>
+                <button class="icon-btn" onclick="closePdfModal()" aria-label="Close PDF Viewer" title="Close PDF Viewer">{ICONS["close"]}</button>
             </div>
         </div>
         <div class="pdf-tablet-notice">
@@ -3719,7 +3788,7 @@ function renderSidebar(filterText = '') {{
         const item = document.createElement('div');
         item.className = `topic-item ${{idx === currentChapterIdx ? 'active' : ''}}`;
         item.innerHTML = `
-            <button class="topic-check-btn" onclick="event.stopPropagation(); saveCompletion('${{ch.id}}', ${{!isDone}})">
+            <button class="topic-check-btn" aria-label="Toggle completion for ${{ch.title}}" title="Toggle completion" onclick="event.stopPropagation(); saveCompletion('${{ch.id}}', ${{!isDone}})">
                 ${{isDone ? SVG_ICONS.check : SVG_ICONS.circle}}
             </button>
             <span class="topic-title-text" onclick="selectChapter(${{idx}})">${{idx + 1}}. ${{ch.title}}</span>
@@ -3895,14 +3964,14 @@ function renderDashboard() {{
             <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
                 <div class="cheat-sheet-badge-icon">{ICONS["cheat_sheet"]}</div>
                 <div>
-                    <div style="font-size: 8pt; font-weight: 700; color: #d8b4fe; text-transform: uppercase; letter-spacing: 1px;">Exam Night Rapid Revision</div>
+                    <div style="font-size: 8pt; font-weight: 700; color: #bae6fd; text-transform: uppercase; letter-spacing: 1px;">Exam Night Rapid Revision</div>
                     <div style="font-size: 13pt; font-weight: 700; color: #ffffff;">Chapter 24: Master Surgery Cheat Sheet</div>
-                    <div style="font-size: 8.5pt; color: #e9d5ff; margin-top: 2px;">
+                    <div style="font-size: 8.5pt; color: #e0f2fe; margin-top: 2px;">
                         Exhaustive high-yield formulas, keywords, named clinical signs, classifications & shock matrices for rapid pre-exam glance.
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #6d28d9; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
+            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #0369a1; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
                 Open Cheat Sheet →
             </button>
         </div>
@@ -3943,7 +4012,7 @@ function renderDashboard() {{
                 <button class="chip ${{currentDashFilter === 'pending' ? 'active' : ''}}" onclick="setDashFilter('pending')">Pending (${{remainingCount}})</button>
                 <button class="chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
                 <button class="chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
-                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
+                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
             </div>
         </div>
 
@@ -3963,7 +4032,7 @@ function renderDashboard() {{
                 <div>
                     <div class="dash-card-header">
                         <span style="font-size: 8pt; font-weight: 700; color: var(--primary); text-transform: uppercase;">Chapter ${{idx + 1}}</span>
-                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f3e8ff; color: #6d28d9; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
+                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f0f9ff; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
                     </div>
                     <div class="dash-card-title">${{ch.title}}</div>
                     <div class="dash-card-source">${{ch.source}}</div>
@@ -4704,7 +4773,7 @@ function renderModalSpotters() {{
     if (!overlay || !modalCurrentFilename) return;
     const spots = SPOTTERS[modalCurrentFilename] || [];
     if (!spots.length) {{
-        overlay.innerHTML = '<div style="position: absolute; top: 12px; left: 12px; background: rgba(124,58,237,0.9); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 8pt; font-weight: 600;">🎯 No labeled landmarks registered for this diagram.</div>';
+        overlay.innerHTML = '<div style="position: absolute; top: 12px; left: 12px; background: rgba(2,132,199,0.9); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 8pt; font-weight: 600;">🎯 No labeled landmarks registered for this diagram.</div>';
         return;
     }}
     let html = '';
@@ -5242,7 +5311,7 @@ function renderTopicView() {{
                             </div>
                             <div class="diagram-item-caption">
                                 ${{spotterModeActive && spots.length === 0 ? `
-                                    <div style="background: rgba(124, 58, 237, 0.1); border: 1px dashed var(--primary); padding: 6px; border-radius: 6px; margin-bottom: 4px; font-size: 7.5pt; color: var(--primary); cursor: pointer;" onclick="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                                    <div style="background: rgba(2, 132, 199, 0.08); border: 1px dashed var(--primary); padding: 6px; border-radius: 6px; margin-bottom: 4px; font-size: 7.5pt; color: var(--primary); cursor: pointer;" onclick="this.nextElementSibling.style.display='block'; this.style.display='none';">
                                         🎯 Spotter Challenge: Test yourself! Tap to reveal schematic caption.
                                     </div>
                                     <div style="display: none;">${{d.title}}</div>
@@ -5592,7 +5661,7 @@ function openModalImgTab() {{
     const img = document.getElementById('modalImg');
     if (img && img.src) {{
         const win = window.open();
-        win.document.write('<body style="margin:0; background:#0f0d1b; display:flex; justify-content:center; align-items:center; min-height:100vh;"><img src="' + img.src + '" style="max-width:100%; height:auto;"></body>');
+        win.document.write('<body style="margin:0; background:#090d16; display:flex; justify-content:center; align-items:center; min-height:100vh;"><img src="' + img.src + '" alt="Full Resolution Surgical Diagram" style="max-width:100%; height:auto;"></body>');
     }}
 }}
 
@@ -5600,6 +5669,24 @@ window.addEventListener('keydown', (e) => {{
     if (e.key === 'Escape') {{
         closeModal();
         closePdfModal();
+        const searchInput = document.getElementById('searchInput');
+        if (document.activeElement === searchInput) {{
+            searchInput.blur();
+        }}
+    }} else if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {{
+        e.preventDefault();
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {{
+            searchInput.focus();
+            searchInput.select();
+        }}
+    }} else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {{
+        e.preventDefault();
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {{
+            searchInput.focus();
+            searchInput.select();
+        }}
     }}
 }});
 
@@ -5698,7 +5785,7 @@ if ('serviceWorker' in navigator) {{
             </div>
             <div class="audio-dock-progress-wrap">
                 <span class="audio-time-label" id="audioCurrentTime">00:00</span>
-                <input type="range" class="audio-scrubber" id="audioProgressScrubber" min="0" max="100" value="0" oninput="onAudioScrub(this.value)">
+                <input type="range" class="audio-scrubber" id="audioProgressScrubber" min="0" max="100" value="0" oninput="onAudioScrub(this.value)" aria-label="Audio playback scrub progress">
                 <span class="audio-time-label" id="audioDuration">00:00</span>
             </div>
         </div>
