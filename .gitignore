@@ -33,12 +33,11 @@ extracted_preview/
 !General_Surgery_Master_Notes.pdf
 
 # Browser test screenshots & scratch test artifacts
-test_screen_*.png
+*.png
 test_*.mjs
-phone_*.png
-tablet_*.png
 scratch/
 node_modules/
+package.json
 package-lock.json
 .playwright-cli/
 
