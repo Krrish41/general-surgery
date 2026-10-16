@@ -1,5 +1,5 @@
 // Surgery Pro - Service Worker for 100% Offline Ward Operation
-const CACHE_NAME = 'surgery-pro-v1';
+const CACHE_NAME = 'surgery-pro-v2';
 const PRECACHE_ASSETS = [
   './',
   './index.html',

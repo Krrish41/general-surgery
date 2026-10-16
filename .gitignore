@@ -42,3 +42,10 @@ package-lock.json
 .playwright-cli/
 
 
+
+# UI Consistency audit and tests
+_ui_audit/
+tests_ui_consistency/
+CHANGELOG_CONSISTENCY.md
+
+DESIGN.md

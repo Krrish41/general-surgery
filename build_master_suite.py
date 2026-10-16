@@ -136,7 +136,7 @@ body {{
     align-items: center;
     text-align: center;
     padding: 40px 20px;
-    border: 3px double #7c3aed;
+    border: 3px double #14b8a6;
     margin: 20px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }}
@@ -153,7 +153,7 @@ body {{
 .cover-subtitle {{
     font-size: 13pt;
     font-weight: 600;
-    color: #7c3aed;
+    color: #0d9488;
     margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -180,9 +180,9 @@ body {{
     border-radius: 9999px;
     font-size: 8.5pt;
     font-weight: 600;
-    background-color: #f5f3ff;
-    color: #7c3aed;
-    border: 1px solid #e9d5ff;
+    background-color: #f0fdfa;
+    color: #0d9488;
+    border: 1px solid #ccfbf1;
 }}
 
 .toc-page {{
@@ -194,7 +194,7 @@ body {{
     font-family: 'Cinzel', serif;
     font-size: 18pt;
     color: #1e1b4b;
-    border-bottom: 2px solid #7c3aed;
+    border-bottom: 2px solid #14b8a6;
     padding-bottom: 8px;
     margin-bottom: 20px;
 }}
@@ -222,7 +222,7 @@ body {{
 }}
 
 .chapter-header {{
-    border-bottom: 2px solid #7c3aed;
+    border-bottom: 2px solid #14b8a6;
     padding-bottom: 8px;
     margin-bottom: 16px;
 }}
@@ -231,7 +231,7 @@ body {{
     font-size: 8.5pt;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #7c3aed;
+    color: #0d9488;
     font-weight: 700;
 }}
 
@@ -286,9 +286,9 @@ body {{
 .section-heading {{
     font-size: 11pt;
     font-weight: 700;
-    color: #7c3aed;
+    color: #0d9488;
     margin: 14px 0 6px 0;
-    border-left: 3px solid #7c3aed;
+    border-left: 3px solid #14b8a6;
     padding-left: 8px;
     text-transform: capitalize;
 }}
@@ -398,6 +398,51 @@ li {{
 p.content-para {{
     margin: 5px 0;
 }}
+
+/* Back to BDS Clinical Vault Hub Link */
+.back-to-vault-link {{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}}
+.back-to-vault-link:hover {{
+    color: var(--primary);
+    border-color: var(--primary-border);
+    background: var(--primary-light);
+}}
+
+/* Focus Timer Pill */
+.focus-timer-pill {{
+    display: inline-flex;
+    align-items: center;
+}}
+.btn-focus-timer {{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    font-weight: 600;
+    padding: 5px 12px;
+}}
+.btn-focus-timer.running {{
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-light);
+}}
+
 </style>
 </head>
 <body>
@@ -459,7 +504,7 @@ p.content-para {{
                     badge_text = "Original Handwritten Notebook Sketch" if is_orig else "High-Resolution 300 DPI Medical Schematic"
                     html_parts.append(f"""
     <div class="diagram-card">
-        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #7c3aed; margin-bottom: 4px;">{badge_text}</div>
+        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #0d9488; margin-bottom: 4px;">{badge_text}</div>
         <img class="diagram-img" src="{b64_data}" alt="{d['title']}">
         <div class="diagram-caption">Figure {idx+1}.{ch['diagrams'].index(d)+1}: {d['title']}</div>
     </div>
@@ -528,64 +573,103 @@ def generate_interactive_website(chapters, b64_images):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<link rel="icon" type="image/svg+xml" href="{FAVICON_SVG}">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+<link rel="alternate icon" href="favicon.ico?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="manifest" href="manifest.json?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Surgery Pro">
-<meta name="theme-color" content="#7c3aed">
-<link rel="apple-touch-icon" href="{FAVICON_SVG}">
-<title>General Surgery Master Portal - University Exam Companion</title>
+<meta name="theme-color" content="#090a12">
+<title>Surgery Pro — University Exam Monograph | BDS Clinical Vault</title>
+<script>
+(function() {{
+    try {{
+        var t = localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
+        if (t === 'light') {{
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.classList.remove('dark');
+        }} else {{
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.classList.add('dark');
+        }}
+    }} catch(e) {{}}
+}})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {{
-    --primary: #7c3aed;
-    --primary-dark: #6d28d9;
-    --primary-light: rgba(124, 58, 237, 0.08);
-    --primary-border: rgba(124, 58, 237, 0.22);
-    --bg-main: #fbfbfe;
-    --bg-card: #ffffff;
-    --bg-surface: #f5f3ff;
-    --text-main: #1e1b4b;
-    --text-muted: #6b7280;
-    --border: #e9d5ff;
-    --border-strong: #c4b5fd;
+    /* Per-portal Accent: Surgery Teal */
+    --primary: #14b8a6;
+    --primary-dark: #0d9488;
+    --primary-light: rgba(20, 184, 166, 0.14);
+    --primary-border: rgba(20, 184, 166, 0.32);
+    --accent: #14b8a6;
+    --accent-dark: #0d9488;
+    --accent-soft: rgba(20, 184, 166, 0.12);
+    --accent-glow: rgba(20, 184, 166, 0.18);
+    --accent-text: #5eead4;
+    --accent-contrast: #042f2e;
+
+    /* Shared Neutral Tokens (Obsidian Dark Default) */
+    --bg-main: #090a12;
+    --bg-card: #101322;
+    --bg-surface: #171b30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.18);
     --sidebar-w: 320px;
-    --accent: #d97706;
-    --accent-light: rgba(217, 119, 6, 0.1);
-    --accent-crimson: #be123c;
+    --accent-crimson: #fb7185;
     --danger: #ef4444;
     --success: #10b981;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --shadow-sm: 0 1px 3px rgba(124, 58, 237, 0.08);
-    --shadow-md: 0 4px 14px rgba(124, 58, 237, 0.12);
-    --shadow-lg: 0 10px 25px rgba(124, 58, 237, 0.18);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+}}
+
+html[data-theme="light"], body.light {{
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-surface: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --primary-light: rgba(20, 184, 166, 0.08);
+    --primary-border: rgba(20, 184, 166, 0.22);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
 }}
 
 body.dark {{
-    --bg-main: #0c071e;
-    --bg-card: #160d33;
-    --bg-surface: #1e1345;
-    --text-main: #f5f3ff;
-    --text-muted: #c4b5fd;
-    --border: #2e1b5b;
-    --border-strong: #4c2889;
-    --primary: #8b5cf6;
-    --primary-dark: #7c3aed;
-    --primary-light: rgba(139, 92, 246, 0.14);
-    --primary-border: rgba(139, 92, 246, 0.32);
-    --accent: #f59e0b;
-    --accent-light: rgba(245, 158, 11, 0.15);
+    --bg-main: #090a12;
+    --bg-card: #101322;
+    --bg-surface: #171b30;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    --primary: #14b8a6;
+    --primary-dark: #0d9488;
+    --primary-light: rgba(20, 184, 166, 0.14);
+    --primary-border: rgba(20, 184, 166, 0.32);
+    --accent: #14b8a6;
+    --accent-light: rgba(20, 184, 166, 0.15);
     --accent-crimson: #fb7185;
     --danger: #f87171;
     --success: #10b981;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
 }}
 
 * {{
@@ -1143,13 +1227,13 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .btn-primary {{
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     color: #ffffff;
     box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-primary:hover {{
-    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
     box-shadow: 0 4px 14px rgba(2, 132, 199, 0.42);
     transform: translateY(-1px);
 }}
@@ -1172,13 +1256,13 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .btn-accent {{
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     color: #ffffff;
     box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-accent:hover {{
-    background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
     box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
     transform: translateY(-1px);
 }}
@@ -1402,7 +1486,7 @@ body.dark .quiz-badge-model {{
 
 .progress-bar-fill {{
     height: 100%;
-    background: linear-gradient(90deg, #8b5cf6 0%, #10b981 100%);
+    background: linear-gradient(90deg, #14b8a6 0%, #10b981 100%);
     border-radius: 999px;
     width: 0%;
     transition: width 0.4s ease;
@@ -1869,7 +1953,7 @@ body.dark .badge-original {{
 
 .badge-hd {{
     background: #ede9fe;
-    color: #7c3aed;
+    color: #0d9488;
     border: 1px solid #e9d5ff;
 }}
 
@@ -2020,7 +2104,7 @@ body.dark .diagram-item img {{
 .quiz-score-badge {{
     font-size: 8.5pt;
     background: #e0f2fe;
-    color: #7c3aed;
+    color: #0d9488;
     padding: 4px 10px;
     border-radius: 6px;
     font-weight: 600;
@@ -2241,7 +2325,7 @@ body.dark .diagram-item img {{
 .modal-tool-btn:hover {{
     background: var(--primary);
     color: #ffffff;
-    border-color: #7c3aed;
+    border-color: #0d9488;
 }}
 
 .modal-tool-btn.modal-close-btn {{
@@ -3061,7 +3145,7 @@ body.dark .diagram-item img {{
         width: 44px;
         height: 44px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #fff;
         display: flex;
         align-items: center;
@@ -3102,7 +3186,7 @@ body.dark .diagram-item img {{
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #ffffff;
         border: none;
         padding: 9px 20px;
@@ -3185,7 +3269,7 @@ body.dark .diagram-item img {{
         transform: translateY(0);
     }}
     .section-audio-pill.speaking {{
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #ffffff;
         border-color: transparent;
         box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
@@ -3206,7 +3290,7 @@ body.dark .diagram-item img {{
         position: absolute;
         top: -9px;
         right: 18px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #fff;
         font-size: 6.5pt;
         font-weight: 800;
@@ -3264,7 +3348,7 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #fff;
         display: flex;
         align-items: center;
@@ -3339,7 +3423,7 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #ffffff !important;
         box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
         display: flex;
@@ -3352,7 +3436,7 @@ body.dark .diagram-item img {{
     .audio-btn-playpause:hover {{
         transform: scale(1.08);
         box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
-        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
     }}
     .audio-btn-playpause:active {{
         transform: scale(0.94);
@@ -3410,7 +3494,7 @@ body.dark .diagram-item img {{
         flex: 1;
         height: 4px;
         border-radius: 9999px;
-        background: linear-gradient(to right, #8b5cf6 var(--scrub-percent, 0%), rgba(2, 132, 199, 0.16) var(--scrub-percent, 0%));
+        background: linear-gradient(to right, #14b8a6 var(--scrub-percent, 0%), rgba(2, 132, 199, 0.16) var(--scrub-percent, 0%));
         cursor: pointer;
         outline: none;
         transition: height 0.15s ease;
@@ -3425,7 +3509,7 @@ body.dark .diagram-item img {{
         height: 13px;
         border-radius: 50%;
         background: #ffffff;
-        border: 2px solid #8b5cf6;
+        border: 2px solid #14b8a6;
         box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
         cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -3470,7 +3554,7 @@ body.dark .diagram-item img {{
         color: var(--primary);
     }}
     .speed-pill.active {{
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         color: #ffffff;
         font-weight: 700;
         box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
@@ -3563,19 +3647,68 @@ body.dark .diagram-item img {{
             bottom: 24px;
         }}
     }}
+
+/* Back to BDS Clinical Vault Hub Link */
+.back-to-vault-link {{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}}
+.back-to-vault-link:hover {{
+    color: var(--primary);
+    border-color: var(--primary-border);
+    background: var(--primary-light);
+}}
+
+/* Focus Timer Pill */
+.focus-timer-pill {{
+    display: inline-flex;
+    align-items: center;
+}}
+.btn-focus-timer {{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    font-weight: 600;
+    padding: 5px 12px;
+}}
+.btn-focus-timer.running {{
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-light);
+}}
+
 </style>
 </head>
-<body>
+<body class="dark">
 
 <div id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
 <div id="sidebar">
     <div class="sidebar-header">
+        <a href="https://krrish41.github.io/bds-vault/" class="back-to-vault-link" data-testid="back-to-vault" title="Back to BDS Clinical Vault Hub">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <span>BDS Clinical Vault</span>
+        </a>
         <div style="display: flex; align-items: center; gap: 10px;">
             {ICONS["modern_logo"]}
             <div>
                 <div class="brand-title">SURGERY<span class="brand-accent">PRO</span></div>
-                <div class="brand-sub">University Exam Monograph</div>
+                <div class="brand-sub">Clinical Monograph · Paper I</div>
             </div>
         </div>
         <button class="mobile-sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close Sidebar">{ICONS["close"]}</button>
@@ -3583,13 +3716,13 @@ body.dark .diagram-item img {{
 
     <div class="sidebar-nav-actions">
         <button class="nav-btn active" id="btnNavDash" onclick="openDashboardView()">{ICONS["dashboard"]} Dashboard</button>
-        <button class="nav-btn" onclick="openPdfModal()">{ICONS["pdf"]} Open PDF</button>
+        <button class="nav-btn" data-testid="open-pdf" onclick="openPdfModal()">{ICONS["pdf"]} Open PDF</button>
     </div>
 
     <div class="search-box">
         <span class="search-icon-pos">{ICONS["search"]}</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
-        <span class="search-kbd-hint"><kbd>/</kbd></span>
+        <input type="text" id="searchInput" data-testid="search" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
+        <button class="search-kbd-hint" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd>⌘K</kbd></button>
     </div>
 
     <div class="topic-list" id="topicList"></div>
@@ -3607,9 +3740,9 @@ body.dark .diagram-item img {{
                 <button class="tab-btn active" data-tab="master" onclick="switchTopicTab('master')">{ICONS["master_answer"]} 15-Mark Master Answer</button>
                 <button class="tab-btn" data-tab="layman" onclick="switchTopicTab('layman')">{ICONS["layman"]} Layman's Intuition</button>
                 <button class="tab-btn" data-tab="types" id="tabBtnTypes" style="display: none;" onclick="switchTopicTab('types')">{ICONS["quiz"]} Types & Subtypes</button>
-                <button class="tab-btn" data-tab="diagrams" onclick="switchTopicTab('diagrams')">{ICONS["diagrams"]} Diagrams Gallery</button>
+                <button class="tab-btn" data-tab="diagrams" data-testid="schematics" onclick="switchTopicTab('diagrams')">{ICONS["diagrams"]} Diagrams Gallery</button>
                 <button class="tab-btn" data-tab="viva" onclick="switchTopicTab('viva')">{ICONS["viva"]} Viva Pearls</button>
-                <button class="tab-btn" data-tab="quiz" onclick="switchTopicTab('quiz')">{ICONS["quiz"]} Flashcard Quiz</button>
+                <button class="tab-btn" data-tab="quiz" data-testid="flashcards" onclick="switchTopicTab('quiz')">{ICONS["quiz"]} Flashcard Quiz</button>
                 <button class="tab-btn" data-tab="notes" onclick="switchTopicTab('notes')">{ICONS["notes"]} My Notes</button>
             </div>
             <button class="tabs-arrow-btn right" id="tabArrowRight" onclick="scrollTabsNav(150)" title="Scroll tabs right">
@@ -3622,9 +3755,15 @@ body.dark .diagram-item img {{
         </div>
 
         <div class="top-right-tools">
-            <button class="btn btn-secondary btn-audio-quick" onclick="togglePlayPauseAudio()" title="Play Chapter Audio Walk" aria-label="Toggle Chapter Audio Walk">{ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span></button>
-            <button class="btn btn-secondary" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">{ICONS["pdf"]} PDF Reader</button>
-            <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">{ICONS["moon"]}</button>
+            <button class="btn btn-secondary btn-audio-quick" data-testid="voice-walk" onclick="togglePlayPauseAudio()" title="Play Chapter Audio Walk (1x-2x)" aria-label="Toggle Chapter Audio Walk">{ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span></button>
+            <div class="focus-timer-pill" data-testid="focus-timer">
+                <button class="btn btn-secondary btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="focusTimerDisplay">25:00</span>
+                </button>
+            </div>
+            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">{ICONS["pdf"]} PDF Reader</button>
+            <button class="icon-btn" data-testid="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">{ICONS["moon"]}</button>
         </div>
     </div>
 
@@ -3681,7 +3820,7 @@ body.dark .diagram-item img {{
                 <span id="modalTitleText">Medical Diagram Viewer</span>
             </div>
             <div class="modal-dialog-actions">
-                <button class="modal-tool-btn" onclick="toggleModalSpotter()" id="btnModalSpotter" title="Spotter Testing Mode">🎯 Spotter Mode</button>
+                <button class="modal-tool-btn" data-testid="spotters" onclick="toggleModalSpotter()" id="btnModalSpotter" title="Spotter Testing Mode">🎯 Spotter Mode</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(1.25)" title="Zoom In">Zoom In ＋</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(0.8)" title="Zoom Out">Zoom Out －</button>
                 <button class="modal-tool-btn" onclick="toggleModalFit()" id="btnModalFit" title="Toggle 100% / Fit to Viewport">100% Size</button>
@@ -4060,7 +4199,7 @@ function renderDashboard() {{
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #7c3aed; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
+            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #0d9488; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
                 Open Cheat Sheet →
             </button>
         </div>
@@ -4089,7 +4228,7 @@ function renderDashboard() {{
                 <span>University Syllabus Completion</span>
                 <span style="color: var(--primary);">${{pct}}%</span>
             </div>
-            <div class="progress-bar-bg">
+            <div class="progress-bar-bg" data-testid="progress">
                 <div class="progress-bar-fill" style="width: ${{pct}}%;"></div>
             </div>
         </div>
@@ -4101,7 +4240,9 @@ function renderDashboard() {{
                 <button class="chip ${{currentDashFilter === 'pending' ? 'active' : ''}}" onclick="setDashFilter('pending')">Pending (${{remainingCount}})</button>
                 <button class="chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
                 <button class="chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
-                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
+                <button class="chip" data-testid="exam-simulator" onclick="launchExamSimFromDashboard()" style="cursor: pointer;">⏱️ Exam Simulator</button>
+                <button class="chip" data-testid="spotters" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">🎯 Spotters</button>
+                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
             </div>
         </div>
 
@@ -4121,7 +4262,7 @@ function renderDashboard() {{
                 <div>
                     <div class="dash-card-header">
                         <span style="font-size: 8pt; font-weight: 700; color: var(--primary); text-transform: uppercase;">Chapter ${{idx + 1}}</span>
-                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f5f3ff; color: #7c3aed; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
+                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f5f3ff; color: #0d9488; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
                     </div>
                     <div class="dash-card-title">${{ch.title}}</div>
                     <div class="dash-card-source">${{ch.source}}</div>
@@ -4143,6 +4284,23 @@ function renderDashboard() {{
 function setDashFilter(filter) {{
     currentDashFilter = filter;
     renderDashboard();
+}}
+
+function launchExamSimFromDashboard() {{
+    selectChapter(0);
+    setTimeout(() => {{
+        toggleExamSimulator(true);
+    }}, 120);
+}}
+
+function openDiagramSpotterFromDashboard() {{
+    selectChapter(0);
+    setTimeout(() => {{
+        switchTopicTab('diagrams');
+        setTimeout(() => {{
+            toggleSpotterMode();
+        }}, 120);
+    }}, 120);
 }}
 
 // --- Continuous Background Audio & Neural Speech Synthesis Engine ---
@@ -5215,7 +5373,7 @@ function renderTopicView() {{
     if (currentTopicTab === 'master') {{
         // Banner for 15-Mark University Essay Exam Simulator
         html += `
-            <div class="exam-simulator-banner">
+            <div class="exam-simulator-banner" data-testid="exam-simulator">
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                     <span style="font-size: 18pt;">⏱️</span>
                     <div>
@@ -6073,8 +6231,53 @@ function toggleSingleVivaAnswer(el) {{
     }}
 }}
 
+let focusTimerSeconds = 25 * 60;
+let focusTimerInterval = null;
+let isFocusTimerRunning = false;
+
+function toggleStudyFocusTimer() {{
+    const btn = document.getElementById('btnFocusTimer');
+    const disp = document.getElementById('focusTimerDisplay');
+    if (!btn || !disp) return;
+
+    if (isFocusTimerRunning) {{
+        clearInterval(focusTimerInterval);
+        isFocusTimerRunning = false;
+        btn.classList.remove('running');
+    }} else {{
+        if (focusTimerSeconds <= 0) focusTimerSeconds = 25 * 60;
+        isFocusTimerRunning = true;
+        btn.classList.add('running');
+        focusTimerInterval = setInterval(() => {{
+            focusTimerSeconds--;
+            if (focusTimerSeconds <= 0) {{
+                clearInterval(focusTimerInterval);
+                isFocusTimerRunning = false;
+                btn.classList.remove('running');
+                focusTimerSeconds = 25 * 60;
+                alert('Focus session complete! Time for a short rest.');
+            }}
+            updateFocusTimerUI();
+        }}, 1000);
+    }}
+    updateFocusTimerUI();
+}}
+
+function updateFocusTimerUI() {{
+    const disp = document.getElementById('focusTimerDisplay');
+    if (!disp) return;
+    const m = Math.floor(focusTimerSeconds / 60);
+    const s = focusTimerSeconds % 60;
+    disp.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}}
+
 function toggleDarkMode() {{
-    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.toggle('dark');
+    document.body.classList.toggle('light', !isDark);
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    try {{
+        localStorage.setItem('bds.surgery.theme', isDark ? 'dark' : 'light');
+    }} catch(e) {{}}
 }}
 
 document.getElementById('searchInput').addEventListener('input', (e) => {{
