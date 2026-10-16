@@ -49,3 +49,7 @@ tests_ui_consistency/
 CHANGELOG_CONSISTENCY.md
 
 DESIGN.md
+
+site_manifest*.json
+PORTAL_SPEC.md
+sync_portal_core*

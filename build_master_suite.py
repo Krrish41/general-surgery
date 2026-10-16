@@ -3729,42 +3729,62 @@ body.dark .diagram-item img {{
 </div>
 
 <div id="main-view">
-    <div class="top-bar">
-        <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
-        
-        <div class="tabs-nav-wrapper" id="topicTabsNav" style="display: none;">
-            <button class="tabs-arrow-btn left" id="tabArrowLeft" onclick="scrollTabsNav(-150)" title="Scroll tabs left">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div class="top-tabs-scroll" id="topicTabsBar" onscroll="updateTabScrollButtons()">
-                <button class="tab-btn active" data-tab="master" onclick="switchTopicTab('master')">{ICONS["master_answer"]} 15-Mark Master Answer</button>
-                <button class="tab-btn" data-tab="layman" onclick="switchTopicTab('layman')">{ICONS["layman"]} Layman's Intuition</button>
-                <button class="tab-btn" data-tab="types" id="tabBtnTypes" style="display: none;" onclick="switchTopicTab('types')">{ICONS["quiz"]} Types & Subtypes</button>
-                <button class="tab-btn" data-tab="diagrams" data-testid="schematics" onclick="switchTopicTab('diagrams')">{ICONS["diagrams"]} Diagrams Gallery</button>
-                <button class="tab-btn" data-tab="viva" onclick="switchTopicTab('viva')">{ICONS["viva"]} Viva Pearls</button>
-                <button class="tab-btn" data-tab="quiz" data-testid="flashcards" onclick="switchTopicTab('quiz')">{ICONS["quiz"]} Flashcard Quiz</button>
-                <button class="tab-btn" data-tab="notes" onclick="switchTopicTab('notes')">{ICONS["notes"]} My Notes</button>
+    <div class="top-bar" data-testid="topbar">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
+            <a href="https://krrish41.github.io/bds-vault/" class="back-to-vault-link" data-testid="back-to-vault" title="Back to BDS Clinical Vault Hub">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <span>BDS Clinical Vault</span>
+            </a>
+            <div class="brand" onclick="showDashboard()">
+                <div class="brand-badge" style="background: transparent; display: flex; align-items: center;">
+                    {ICONS["modern_logo"]}
+                </div>
+                <div class="brand-title">
+                    <h1 style="font-size: 1rem; font-weight: 800; margin: 0; line-height: 1.1;">SURGERY PRO</h1>
+                    <span style="font-size: 0.68rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Clinical Monograph · Paper I</span>
+                </div>
             </div>
-            <button class="tabs-arrow-btn right" id="tabArrowRight" onclick="scrollTabsNav(150)" title="Scroll tabs right">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-        </div>
-
-        <div id="dashTitleBar" style="font-weight: 700; color: var(--primary); font-size: 11pt; display: flex; align-items: center; gap: 6px;">
-            {ICONS["dashboard"]} Exam Preparation Dashboard
         </div>
 
         <div class="top-right-tools">
-            <button class="btn btn-secondary btn-audio-quick" data-testid="voice-walk" onclick="togglePlayPauseAudio()" title="Play Chapter Audio Walk (1x-2x)" aria-label="Toggle Chapter Audio Walk">{ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span></button>
+            <button class="btn btn-secondary btn-audio-quick" data-testid="audio-walkthrough" data-action="voice-walk" onclick="togglePlayPauseAudio()" title="Continuous Audio Walk (1x-2x)" aria-label="Toggle Chapter Audio Walk">
+                {ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span>
+            </button>
             <div class="focus-timer-pill" data-testid="focus-timer">
                 <button class="btn btn-secondary btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <span id="focusTimerDisplay">25:00</span>
                 </button>
             </div>
-            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">{ICONS["pdf"]} PDF Reader</button>
-            <button class="icon-btn" data-testid="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">{ICONS["moon"]}</button>
+            <button class="btn btn-secondary" data-testid="palette" onclick="openCmdkModal()" title="Command Palette (Ctrl+K)">
+                <kbd style="font-family: monospace; font-size: 0.72rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px;">⌘K</kbd>
+            </button>
+            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">
+                {ICONS["pdf"]} <span>Master PDF</span>
+            </button>
+            <button class="icon-btn" data-testid="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">
+                {ICONS["moon"]}
+            </button>
         </div>
+    </div>
+
+    <div class="tabs-nav-wrapper" id="topicTabsNav" style="display: none; margin: 0 16px 12px 16px;">
+        <button class="tabs-arrow-btn left" id="tabArrowLeft" onclick="scrollTabsNav(-150)" title="Scroll tabs left">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="top-tabs-scroll" id="topicTabsBar" onscroll="updateTabScrollButtons()">
+            <button class="tab-btn active" data-tab="master" onclick="switchTopicTab('master')">{ICONS["master_answer"]} 15-Mark Master Answer</button>
+            <button class="tab-btn" data-tab="layman" onclick="switchTopicTab('layman')">{ICONS["layman"]} Layman's Intuition</button>
+            <button class="tab-btn" data-tab="types" id="tabBtnTypes" style="display: none;" onclick="switchTopicTab('types')">{ICONS["quiz"]} Types & Subtypes</button>
+            <button class="tab-btn" data-tab="diagrams" data-testid="schematics" onclick="switchTopicTab('diagrams')">{ICONS["diagrams"]} Diagrams Gallery</button>
+            <button class="tab-btn" data-tab="viva" onclick="switchTopicTab('viva')">{ICONS["viva"]} Viva Pearls</button>
+            <button class="tab-btn" data-tab="quiz" data-testid="flashcards" onclick="switchTopicTab('quiz')">{ICONS["quiz"]} Flashcard Quiz</button>
+            <button class="tab-btn" data-tab="notes" onclick="switchTopicTab('notes')">{ICONS["notes"]} My Notes</button>
+        </div>
+        <button class="tabs-arrow-btn right" id="tabArrowRight" onclick="scrollTabsNav(150)" title="Scroll tabs right">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
     </div>
 
     <div class="mobile-section-nav" id="mobileSectionNav">
@@ -3892,7 +3912,13 @@ let currentTopicTab = 'master';
 let currentDashFilter = 'all';
 
 // State stored in localStorage
-let completedTopics = JSON.parse(localStorage.getItem('surgery_completed_topics') || '{{}}');
+let completedTopics = (function() {{
+    try {{
+        return JSON.parse(localStorage.getItem('bds.surgery.progress') || localStorage.getItem('surgery_completed_topics') || '{{}}');
+    }} catch(e) {{
+        return {{}};
+    }}
+}})();
 let quizCardIdx = 0;
 let quizViewMode = 'carousel';
 let quizAnswerRevealed = false;
@@ -3970,8 +3996,11 @@ function saveCompletion(chId, state) {{
     }} else {{
         delete completedTopics[chId];
     }}
-    localStorage.setItem('surgery_completed_topics', JSON.stringify(completedTopics));
-    renderSidebar(document.getElementById('searchInput').value);
+    try {{
+        localStorage.setItem('bds.surgery.progress', JSON.stringify(completedTopics));
+        localStorage.setItem('surgery_completed_topics', JSON.stringify(completedTopics));
+    }} catch(e) {{}}
+    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
     if (currentChapterIdx === -1) {{
         renderDashboard();
     }} else {{
@@ -4025,19 +4054,64 @@ function renderSidebar(filterText = '') {{
     }});
 }}
 
-function openDashboardView() {{
+function getSlugForChapter(idx) {{
+    if (idx < 0 || idx >= CHAPTERS.length) return '';
+    const ch = CHAPTERS[idx];
+    const cleanTitle = (ch.title || '').replace(/^(chapter\s*\d+[:.]*|\d+[\.:\s]+)/i, '').trim();
+    return cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}}
+
+function handleHashRoute() {{
+    const hash = window.location.hash || '';
+    if (!hash || hash === '#' || hash === '#/') {{
+        if (currentChapterIdx !== -1) openDashboardView(false);
+        return;
+    }}
+    if (hash.startsWith('#/topic/')) {{
+        const targetSlug = hash.replace('#/topic/', '').toLowerCase();
+        const foundIdx = CHAPTERS.findIndex((ch, i) => {{
+            const s = getSlugForChapter(i);
+            return s === targetSlug || (ch.id && ch.id.toLowerCase() === targetSlug) || ('chap' + (i + 1) === targetSlug);
+        }});
+        if (foundIdx !== -1) {{
+            if (currentChapterIdx !== foundIdx) {{
+                selectChapter(foundIdx, false);
+            }}
+        }} else {{
+            console.warn('Unknown topic slug:', targetSlug);
+            openDashboardView(false);
+        }}
+    }} else if (hash === '#/simulator') {{
+        openExamSimModal();
+    }} else if (hash === '#/spotters') {{
+        openDiagramModal();
+    }}
+}}
+
+function openDashboardView(updateHash = true) {{
     currentChapterIdx = -1;
     stopCurrentSpeech();
-    document.getElementById('btnNavDash').classList.add('active');
-    document.getElementById('topicTabsNav').style.display = 'none';
+    if (updateHash && window.location.hash && window.location.hash !== '#/' && window.location.hash !== '#') {{
+        history.pushState(null, '', '#/');
+    }}
+    const btnDash = document.getElementById('btnNavDash');
+    if (btnDash) btnDash.classList.add('active');
+    const tabsNav = document.getElementById('topicTabsNav');
+    if (tabsNav) tabsNav.style.display = 'none';
     const mobNav = document.getElementById('mobileSectionNav');
     if (mobNav) mobNav.classList.remove('active');
     const bottomBar = document.getElementById('mobileFloatingBottomBar');
     if (bottomBar) bottomBar.classList.remove('in-chapter');
-    document.getElementById('dashTitleBar').style.display = 'flex';
-    renderSidebar(document.getElementById('searchInput').value);
+    const titleBar = document.getElementById('dashTitleBar');
+    if (titleBar) titleBar.style.display = 'flex';
+    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
     renderDashboard();
     toggleSidebar(false);
+    window.scrollTo({{ top: 0, behavior: 'smooth' }});
+}}
+
+function showDashboard(updateHash = true) {{
+    openDashboardView(updateHash);
 }}
 
 function scrollTabsNav(offset) {{
@@ -4075,24 +4149,34 @@ function updateTabScrollButtons() {{
     else wrapper.classList.remove('can-scroll-right');
 }}
 
-function selectChapter(idx) {{
+function selectChapter(idx, updateHash = true) {{
     currentChapterIdx = idx;
+    if (updateHash) {{
+        const slug = getSlugForChapter(idx);
+        if (slug && window.location.hash !== `#/topic/${{slug}}`) {{
+            history.pushState(null, '', `#/topic/${{slug}}`);
+        }}
+    }}
     isExamSimActive = false;
     stopCurrentSpeech();
     quizCardIdx = 0;
     quizAnswerRevealed = false;
     vivaAnswersVisible = false;
-    document.getElementById('btnNavDash').classList.remove('active');
-    document.getElementById('topicTabsNav').style.display = 'flex';
+    const btnDash = document.getElementById('btnNavDash');
+    if (btnDash) btnDash.classList.remove('active');
+    const tabsNav = document.getElementById('topicTabsNav');
+    if (tabsNav) tabsNav.style.display = 'flex';
     const mobNav = document.getElementById('mobileSectionNav');
     if (mobNav) mobNav.classList.add('active');
     const bottomBar = document.getElementById('mobileFloatingBottomBar');
     if (bottomBar) bottomBar.classList.add('in-chapter');
-    document.getElementById('dashTitleBar').style.display = 'none';
+    const titleBar = document.getElementById('dashTitleBar');
+    if (titleBar) titleBar.style.display = 'none';
     
     // Check if preset exists for Types tab
     const hasPreset = !!PRESETS[CHAPTERS[idx].id];
-    document.getElementById('tabBtnTypes').style.display = hasPreset ? 'flex' : 'none';
+    const tabTypes = document.getElementById('tabBtnTypes');
+    if (tabTypes) tabTypes.style.display = hasPreset ? 'flex' : 'none';
     const pillTypes = document.getElementById('pillTypes');
     if (pillTypes) pillTypes.style.display = hasPreset ? 'inline-block' : 'none';
 
@@ -4100,10 +4184,11 @@ function selectChapter(idx) {{
         currentTopicTab = 'master';
     }}
 
-    renderSidebar(document.getElementById('searchInput').value);
+    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
     switchTopicTab(currentTopicTab);
     toggleSidebar(false);
     setTimeout(updateTabScrollButtons, 150);
+    window.scrollTo({{ top: 0, behavior: 'smooth' }});
 }}
 
 function switchTopicTab(tab) {{
@@ -6284,10 +6369,42 @@ document.getElementById('searchInput').addEventListener('input', (e) => {{
     renderSidebar(e.target.value);
 }});
 
+function openCmdkModal() {{
+    const searchInput = document.getElementById('searchInput');
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && !sidebar.classList.contains('active')) {{
+        toggleSidebar(true);
+    }}
+    if (searchInput) {{
+        searchInput.focus();
+        searchInput.select();
+    }}
+}}
+
+function openCmdkFromDashboard() {{
+    openCmdkModal();
+}}
+
+// Keyboard Shortcuts
+window.addEventListener('keydown', e => {{
+    if ((e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {{
+        e.preventDefault();
+        openCmdkModal();
+    }} else if (e.key === 'Escape') {{
+        closePdfModal();
+        closeDiagramModal();
+        toggleSidebar(false);
+    }}
+}});
+
 // Initialize on Dashboard view
 renderSidebar();
 renderDashboard();
 initMasterAudio();
+
+// Hash route cold-load & listener
+window.addEventListener('hashchange', handleHashRoute);
+handleHashRoute();
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {{
@@ -6373,6 +6490,29 @@ def main():
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(site_content)
     print("Saved index.html")
+
+    # Emit topics.json registry
+    topics_registry = []
+    import re
+    for idx, ch in enumerate(ALL_CHAPTERS):
+        title = ch["title"]
+        clean_title = re.sub(r'^(Chapter\s*\d+[:.]*|\d+[\.:\s]+)', '', title, flags=re.IGNORECASE).strip()
+        slug = re.sub(r'[^a-zA-Z0-9]+', '-', clean_title).strip('-').lower()
+        is_cheat_sheet = "cheat sheet" in title.lower() or "rapid revision" in title.lower()
+        topics_registry.append({
+            "id": slug,
+            "title": title,
+            "portal": "surgery",
+            "portalName": "General Surgery Pro",
+            "paper": "Paper I · Surgery",
+            "chapter": idx + 1,
+            "type": "cheat-sheet" if is_cheat_sheet else "essay",
+            "url": f"https://krrish41.github.io/general-surgery/#/topic/{slug}",
+            "order": idx + 1
+        })
+    with open("topics.json", "w", encoding="utf-8") as f:
+        json.dump(topics_registry, f, indent=2)
+    print(f"Emitted topics.json ({len(topics_registry)} topics).")
 
     # Compiling to PDF via Headless Edge
     edge_paths = [
