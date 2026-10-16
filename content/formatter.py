@@ -43,8 +43,8 @@ ICONS = {
     "lock_sm": '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 3px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
 }
 
-# Modern Surgical Cobalt SVG Favicon Data URL (Caduceus cross in cobalt gradient shield)
-FAVICON_SVG = """data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%230369a1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 6v20M6 16h20' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23bae6fd'/%3E%3C/svg%3E"""
+# Modern Surgical Purple SVG Favicon Data URL (Caduceus cross in royal violet gradient shield)
+FAVICON_SVG = """data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='32' y2='32'%3E%3Cstop offset='0%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 6v20M6 16h20' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23e9d5ff'/%3E%3C/svg%3E"""
 
 def clean_latex(text: str) -> str:
     """Converts raw LaTeX math expressions and backslashes into clean readable Unicode."""
@@ -167,6 +167,49 @@ def parse_markdown_to_html(md_text: str) -> str:
         return ""
     
     text = clean_latex(md_text.strip())
+
+    # Pre-process and protect code blocks (``` ... ```)
+    code_blocks = {}
+    def save_code_block(match):
+        raw_code = match.group(1).strip()
+        esc = raw_code.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        key = f"__CODE_BLOCK_{len(code_blocks)}__"
+        card = (
+            '<div class="clinical-flowchart-card" style="margin: 16px 0; border: 1.5px solid #c4b5fd; '
+            'border-left: 5px solid #7c3aed; border-radius: 10px; background: #fdf4ff; '
+            'padding: 14px 18px; break-inside: avoid; page-break-inside: avoid;">'
+            '<div class="flowchart-header" style="font-size: 8pt; font-weight: 700; text-transform: uppercase; '
+            'letter-spacing: 1.2px; color: #6d28d9; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">'
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg>'
+            'CLINICAL ALGORITHM / SCHEMATIC FLOWCHART</div>'
+            f'<pre class="flowchart-pre" style="margin: 0; font-family: \'JetBrains Mono\', monospace; font-size: 8pt; '
+            f'line-height: 1.45; overflow-x: auto; color: #1e1b4b; white-space: pre; background: transparent; border: none; padding: 0;"><code>{esc}</code></pre>'
+            '</div>'
+        )
+        code_blocks[key] = card
+        return f"\n\n{key}\n\n"
+
+    text = re.sub(r'```(?:[a-zA-Z0-9_\-]+)?\n?([\s\S]*?)```', save_code_block, text)
+
+    # Pre-process formulas ($$...$$)
+    formula_blocks = {}
+    def save_formula(match):
+        f_raw = match.group(1).strip()
+        key = f"__FORMULA_BLOCK_{len(formula_blocks)}__"
+        card = (
+            '<div class="formula-card" style="margin: 14px 0; border: 1.5px solid #e9d5ff; '
+            'border-left: 4px solid #d97706; border-radius: 8px; background: #fdf4ff; '
+            'padding: 12px 16px; break-inside: avoid; page-break-inside: avoid;">'
+            '<div style="font-size: 8pt; font-weight: 700; color: #d97706; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">'
+            'CLINICAL FORMULA / EQUATION</div>'
+            f'<div style="font-family: \'JetBrains Mono\', monospace; font-size: 10pt; font-weight: 600; color: #1e1b4b;">{clean_latex(f_raw)}</div>'
+            '</div>'
+        )
+        formula_blocks[key] = card
+        return f"\n\n{key}\n\n"
+
+    text = re.sub(r'\$\$([\s\S]*?)\$\$', save_formula, text)
+
     lines = text.split("\n")
     output = []
     
@@ -224,6 +267,23 @@ def parse_markdown_to_html(md_text: str) -> str:
 
     for line in lines:
         s_line = line.strip()
+
+        # Check for placeholder blocks
+        if s_line.startswith("__CODE_BLOCK_") and s_line.endswith("__"):
+            if in_table:
+                in_table = False
+                output.append(flush_table())
+            output.extend(close_lists())
+            output.append(code_blocks.get(s_line, ""))
+            continue
+
+        if s_line.startswith("__FORMULA_BLOCK_") and s_line.endswith("__"):
+            if in_table:
+                in_table = False
+                output.append(flush_table())
+            output.extend(close_lists())
+            output.append(formula_blocks.get(s_line, ""))
+            continue
 
         # Check for table line
         if s_line.startswith("|") and s_line.endswith("|"):

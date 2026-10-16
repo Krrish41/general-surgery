@@ -136,7 +136,7 @@ body {{
     align-items: center;
     text-align: center;
     padding: 40px 20px;
-    border: 3px double #0369a1;
+    border: 3px double #7c3aed;
     margin: 20px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }}
@@ -153,7 +153,7 @@ body {{
 .cover-subtitle {{
     font-size: 13pt;
     font-weight: 600;
-    color: #0369a1;
+    color: #7c3aed;
     margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -180,9 +180,9 @@ body {{
     border-radius: 9999px;
     font-size: 8.5pt;
     font-weight: 600;
-    background-color: #f0f9ff;
-    color: #0369a1;
-    border: 1px solid #bae6fd;
+    background-color: #f5f3ff;
+    color: #7c3aed;
+    border: 1px solid #e9d5ff;
 }}
 
 .toc-page {{
@@ -194,7 +194,7 @@ body {{
     font-family: 'Cinzel', serif;
     font-size: 18pt;
     color: #1e1b4b;
-    border-bottom: 2px solid #0369a1;
+    border-bottom: 2px solid #7c3aed;
     padding-bottom: 8px;
     margin-bottom: 20px;
 }}
@@ -222,7 +222,7 @@ body {{
 }}
 
 .chapter-header {{
-    border-bottom: 2px solid #0369a1;
+    border-bottom: 2px solid #7c3aed;
     padding-bottom: 8px;
     margin-bottom: 16px;
 }}
@@ -231,7 +231,7 @@ body {{
     font-size: 8.5pt;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #0369a1;
+    color: #7c3aed;
     font-weight: 700;
 }}
 
@@ -286,9 +286,9 @@ body {{
 .section-heading {{
     font-size: 11pt;
     font-weight: 700;
-    color: #0369a1;
+    color: #7c3aed;
     margin: 14px 0 6px 0;
-    border-left: 3px solid #0369a1;
+    border-left: 3px solid #7c3aed;
     padding-left: 8px;
     text-transform: capitalize;
 }}
@@ -298,12 +298,18 @@ body {{
     margin: 12px 0;
 }}
 
+.clinical-flowchart-card, .formula-card, .callout, table, tr, pre, code {{
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}}
+
 table.data-table {{
     width: 100%;
     border-collapse: collapse;
     margin: 8px 0;
     font-size: 8pt;
     break-inside: avoid;
+    page-break-inside: avoid;
 }}
 
 table.data-table th, table.data-table td {{
@@ -453,7 +459,7 @@ p.content-para {{
                     badge_text = "Original Handwritten Notebook Sketch" if is_orig else "High-Resolution 300 DPI Medical Schematic"
                     html_parts.append(f"""
     <div class="diagram-card">
-        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #0369a1; margin-bottom: 4px;">{badge_text}</div>
+        <div style="font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #7c3aed; margin-bottom: 4px;">{badge_text}</div>
         <img class="diagram-img" src="{b64_data}" alt="{d['title']}">
         <div class="diagram-caption">Figure {idx+1}.{ch['diagrams'].index(d)+1}: {d['title']}</div>
     </div>
@@ -527,7 +533,7 @@ def generate_interactive_website(chapters, b64_images):
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Surgery Pro">
-<meta name="theme-color" content="#0369a1">
+<meta name="theme-color" content="#7c3aed">
 <link rel="apple-touch-icon" href="{FAVICON_SVG}">
 <title>General Surgery Master Portal - University Exam Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -535,51 +541,51 @@ def generate_interactive_website(chapters, b64_images):
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {{
-    --primary: #0369a1;
-    --primary-dark: #075985;
-    --primary-light: rgba(3, 105, 161, 0.08);
-    --primary-border: rgba(3, 105, 161, 0.22);
-    --bg-main: #fbfbfa;
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: rgba(124, 58, 237, 0.08);
+    --primary-border: rgba(124, 58, 237, 0.22);
+    --bg-main: #fbfbfe;
     --bg-card: #ffffff;
-    --bg-surface: #f8fafc;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --border: #e2e8f0;
-    --border-strong: #cbd5e1;
+    --bg-surface: #f5f3ff;
+    --text-main: #1e1b4b;
+    --text-muted: #6b7280;
+    --border: #e9d5ff;
+    --border-strong: #c4b5fd;
     --sidebar-w: 320px;
     --accent: #d97706;
     --accent-light: rgba(217, 119, 6, 0.1);
     --accent-crimson: #be123c;
     --danger: #ef4444;
-    --success: #059669;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.12);
+    --success: #10b981;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(124, 58, 237, 0.08);
+    --shadow-md: 0 4px 14px rgba(124, 58, 237, 0.12);
+    --shadow-lg: 0 10px 25px rgba(124, 58, 237, 0.18);
 }}
 
 body.dark {{
-    --bg-main: #090d16;
-    --bg-card: #0f172a;
-    --bg-surface: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border: #1e293b;
-    --border-strong: #334155;
-    --primary: #38bdf8;
-    --primary-dark: #0284c7;
-    --primary-light: rgba(56, 189, 248, 0.12);
-    --primary-border: rgba(56, 189, 248, 0.32);
+    --bg-main: #0c071e;
+    --bg-card: #160d33;
+    --bg-surface: #1e1345;
+    --text-main: #f5f3ff;
+    --text-muted: #c4b5fd;
+    --border: #2e1b5b;
+    --border-strong: #4c2889;
+    --primary: #8b5cf6;
+    --primary-dark: #7c3aed;
+    --primary-light: rgba(139, 92, 246, 0.14);
+    --primary-border: rgba(139, 92, 246, 0.32);
     --accent: #f59e0b;
     --accent-light: rgba(245, 158, 11, 0.15);
     --accent-crimson: #fb7185;
     --danger: #f87171;
     --success: #10b981;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
 }}
 
 * {{
@@ -1137,13 +1143,13 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .btn-primary {{
-    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: #ffffff;
     box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-primary:hover {{
-    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     box-shadow: 0 4px 14px rgba(2, 132, 199, 0.42);
     transform: translateY(-1px);
 }}
@@ -1166,13 +1172,13 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .btn-accent {{
-    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: #ffffff;
     box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
 }}
 
 .btn-accent:hover {{
-    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%);
     box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
     transform: translateY(-1px);
 }}
@@ -1396,7 +1402,7 @@ body.dark .quiz-badge-model {{
 
 .progress-bar-fill {{
     height: 100%;
-    background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);
+    background: linear-gradient(90deg, #8b5cf6 0%, #10b981 100%);
     border-radius: 999px;
     width: 0%;
     transition: width 0.4s ease;
@@ -1863,8 +1869,8 @@ body.dark .badge-original {{
 
 .badge-hd {{
     background: #ede9fe;
-    color: #0369a1;
-    border: 1px solid #bae6fd;
+    color: #7c3aed;
+    border: 1px solid #e9d5ff;
 }}
 
 body.dark .badge-hd {{
@@ -1934,7 +1940,7 @@ body.dark .diagram-item img {{
 
 .dash-hero-sub {{
     font-size: 9.5pt;
-    color: #bae6fd;
+    color: #e9d5ff;
     margin: 0 0 16px 0;
     line-height: 1.5;
 }}
@@ -2014,7 +2020,7 @@ body.dark .diagram-item img {{
 .quiz-score-badge {{
     font-size: 8.5pt;
     background: #e0f2fe;
-    color: #0369a1;
+    color: #7c3aed;
     padding: 4px 10px;
     border-radius: 6px;
     font-weight: 600;
@@ -2235,7 +2241,7 @@ body.dark .diagram-item img {{
 .modal-tool-btn:hover {{
     background: var(--primary);
     color: #ffffff;
-    border-color: #0369a1;
+    border-color: #7c3aed;
 }}
 
 .modal-tool-btn.modal-close-btn {{
@@ -2886,7 +2892,7 @@ body.dark .diagram-item img {{
     }}
     .spotter-box .spotter-front {{
         background: rgba(2, 132, 199, 0.94);
-        border: 1.5px solid #bae6fd;
+        border: 1.5px solid #e9d5ff;
         color: #ffffff;
     }}
     .spotter-box .spotter-front .spotter-num {{
@@ -3055,7 +3061,7 @@ body.dark .diagram-item img {{
         width: 44px;
         height: 44px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #fff;
         display: flex;
         align-items: center;
@@ -3096,7 +3102,7 @@ body.dark .diagram-item img {{
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #ffffff;
         border: none;
         padding: 9px 20px;
@@ -3179,7 +3185,7 @@ body.dark .diagram-item img {{
         transform: translateY(0);
     }}
     .section-audio-pill.speaking {{
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #ffffff;
         border-color: transparent;
         box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
@@ -3200,7 +3206,7 @@ body.dark .diagram-item img {{
         position: absolute;
         top: -9px;
         right: 18px;
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #fff;
         font-size: 6.5pt;
         font-weight: 800;
@@ -3258,7 +3264,7 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 12px;
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #fff;
         display: flex;
         align-items: center;
@@ -3333,7 +3339,7 @@ body.dark .diagram-item img {{
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #ffffff !important;
         box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
         display: flex;
@@ -3346,7 +3352,7 @@ body.dark .diagram-item img {{
     .audio-btn-playpause:hover {{
         transform: scale(1.08);
         box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
-        background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
     }}
     .audio-btn-playpause:active {{
         transform: scale(0.94);
@@ -3404,7 +3410,7 @@ body.dark .diagram-item img {{
         flex: 1;
         height: 4px;
         border-radius: 9999px;
-        background: linear-gradient(to right, #0284c7 var(--scrub-percent, 0%), rgba(2, 132, 199, 0.16) var(--scrub-percent, 0%));
+        background: linear-gradient(to right, #8b5cf6 var(--scrub-percent, 0%), rgba(2, 132, 199, 0.16) var(--scrub-percent, 0%));
         cursor: pointer;
         outline: none;
         transition: height 0.15s ease;
@@ -3419,7 +3425,7 @@ body.dark .diagram-item img {{
         height: 13px;
         border-radius: 50%;
         background: #ffffff;
-        border: 2px solid #0284c7;
+        border: 2px solid #8b5cf6;
         box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
         cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -3464,7 +3470,7 @@ body.dark .diagram-item img {{
         color: var(--primary);
     }}
     .speed-pill.active {{
-        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: #ffffff;
         font-weight: 700;
         box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
@@ -4047,14 +4053,14 @@ function renderDashboard() {{
             <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
                 <div class="cheat-sheet-badge-icon">{ICONS["cheat_sheet"]}</div>
                 <div>
-                    <div style="font-size: 8pt; font-weight: 700; color: #bae6fd; text-transform: uppercase; letter-spacing: 1px;">Exam Night Rapid Revision</div>
+                    <div style="font-size: 8pt; font-weight: 700; color: #e9d5ff; text-transform: uppercase; letter-spacing: 1px;">Exam Night Rapid Revision</div>
                     <div style="font-size: 13pt; font-weight: 700; color: #ffffff;">Chapter 24: Master Surgery Cheat Sheet</div>
                     <div style="font-size: 8.5pt; color: #e0f2fe; margin-top: 2px;">
                         Exhaustive high-yield formulas, keywords, named clinical signs, classifications & shock matrices for rapid pre-exam glance.
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #0369a1; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
+            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #7c3aed; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
                 Open Cheat Sheet →
             </button>
         </div>
@@ -4095,7 +4101,7 @@ function renderDashboard() {{
                 <button class="chip ${{currentDashFilter === 'pending' ? 'active' : ''}}" onclick="setDashFilter('pending')">Pending (${{remainingCount}})</button>
                 <button class="chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
                 <button class="chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
-                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
+                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
             </div>
         </div>
 
@@ -4115,7 +4121,7 @@ function renderDashboard() {{
                 <div>
                     <div class="dash-card-header">
                         <span style="font-size: 8pt; font-weight: 700; color: var(--primary); text-transform: uppercase;">Chapter ${{idx + 1}}</span>
-                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f0f9ff; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
+                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f5f3ff; color: #7c3aed; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
                     </div>
                     <div class="dash-card-title">${{ch.title}}</div>
                     <div class="dash-card-source">${{ch.source}}</div>
@@ -6186,6 +6192,7 @@ def main():
             "--headless",
             "--disable-gpu",
             "--run-all-compositor-stages-before-draw",
+            "--no-pdf-header-footer",
             f"--print-to-pdf={pdf_abs}",
             html_abs
         ]
