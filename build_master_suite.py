@@ -1958,9 +1958,9 @@ body.dark .badge-original {{
 }}
 
 body.dark .badge-hd {{
-    background: rgba(2, 132, 199, 0.25);
-    color: #38bdf8;
-    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(20, 184, 166, 0.2);
+    color: #5eead4;
+    border-color: rgba(20, 184, 166, 0.35);
 }}
 
 .diagram-item img {{
@@ -1974,7 +1974,7 @@ body.dark .badge-hd {{
 }}
 
 body.dark .diagram-item img {{
-    background-color: #1e153a;
+    background-color: #101322;
 }}
 
 .diagram-item-caption {{
@@ -1988,7 +1988,7 @@ body.dark .diagram-item img {{
 
 /* Dashboard Hero Card */
 .dash-hero-card {{
-    background: linear-gradient(135deg, #090d16 0%, #0f172a 60%, #1e293b 100%);
+    background: linear-gradient(135deg, #090a12 0%, #042f2e 60%, #0d9488 100%);
     border-radius: var(--radius-md);
     padding: 24px 28px;
     margin-bottom: 20px;
@@ -1997,8 +1997,8 @@ body.dark .diagram-item img {{
     justify-content: space-between;
     gap: 24px;
     color: #ffffff;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.25);
-    border: 1px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 0 6px 24px rgba(4, 47, 46, 0.35);
+    border: 1px solid rgba(20, 184, 166, 0.35);
 }}
 
 .dash-hero-badge {{
@@ -2007,8 +2007,8 @@ body.dark .diagram-item img {{
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    background: rgba(56, 189, 248, 0.2);
-    color: #7dd3fc;
+    background: rgba(20, 184, 166, 0.2);
+    color: #5eead4;
     padding: 4px 10px;
     border-radius: 9999px;
     margin-bottom: 10px;
@@ -4179,7 +4179,7 @@ function renderDashboard() {{
                 <div class="dash-hero-meta">
                     <span class="dash-hero-stat"><strong>${{total}}</strong> University Topics</span>
                     <span class="dash-hero-stat"><strong style="color: #4ade80;">${{completedCount}}</strong> Completed</span>
-                    <span class="dash-hero-stat"><strong style="color: #38bdf8;">${{pct}}%</strong> Syllabus Ready</span>
+                    <span class="dash-hero-stat"><strong style="color: #5eead4;">${{pct}}%</strong> Syllabus Ready</span>
                 </div>
             </div>
             ${{DIAGRAMS['surgery_dashboard_banner.jpg'] ? `
