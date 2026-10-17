@@ -795,11 +795,10 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .sidebar-header {{
-    padding: 16px 20px;
+    padding: 14px 16px;
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
 }}
 
 .brand-title {{
@@ -898,34 +897,29 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .search-box {{
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
     position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }}
 
 .search-input {{
     width: 100%;
-    padding: 8px 12px 8px 34px;
+    box-sizing: border-box;
+    padding: 9px 58px 9px 12px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background-color: var(--bg-main);
     color: var(--text-main);
-    font-size: 9pt;
+    font-size: 0.85rem;
+    font-family: inherit;
     outline: none;
     transition: border 0.2s;
 }}
 
 .search-input:focus {{
     border-color: var(--primary);
-}}
-
-.search-icon-pos {{
-    position: absolute;
-    left: 24px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
+    box-shadow: 0 0 0 2px var(--accent-glow);
 }}
 
 .topic-list {{
@@ -935,45 +929,64 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .topic-item {{
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 9pt;
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 3px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
-    transition: all 0.15s;
-    color: var(--text-muted);
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
 }}
 
 .topic-item:hover {{
-    background-color: var(--primary-light);
+    background: var(--bg-surface-2, rgba(255, 255, 255, 0.04));
     color: var(--primary);
 }}
 
 .topic-item.active {{
-    background-color: var(--primary);
-    color: #ffffff;
-    font-weight: 600;
+    background: var(--accent-soft, rgba(20, 184, 166, 0.14));
+    border-color: var(--primary);
 }}
 
-.topic-check-btn {{
-    background: none;
-    border: none;
+.topic-check {{
+    margin-top: 2px;
+    color: var(--text-muted);
     cursor: pointer;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    padding: 2px;
-    color: inherit;
 }}
 
-.topic-title-text {{
+.topic-check.completed {{
+    color: var(--primary);
+}}
+
+.topic-info {{
     flex: 1;
-    white-space: normal;
+    min-width: 0;
+}}
+
+.topic-title {{
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-main);
     line-height: 1.35;
+    white-space: normal;
     word-break: break-word;
+}}
+
+.topic-item.active .topic-title {{
+    color: var(--primary);
+    font-weight: 700;
+}}
+
+.topic-meta {{
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
 }}
 
 /* Main View / Column */
@@ -3734,6 +3747,7 @@ body.dark .diagram-item img {{
     border-color: var(--primary);
     color: var(--primary);
     box-shadow: 0 0 10px var(--primary-light);
+}}
 .nav-btn-primary {{
     background: var(--primary);
     color: #090a12 !important;
@@ -3744,6 +3758,10 @@ body.dark .diagram-item img {{
     color: #ffffff !important;
 }}
 .search-kbd-btn {{
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -3751,7 +3769,20 @@ body.dark .diagram-item img {{
     font-size: 0.72rem;
     display: flex;
     align-items: center;
-    padding: 0 6px;
+    padding: 0;
+    z-index: 2;
+}}
+.kbd-label {{
+    background: var(--bg-surface, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 0.68rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
 }}
 
 </style>
@@ -4115,11 +4146,15 @@ function renderSidebar(filterText = '') {{
         const isDone = !!completedTopics[ch.id];
         const item = document.createElement('div');
         item.className = `topic-item ${{idx === currentChapterIdx ? 'active' : ''}}`;
+        item.onclick = () => selectChapter(idx);
         item.innerHTML = `
-            <button class="topic-check-btn" aria-label="Toggle completion for ${{ch.title}}" title="Toggle completion" onclick="event.stopPropagation(); saveCompletion('${{ch.id}}', ${{!isDone}})">
+            <div class="topic-check ${{isDone ? 'completed' : ''}}" onclick="event.stopPropagation(); saveCompletion('${{ch.id}}', ${{!isDone}})">
                 ${{isDone ? SVG_ICONS.check : SVG_ICONS.circle}}
-            </button>
-            <span class="topic-title-text" onclick="selectChapter(${{idx}})">${{idx + 1}}. ${{ch.title}}</span>
+            </div>
+            <div class="topic-info">
+                <div class="topic-title">${{idx + 1}}. ${{ch.title}}</div>
+                <div class="topic-meta">Chapter ${{idx + 1}} • 25 min read</div>
+            </div>
         `;
         container.appendChild(item);
     }});
