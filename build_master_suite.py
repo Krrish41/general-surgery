@@ -858,26 +858,43 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .nav-btn {{
-    flex: 1;
-    padding: 8px 10px;
+    padding: 7px 12px;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background-color: var(--bg-main);
-    color: var(--text-main);
+    border: 1px solid var(--border-color, var(--border));
+    background-color: var(--bg-surface-2, rgba(255, 255, 255, 0.04));
+    color: var(--text-secondary, #cbd5e1);
     font-size: 8.5pt;
     font-weight: 600;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+}}
+
+.sidebar-nav-actions .nav-btn {{
+    flex: 1;
 }}
 
 .nav-btn:hover, .nav-btn.active {{
     background-color: var(--primary-light);
     color: var(--primary);
     border-color: var(--primary);
+}}
+
+.nav-btn-primary {{
+    background: var(--accent-primary, #14b8a6) !important;
+    color: #090a12 !important;
+    border-color: var(--accent-primary, #14b8a6) !important;
+    font-weight: 700;
+}}
+
+.nav-btn-primary:hover {{
+    background: var(--accent-primary-hover, #0d9488) !important;
+    box-shadow: 0 2px 12px var(--accent-glow, rgba(20, 184, 166, 0.35));
 }}
 
 .search-box {{
@@ -959,13 +976,15 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
     word-break: break-word;
 }}
 
-/* Main View */
-#main-view {{
+/* Main View / Column */
+.main-column, #main-view, #mainView {{
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     position: relative;
+    background: var(--bg-base, #090a12);
 }}
 
 .top-bar {{
@@ -1429,147 +1448,162 @@ body.dark .quiz-badge-model {{
     color: #34d399;
 }}
 
-.content-body {{
+/* Content Area / Content Body */
+.content-area, .content-body, #contentArea, #mainContent {{
     flex: 1;
+    min-width: 0;
     overflow-y: auto;
-    padding: 24px 32px;
+    padding: 24px 32px 120px 32px;
 }}
 
-/* Dashboard Landing View */
-.dashboard-grid {{
+/* Dashboard Landing View — Spec Parity with Medicine & Pathology */
+.stats-grid-dashboard, .dashboard-grid {{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }}
 
-.stat-card {{
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+.stat-card-box, .stat-card {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color, var(--border));
+    border-radius: 12px;
     padding: 18px 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    box-shadow: var(--shadow-sm);
 }}
 
-.stat-label {{
-    font-size: 8.5pt;
+.stat-card-label, .stat-label {{
+    font-size: 0.76rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.06em;
     color: var(--text-muted);
     margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-weight: 600;
 }}
 
-.stat-val {{
-    font-size: 22pt;
-    font-weight: 700;
-    color: var(--primary);
+.stat-card-val, .stat-val {{
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--accent-primary, #14b8a6);
+    line-height: 1.2;
 }}
 
-.progress-banner {{
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 20px 24px;
+.progress-banner-dash, .progress-banner {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color, var(--border));
+    border-radius: 12px;
+    padding: 18px 22px;
     margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
 }}
 
-.progress-bar-bg {{
+.progress-bar-bg-dash, .progress-bar-bg {{
     width: 100%;
-    height: 10px;
-    background-color: var(--border);
+    height: 9px;
+    background-color: var(--border-color, var(--border));
     border-radius: 999px;
     overflow: hidden;
     margin-top: 10px;
 }}
 
-.progress-bar-fill {{
+.progress-bar-fill-dash, .progress-bar-fill {{
     height: 100%;
-    background: linear-gradient(90deg, #14b8a6 0%, #10b981 100%);
+    background: linear-gradient(90deg, #14b8a6 0%, #0d9488 50%, #10b981 100%);
     border-radius: 999px;
     width: 0%;
     transition: width 0.4s ease;
 }}
 
-.filter-chips {{
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-}}
-
-.chip {{
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 8.5pt;
-    font-weight: 600;
-    border: 1px solid var(--border);
-    background-color: var(--bg-card);
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: all 0.2s;
-}}
-
-.chip.active {{
-    background-color: var(--primary);
-    color: #ffffff;
-    border-color: var(--primary);
-}}
-
-.dashboard-topic-cards {{
+.dashboard-topic-cards-grid, .dashboard-topic-cards {{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 16px;
 }}
 
-.dash-card {{
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 16px;
+.dash-topic-card, .dash-card {{
+    background: var(--bg-card);
+    border: 1px solid var(--border-color, var(--border));
+    border-radius: 12px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
 }}
 
-.dash-card:hover {{
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+.dash-topic-card:hover, .dash-card:hover {{
+    transform: translateY(-2px);
+    border-color: var(--accent-primary, #14b8a6);
+    box-shadow: var(--shadow-md);
 }}
 
-.dash-card.completed {{
-    border-left: 4px solid var(--success);
+.dash-topic-card.completed, .dash-card.completed {{
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.02);
 }}
 
-.dash-card-header {{
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 8px;
-}}
-
-.dash-card-title {{
-    font-size: 10.5pt;
-    font-weight: 600;
-    color: var(--text-main);
-}}
-
-.dash-card-source {{
-    font-size: 8pt;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-}}
-
-.dash-card-footer {{
+.dash-card-header-row, .dash-card-header {{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
+    margin-bottom: 8px;
+}}
+
+.dash-card-chapter-tag {{
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-primary, #14b8a6);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}}
+
+.dash-card-title-text, .dash-card-title {{
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+}}
+
+.dash-card-source-text, .dash-card-source {{
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}}
+
+.dash-card-footer-row, .dash-card-footer {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color, var(--border));
+}}
+
+.category-scroll, .filter-chips {{
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}}
+
+.filter-chip, .chip {{
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color, var(--border));
+    background: var(--bg-card);
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+}}
+
+.filter-chip:hover, .filter-chip.active, .chip:hover, .chip.active {{
+    background: var(--accent-primary, #14b8a6);
+    color: #ffffff;
+    border-color: var(--accent-primary, #14b8a6);
 }}
 
 /* Topic View */
@@ -1987,45 +2021,47 @@ body.dark .diagram-item img {{
     background-color: var(--bg-card);
 }}
 
-/* Dashboard Hero Card */
+/* Dashboard Specific Styles matching Calm Obsidian Theme */
 .dash-hero-card {{
-    background: linear-gradient(135deg, #090a12 0%, #042f2e 60%, #0d9488 100%);
-    border-radius: var(--radius-md);
-    padding: 24px 28px;
-    margin-bottom: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary, #14b8a6);
+    border-radius: 14px;
+    padding: 26px 30px;
+    margin-bottom: 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    color: #ffffff;
-    box-shadow: 0 6px 24px rgba(4, 47, 46, 0.35);
-    border: 1px solid rgba(20, 184, 166, 0.35);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
 }}
 
 .dash-hero-badge {{
     display: inline-block;
-    font-size: 7.5pt;
+    font-size: 0.74rem;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    background: rgba(20, 184, 166, 0.2);
-    color: #5eead4;
-    padding: 4px 10px;
+    background: var(--accent-light, rgba(20, 184, 166, 0.12));
+    color: var(--accent-primary, #14b8a6);
+    padding: 4px 12px;
     border-radius: 9999px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }}
 
 .dash-hero-title {{
-    font-family: 'Cinzel', serif;
-    font-size: 20pt;
-    color: #f8fafc;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
     margin: 0 0 8px 0;
+    letter-spacing: -0.02em;
     line-height: 1.25;
 }}
 
 .dash-hero-sub {{
-    font-size: 9.5pt;
-    color: #e9d5ff;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
     margin: 0 0 16px 0;
     line-height: 1.5;
 }}
@@ -2037,34 +2073,41 @@ body.dark .diagram-item img {{
 }}
 
 .dash-hero-stat {{
-    font-size: 8.5pt;
-    background: rgba(255,255,255,0.12);
-    padding: 5px 12px;
+    font-size: 0.84rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 5px 14px;
     border-radius: 9999px;
-    color: #f8fafc;
+    color: var(--text-secondary);
+    font-weight: 500;
 }}
 
 .dash-hero-image-box {{
     flex-shrink: 0;
-    width: 280px;
-    border-radius: var(--radius-sm);
+    width: 260px;
+    height: 140px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
 }}
 
-/* Dashboard Rapid Revision Cheat Sheet Card */
 .dash-cheat-sheet-card {{
-    background: linear-gradient(135deg, #042f2e 0%, #0f172a 100%);
-    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary, #14b8a6);
+    border-radius: 14px;
     padding: 20px 24px;
     margin-bottom: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    color: #ffffff;
-    box-shadow: 0 4px 20px rgba(4, 47, 46, 0.25);
-    border: 1px solid rgba(20, 184, 166, 0.35);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
     flex-wrap: wrap;
 }}
 
@@ -2072,12 +2115,12 @@ body.dark .diagram-item img {{
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--accent-light, rgba(20, 184, 166, 0.12));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #f8fafc;
+    color: var(--accent-primary, #14b8a6);
 }}
 
 .dash-hero-img {{
@@ -3699,7 +3742,7 @@ body.dark .diagram-item img {{
 
 <div id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
-<div id="sidebar">
+<aside class="sidebar" id="sidebar">
     <div class="brand-block" onclick="openDashboardView()">
         <img src="favicon.svg" alt="Surgery Pro Logo" class="brand-logo-tile" width="40" height="40">
         <div class="brand-text-stack">
@@ -3727,9 +3770,10 @@ body.dark .diagram-item img {{
     </div>
 
     <div class="topic-list" id="topicList"></div>
-</div>
+</aside>
 
-<div id="main-view">
+<!-- Main View Column -->
+<div class="main-column" id="mainView">
     <div class="top-bar" data-testid="topbar">
         <div class="top-bar-left">
             <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
@@ -3743,23 +3787,25 @@ body.dark .diagram-item img {{
         </div>
 
         <div class="top-right-tools">
-            <button class="btn btn-secondary btn-audio-quick" data-testid="audio-walkthrough" data-action="voice-walk" onclick="togglePlayPauseAudio()" title="Continuous Audio Walk (1x-2x)" aria-label="Toggle Chapter Audio Walk">
-                {ICONS["headphones"]} <span class="btn-label audio-quick-text">Audio Walk</span>
+            <button class="nav-btn" data-testid="audio-walkthrough" data-action="voice-walk" onclick="togglePlayPauseAudio()" title="Continuous Audio Walk (1x-2x)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                <span class="btn-label">Audio Walk</span>
             </button>
             <div class="focus-timer-pill" data-testid="focus-timer">
-                <button class="btn btn-secondary btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
+                <button class="nav-btn btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <span id="focusTimerDisplay">25:00</span>
                 </button>
             </div>
-            <button class="btn btn-secondary" data-testid="palette" onclick="openCmdkModal()" title="Command Palette">
+            <button class="nav-btn" data-testid="palette" onclick="openCmdkModal()" title="Command Palette">
                 <kbd class="kbd-label" style="font-family: monospace; font-size: 0.72rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px;">Ctrl K</kbd>
             </button>
-            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8.5pt;">
-                {ICONS["pdf"]} <span class="btn-label">Master PDF</span>
+            <button class="nav-btn" data-testid="open-pdf" onclick="openPdfModal()" title="View Master PDF">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13v-2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/><path d="M10 18h4"/></svg>
+                <span class="btn-label">Master PDF</span>
             </button>
-            <button class="icon-btn" data-testid="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">
-                {ICONS["moon"]}
+            <button class="nav-btn" data-testid="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-label="Toggle dark/light mode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
             </button>
         </div>
     </div>
@@ -3801,7 +3847,7 @@ body.dark .diagram-item img {{
         </div>
     </div>
 
-    <div class="content-body" id="contentArea"></div>
+    <main class="content-area content-body" id="contentArea"></main>
 
     <nav class="mobile-floating-bottom-bar" id="mobileFloatingBottomBar">
     <button class="mobile-bottom-tab active" data-tab="master" onclick="switchTopicTab('master')">
@@ -4261,83 +4307,102 @@ function renderDashboard() {{
         if (getTopicNotes(ch.id).trim().length > 0) notesCount++;
     }});
 
+    const dashBtn = document.getElementById('sidebarDashBtn') || document.getElementById('btnNavDash');
+    if (dashBtn) dashBtn.classList.add('active');
+    document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
+
     let html = `
         <div class="dash-hero-card">
             <div style="flex: 1;">
-                <span class="dash-hero-badge">MBBS & MS GENERAL SURGERY PORTAL</span>
+                <span class="dash-hero-badge">BDS 3RD YEAR &amp; MBBS GENERAL SURGERY PORTAL</span>
                 <h1 class="dash-hero-title">General Surgery Master Exam Hub</h1>
-                <p class="dash-hero-sub">15-Mark University Essay Blueprints • Clinical Examination Signs • Examiner Viva Pearls</p>
+                <p class="dash-hero-sub">15-Mark University Essay Blueprints • Emergency Protocols • Bedside Clinical Pearls</p>
                 <div class="dash-hero-meta">
                     <span class="dash-hero-stat"><strong>${{total}}</strong> University Topics</span>
                     <span class="dash-hero-stat"><strong style="color: #4ade80;">${{completedCount}}</strong> Completed</span>
-                    <span class="dash-hero-stat"><strong style="color: #5eead4;">${{pct}}%</strong> Syllabus Ready</span>
+                    <span class="dash-hero-stat"><strong style="color: var(--accent-primary, #14b8a6);">${{pct}}%</strong> Syllabus Ready</span>
                 </div>
             </div>
-            ${{DIAGRAMS['surgery_dashboard_banner.jpg'] ? `
             <div class="dash-hero-image-box">
-                <img src="${{DIAGRAMS['surgery_dashboard_banner.jpg']}}" alt="Surgical Dashboard" class="dash-hero-img">
-            </div>` : ''}}
+                <svg viewBox="0 0 260 140" width="260" height="140" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="260" height="140" fill="#042f2e" rx="8"/>
+                    <path d="M30 100 L110 30 L130 50 L50 120 Z" fill="#14b8a6" fill-opacity="0.3" stroke="#5eead4" stroke-width="2"/>
+                    <line x1="110" y1="30" x2="220" y2="30" stroke="#14b8a6" stroke-width="2" stroke-dasharray="4 4"/>
+                    <circle cx="110" cy="30" r="4" fill="#5eead4"/>
+                    <path d="M70 65 L190 65" stroke="#2dd4bf" stroke-width="1.5"/>
+                    <circle cx="190" cy="65" r="4" fill="#14b8a6"/>
+                    <text x="130" y="125" fill="#5eead4" font-size="10" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700" text-anchor="middle">OPERATIVE SURGERY &amp; ANATOMY</text>
+                </svg>
+            </div>
         </div>
 
         <div class="dash-cheat-sheet-card">
             <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
-                <div class="cheat-sheet-badge-icon">{ICONS["cheat_sheet"]}</div>
+                <div class="cheat-sheet-badge-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                </div>
                 <div>
-                    <div style="font-size: 8pt; font-weight: 700; color: #e9d5ff; text-transform: uppercase; letter-spacing: 1px;">Exam Night Rapid Revision</div>
-                    <div style="font-size: 13pt; font-weight: 700; color: #ffffff;">Chapter 24: Master Surgery Cheat Sheet</div>
-                    <div style="font-size: 8.5pt; color: #e0f2fe; margin-top: 2px;">
-                        Exhaustive high-yield formulas, keywords, named clinical signs, classifications & shock matrices for rapid pre-exam glance.
+                    <div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-primary, #14b8a6); text-transform: uppercase; letter-spacing: 0.08em;">Exam Night Rapid Revision</div>
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">Chapter 24: Master Surgery Cheat Sheet</div>
+                    <div style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 2px;">
+                        Exhaustive high-yield formulas, keywords, named clinical signs, classifications &amp; shock matrices for rapid pre-exam glance.
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="selectChapter(23)" style="background: #ffffff; color: #0d9488; font-weight: 700; padding: 10px 22px; font-size: 9pt; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
-                Open Cheat Sheet →
+            <button class="nav-btn nav-btn-primary" onclick="selectChapter(23)" style="padding: 10px 20px; font-size: 0.88rem;">
+                Open Chapter 24 →
             </button>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="stat-card">
-                <div class="stat-label">Total University Topics</div>
-                <div class="stat-val">${{total}}</div>
+        <div class="stats-grid-dashboard">
+            <div class="stat-card-box">
+                <div class="stat-card-label">Total University Topics</div>
+                <div class="stat-card-val">${{total}}</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Topics Completed</div>
-                <div class="stat-val" style="color: var(--success);">${{completedCount}}</div>
+            <div class="stat-card-box">
+                <div class="stat-card-label">Topics Completed</div>
+                <div class="stat-card-val" style="color: #10b981;">${{completedCount}}</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Topics Remaining</div>
-                <div class="stat-val" style="color: var(--accent);">${{remainingCount}}</div>
+            <div class="stat-card-box">
+                <div class="stat-card-label">Topics Remaining</div>
+                <div class="stat-card-val" style="color: #f59e0b;">${{remainingCount}}</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Topics with Notes</div>
-                <div class="stat-val">${{notesCount}}</div>
+            <div class="stat-card-box">
+                <div class="stat-card-label">Topics with Notes</div>
+                <div class="stat-card-val" style="color: var(--accent-primary, #14b8a6);">${{notesCount}}</div>
             </div>
         </div>
 
-        <div class="progress-banner">
-            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 10pt;">
+        <div class="progress-banner-dash">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.92rem;">
                 <span>University Syllabus Completion</span>
-                <span style="color: var(--primary);">${{pct}}%</span>
+                <span style="color: var(--accent-primary, #14b8a6);">${{pct}}%</span>
             </div>
-            <div class="progress-bar-bg" data-testid="progress">
-                <div class="progress-bar-fill" style="width: ${{pct}}%;"></div>
-            </div>
-        </div>
-
-        <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-            <h2 style="font-size: 12pt; font-weight: 700; color: var(--text-main);">Study Plan Topics</h2>
-            <div class="filter-chips">
-                <button class="chip ${{currentDashFilter === 'all' ? 'active' : ''}}" onclick="setDashFilter('all')">All Topics (${{total}})</button>
-                <button class="chip ${{currentDashFilter === 'pending' ? 'active' : ''}}" onclick="setDashFilter('pending')">Pending (${{remainingCount}})</button>
-                <button class="chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
-                <button class="chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
-                <button class="chip" data-testid="exam-simulator" onclick="launchExamSimFromDashboard()" style="cursor: pointer;">⏱️ Exam Simulator</button>
-                <button class="chip" data-testid="spotters" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">🎯 Spotters</button>
-                <button class="chip" onclick="selectChapter(23)" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); color: #ffffff; border: none;">⚡ Cheat Sheet</button>
+            <div class="progress-bar-bg-dash" data-testid="progress">
+                <div class="progress-bar-fill-dash" style="width: ${{pct}}%;"></div>
             </div>
         </div>
 
-        <div class="dashboard-topic-cards">
+        <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <h2 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">Study Plan Topics</h2>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <div class="category-scroll">
+                    <button class="filter-chip ${{currentDashFilter === 'all' ? 'active' : ''}}" onclick="setDashFilter('all')">All Topics (${{total}})</button>
+                    <button class="filter-chip ${{currentDashFilter === 'pending' ? 'active' : ''}}" onclick="setDashFilter('pending')">Pending (${{remainingCount}})</button>
+                    <button class="filter-chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
+                    <button class="filter-chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <button class="filter-chip" data-testid="exam-simulator" onclick="launchExamSimFromDashboard()" style="cursor: pointer;">⏱️ Exam Simulator</button>
+                    <button class="filter-chip" data-testid="spotters" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">🎯 Spotters</button>
+                    <button class="filter-chip" onclick="selectChapter(23)" style="cursor: pointer;">⚡ Cheat Sheet</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-topic-cards-grid">
     `;
 
     CHAPTERS.forEach((ch, idx) => {{
@@ -4349,27 +4414,28 @@ function renderDashboard() {{
         if (currentDashFilter === 'notes' && !hasNote) return;
 
         html += `
-            <div class="dash-card ${{isDone ? 'completed' : ''}}">
+            <div class="dash-topic-card ${{isDone ? 'completed' : ''}}">
                 <div>
-                    <div class="dash-card-header">
-                        <span style="font-size: 8pt; font-weight: 700; color: var(--primary); text-transform: uppercase;">Chapter ${{idx + 1}}</span>
-                        ${{hasNote ? '<span style="font-size: 7.5pt; background: #f5f3ff; color: #0d9488; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
+                    <div class="dash-card-header-row">
+                        <span class="dash-card-chapter-tag">Chapter ${{idx + 1}}</span>
+                        ${{hasNote ? '<span style="font-size: 0.72rem; background: rgba(20, 184, 166, 0.12); color: #2dd4bf; padding: 2px 7px; border-radius: 4px; font-weight: 600;">Note Saved</span>' : ''}}
                     </div>
-                    <div class="dash-card-title">${{ch.title}}</div>
-                    <div class="dash-card-source">${{ch.source}}</div>
+                    <div class="dash-card-title-text">${{ch.title}}</div>
+                    <div class="dash-card-source-text">${{ch.source || 'General Surgery Monograph'}} • 25 min</div>
                 </div>
-                <div class="dash-card-footer">
+                <div class="dash-card-footer-row">
                     <button class="toggle-complete-btn ${{isDone ? 'is-completed' : ''}}" onclick="saveCompletion('${{ch.id}}', ${{!isDone}})">
-                        ${{isDone ? SVG_ICONS.check + ' Completed' : SVG_ICONS.circle + ' Mark Done'}}
+                        ${{isDone ? '✓ Completed' : '○ Mark Done'}}
                     </button>
-                    <button class="btn btn-primary" onclick="selectChapter(${{idx}})" style="padding: 6px 16px; font-size: 8.5pt;">Study →</button>
+                    <button class="nav-btn nav-btn-primary" onclick="selectChapter(${{idx}})" style="padding: 6px 14px; font-size: 0.8rem;">Study →</button>
                 </div>
             </div>
         `;
     }});
 
     html += `</div>`;
-    document.getElementById('contentArea').innerHTML = html;
+    const target = document.getElementById('contentArea') || document.getElementById('mainContent');
+    if (target) target.innerHTML = html;
 }}
 
 function setDashFilter(filter) {{
@@ -6362,13 +6428,24 @@ function updateFocusTimerUI() {{
     disp.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }}
 
-function toggleDarkMode() {{
+function toggleTheme() {{
     const isDark = document.body.classList.toggle('dark');
     document.body.classList.toggle('light', !isDark);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     try {{
+        localStorage.setItem('surgery_theme', isDark ? 'dark' : 'light');
         localStorage.setItem('bds.surgery.theme', isDark ? 'dark' : 'light');
     }} catch(e) {{}}
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.innerHTML = isDark ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+}}
+
+function toggleDarkMode() {{
+    toggleTheme();
+}}
+
+function showDashboard() {{
+    openDashboardView();
 }}
 
 document.getElementById('searchInput').addEventListener('input', (e) => {{
@@ -6402,6 +6479,22 @@ window.addEventListener('keydown', e => {{
         toggleSidebar(false);
     }}
 }});
+
+// Initialization: Dark by default
+const savedTheme = localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
+if (savedTheme === 'light') {{
+    document.body.classList.remove('dark');
+    document.body.classList.add('light');
+    document.documentElement.setAttribute('data-theme', 'light');
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+}} else {{
+    document.body.classList.add('dark');
+    document.body.classList.remove('light');
+    document.documentElement.setAttribute('data-theme', 'dark');
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+}}
 
 // Initialize on Dashboard view
 renderSidebar();
