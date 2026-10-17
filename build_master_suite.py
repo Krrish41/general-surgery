@@ -585,7 +585,7 @@ def generate_interactive_website(chapters, b64_images):
 <script>
 (function() {{
     try {{
-        var t = localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
+        var t = localStorage.getItem('bds.theme') || localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
         if (t === 'light') {{
             document.documentElement.setAttribute('data-theme', 'light');
             document.documentElement.classList.remove('dark');
@@ -3734,6 +3734,24 @@ body.dark .diagram-item img {{
     border-color: var(--primary);
     color: var(--primary);
     box-shadow: 0 0 10px var(--primary-light);
+.nav-btn-primary {{
+    background: var(--primary);
+    color: #090a12 !important;
+    border-color: transparent;
+}}
+.nav-btn-primary:hover {{
+    background: var(--primary-dark);
+    color: #ffffff !important;
+}}
+.search-kbd-btn {{
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.72rem;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
 }}
 
 </style>
@@ -3749,7 +3767,6 @@ body.dark .diagram-item img {{
             <div class="brand-wordmark">SURGERY PRO</div>
             <div class="brand-subtitle">Clinical Monograph · Paper I</div>
         </div>
-        <button class="mobile-sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close Sidebar" style="margin-left: auto;">{ICONS["close"]}</button>
     </div>
 
     <div class="sidebar-back-row">
@@ -3759,14 +3776,16 @@ body.dark .diagram-item img {{
         </a>
     </div>
 
-    <div class="sidebar-nav-actions">
-        <button class="nav-btn active" id="btnNavDash" onclick="openDashboardView()">{ICONS["dashboard"]} Dashboard</button>
-    </div>
-
-    <div class="search-box">
-        <span class="search-icon-pos">{ICONS["search"]}</span>
-        <input type="text" id="searchInput" data-testid="search" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
-        <button class="search-kbd-hint" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd class="kbd-label">Ctrl K</kbd></button>
+    <div class="sidebar-header" style="border-bottom: none; padding-bottom: 0;">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <button class="nav-btn nav-btn-primary" id="btnNavDash" onclick="openDashboardView()" style="flex: 1; justify-content: center; font-weight: 700;">
+                {ICONS["dashboard"]} Dashboard
+            </button>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" data-testid="search" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
+            <button class="search-kbd-btn" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd class="kbd-label">Ctrl K</kbd></button>
+        </div>
     </div>
 
     <div class="topic-list" id="topicList"></div>
@@ -3805,7 +3824,7 @@ body.dark .diagram-item img {{
                 <span class="btn-label">Master PDF</span>
             </button>
             <button class="nav-btn" data-testid="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-label="Toggle dark/light mode">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                {ICONS["moon"]}
             </button>
         </div>
     </div>
@@ -6388,44 +6407,10 @@ function toggleSingleVivaAnswer(el) {{
     }}
 }}
 
-let focusTimerSeconds = 25 * 60;
-let focusTimerInterval = null;
-let isFocusTimerRunning = false;
-
 function toggleStudyFocusTimer() {{
-    const btn = document.getElementById('btnFocusTimer');
-    const disp = document.getElementById('focusTimerDisplay');
-    if (!btn || !disp) return;
-
-    if (isFocusTimerRunning) {{
-        clearInterval(focusTimerInterval);
-        isFocusTimerRunning = false;
-        btn.classList.remove('running');
-    }} else {{
-        if (focusTimerSeconds <= 0) focusTimerSeconds = 25 * 60;
-        isFocusTimerRunning = true;
-        btn.classList.add('running');
-        focusTimerInterval = setInterval(() => {{
-            focusTimerSeconds--;
-            if (focusTimerSeconds <= 0) {{
-                clearInterval(focusTimerInterval);
-                isFocusTimerRunning = false;
-                btn.classList.remove('running');
-                focusTimerSeconds = 25 * 60;
-                alert('Focus session complete! Time for a short rest.');
-            }}
-            updateFocusTimerUI();
-        }}, 1000);
+    if (window.BdsTimer) {{
+        window.BdsTimer.toggle();
     }}
-    updateFocusTimerUI();
-}}
-
-function updateFocusTimerUI() {{
-    const disp = document.getElementById('focusTimerDisplay');
-    if (!disp) return;
-    const m = Math.floor(focusTimerSeconds / 60);
-    const s = focusTimerSeconds % 60;
-    disp.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }}
 
 function toggleTheme() {{
@@ -6435,9 +6420,10 @@ function toggleTheme() {{
     try {{
         localStorage.setItem('surgery_theme', isDark ? 'dark' : 'light');
         localStorage.setItem('bds.surgery.theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('bds.theme', isDark ? 'dark' : 'light');
     }} catch(e) {{}}
     const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = isDark ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+    if (btn) btn.innerHTML = isDark ? '{ICONS["sun"]}' : '{ICONS["moon"]}';
 }}
 
 function toggleDarkMode() {{
@@ -6562,6 +6548,7 @@ if ('serviceWorker' in navigator) {{
         </div>
     </div>
 </div>
+<script src="portal-core/core-engine.js"></script>
 </body>
 </html>
 """
