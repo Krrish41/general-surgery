@@ -1,15 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#14b8a6"/>
-      <stop offset="100%" stop-color="#0d9488"/>
+    <linearGradient id="surgBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#042f2e"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)" stroke="rgba(255,255,255,0.22)" stroke-width="16"/>
-  <!-- Scalpel & Blade Vector -->
-  <g transform="translate(64, 64) scale(16)" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="m14 4 6 6-10 10H4v-6L14 4z"/>
-    <path d="m18 8-4-4"/>
-    <path d="M7 17l-3 3"/>
+  <rect width="512" height="512" rx="112" fill="url(#surgBg)" stroke="rgba(255,255,255,0.20)" stroke-width="16"/>
+  <!-- Authentic Surgical Scalpel (Replacing pencil glyph) -->
+  <g fill="none" stroke="#f8fafc" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Scalpel Straight Handle with ergonomic grip -->
+    <path d="M128 384 L244 268" stroke-width="28"/>
+    <!-- Handle Grip Grooves -->
+    <line x1="148" y1="336" x2="164" y2="352" stroke="#5eead4" stroke-width="10"/>
+    <line x1="172" y1="312" x2="188" y2="328" stroke="#5eead4" stroke-width="10"/>
+    <line x1="196" y1="288" x2="212" y2="304" stroke="#5eead4" stroke-width="10"/>
+    <!-- Blade Mount Collar -->
+    <path d="M236 276 L252 260" stroke="#f8fafc" stroke-width="34"/>
+    <!-- Curved Surgical Knife Blade (#15 Scalpel Blade) -->
+    <!-- Straight spine to sharp angled point at (384, 128), curved convex cutting belly back to (244, 268) -->
+    <path d="M244 268 L384 128 C416 148 400 200 364 236 C324 276 276 280 244 268 Z" fill="#5eead4" fill-opacity="0.25" stroke="#ffffff" stroke-width="24"/>
+    <!-- Blade internal alignment slot -->
+    <line x1="272" y1="240" x2="324" y2="188" stroke="#5eead4" stroke-width="12"/>
   </g>
 </svg>

@@ -599,6 +599,7 @@ def generate_interactive_website(chapters, b64_images):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal-core/core-shell.css">
 <style>
 :root {{
     /* Per-portal Accent: Surgery Teal */
@@ -622,7 +623,7 @@ def generate_interactive_website(chapters, b64_images):
     --text-dim: #64748b;
     --border: rgba(255, 255, 255, 0.09);
     --border-strong: rgba(255, 255, 255, 0.18);
-    --sidebar-w: 320px;
+    --sidebar-w: 304px;
     --accent-crimson: #fb7185;
     --danger: #ef4444;
     --success: #10b981;
@@ -953,9 +954,9 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 
 .topic-title-text {{
     flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.35;
+    word-break: break-word;
 }}
 
 /* Main View */
@@ -968,7 +969,7 @@ code, pre, .stat-val, .table-cell-numeric, .audio-time-label, .score-badge, .for
 }}
 
 .top-bar {{
-    height: 56px;
+    height: 64px;
     background-color: var(--bg-card);
     border-bottom: 1px solid var(--border);
     display: flex;
@@ -3699,30 +3700,30 @@ body.dark .diagram-item img {{
 <div id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
 <div id="sidebar">
-    <div class="sidebar-header">
-        <a href="https://krrish41.github.io/bds-vault/" class="back-to-vault-link" data-testid="back-to-vault" title="Back to BDS Clinical Vault Hub">
+    <div class="brand-block" onclick="openDashboardView()">
+        <img src="favicon.svg" alt="Surgery Pro Logo" class="brand-logo-tile" width="40" height="40">
+        <div class="brand-text-stack">
+            <div class="brand-wordmark">SURGERY PRO</div>
+            <div class="brand-subtitle">Clinical Monograph · Paper I</div>
+        </div>
+        <button class="mobile-sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close Sidebar" style="margin-left: auto;">{ICONS["close"]}</button>
+    </div>
+
+    <div class="sidebar-back-row">
+        <a href="https://krrish41.github.io/bds-vault/#surgery" class="back-to-vault-btn" data-testid="back-to-vault" aria-label="Back to BDS Clinical Vault">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             <span>BDS Clinical Vault</span>
         </a>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            {ICONS["modern_logo"]}
-            <div>
-                <div class="brand-title">SURGERY<span class="brand-accent">PRO</span></div>
-                <div class="brand-sub">Clinical Monograph · Paper I</div>
-            </div>
-        </div>
-        <button class="mobile-sidebar-close-btn" onclick="toggleSidebar(false)" aria-label="Close Sidebar">{ICONS["close"]}</button>
     </div>
 
     <div class="sidebar-nav-actions">
         <button class="nav-btn active" id="btnNavDash" onclick="openDashboardView()">{ICONS["dashboard"]} Dashboard</button>
-        <button class="nav-btn" data-testid="open-pdf" onclick="openPdfModal()">{ICONS["pdf"]} Open PDF</button>
     </div>
 
     <div class="search-box">
         <span class="search-icon-pos">{ICONS["search"]}</span>
         <input type="text" id="searchInput" data-testid="search" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
-        <button class="search-kbd-hint" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd>⌘K</kbd></button>
+        <button class="search-kbd-hint" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd class="kbd-label">Ctrl K</kbd></button>
     </div>
 
     <div class="topic-list" id="topicList"></div>
@@ -3730,26 +3731,20 @@ body.dark .diagram-item img {{
 
 <div id="main-view">
     <div class="top-bar" data-testid="topbar">
-        <div style="display: flex; align-items: center; gap: 14px;">
+        <div class="top-bar-left">
             <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
-            <a href="https://krrish41.github.io/bds-vault/" class="back-to-vault-link" data-testid="back-to-vault" title="Back to BDS Clinical Vault Hub">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                <span>BDS Clinical Vault</span>
-            </a>
-            <div class="brand" onclick="showDashboard()">
-                <div class="brand-badge" style="background: transparent; display: flex; align-items: center;">
-                    {ICONS["modern_logo"]}
-                </div>
-                <div class="brand-title">
-                    <h1 style="font-size: 1rem; font-weight: 800; margin: 0; line-height: 1.1;">SURGERY PRO</h1>
-                    <span style="font-size: 0.68rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Clinical Monograph · Paper I</span>
+            <div class="brand" onclick="openDashboardView()" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <img src="favicon.svg" alt="Surgery Pro" class="brand-logo-tile" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px;">
+                <div class="brand-title-group" style="display: flex; flex-direction: column;">
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.02em; line-height: 1.2;">SURGERY PRO</div>
+                    <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Clinical Monograph · Paper I</span>
                 </div>
             </div>
         </div>
 
         <div class="top-right-tools">
             <button class="btn btn-secondary btn-audio-quick" data-testid="audio-walkthrough" data-action="voice-walk" onclick="togglePlayPauseAudio()" title="Continuous Audio Walk (1x-2x)" aria-label="Toggle Chapter Audio Walk">
-                {ICONS["headphones"]} <span class="audio-quick-text">Audio Walk</span>
+                {ICONS["headphones"]} <span class="btn-label audio-quick-text">Audio Walk</span>
             </button>
             <div class="focus-timer-pill" data-testid="focus-timer">
                 <button class="btn btn-secondary btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
@@ -3757,11 +3752,11 @@ body.dark .diagram-item img {{
                     <span id="focusTimerDisplay">25:00</span>
                 </button>
             </div>
-            <button class="btn btn-secondary" data-testid="palette" onclick="openCmdkModal()" title="Command Palette (Ctrl+K)">
-                <kbd style="font-family: monospace; font-size: 0.72rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px;">⌘K</kbd>
+            <button class="btn btn-secondary" data-testid="palette" onclick="openCmdkModal()" title="Command Palette">
+                <kbd class="kbd-label" style="font-family: monospace; font-size: 0.72rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px;">Ctrl K</kbd>
             </button>
-            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8pt;">
-                {ICONS["pdf"]} <span>Master PDF</span>
+            <button class="btn btn-secondary" data-testid="open-pdf" onclick="openPdfModal()" style="padding: 5px 12px; font-size: 8.5pt;">
+                {ICONS["pdf"]} <span class="btn-label">Master PDF</span>
             </button>
             <button class="icon-btn" data-testid="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" aria-label="Toggle between dark and light mode">
                 {ICONS["moon"]}
@@ -3883,6 +3878,17 @@ body.dark .diagram-item img {{
 </div>
 
 <script>
+// Platform detection for keyboard shortcut hints (Ctrl K vs ⌘K)
+(function() {{
+    try {{
+        const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+        const kbdString = isMac ? '⌘K' : 'Ctrl K';
+        window.addEventListener('DOMContentLoaded', () => {{
+            document.querySelectorAll('.kbd-label').forEach(el => el.textContent = kbdString);
+        }});
+    }} catch(e) {{}}
+}})();
+
 const CHAPTERS = {chapters_json};
 const DIAGRAMS = {images_json};
 const PRESETS = {presets_json};
