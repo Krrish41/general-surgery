@@ -8,16 +8,16 @@
 
 ---
 
-## 🌐 BDS Clinical Vault Multi-Portal Ecosystem
+## BDS Clinical Vault Multi-Portal Ecosystem
 
 This repository is **Paper I** in the 4-part BDS Clinical Vault 3rd Year examination ecosystem:
 
 | Portal | Subject / Domain | Live Web Application | Master Monograph PDF | GitHub Repository |
 | :--- | :--- | :--- | :--- | :--- |
-| 🏛️ **Central Hub** | **BDS Clinical Vault** (Master Directory & Cockpit) | [Launch Hub](https://krrish41.github.io/bds-vault/) | — | [Krrish41/bds-vault](https://github.com/Krrish41/bds-vault) |
-| 🩺 **Paper I** *(This)* | **General Surgery Pro** (Surgical Principles & Trauma) | [Launch Portal](https://krrish41.github.io/general-surgery/) | [Download PDF](https://krrish41.github.io/general-surgery/General_Surgery_Master_Notes.pdf) | [Krrish41/general-surgery](https://github.com/Krrish41/general-surgery) |
-| 🫀 **Paper II** | **General Medicine Pro** (Internal Medicine & Therapeutics) | [Launch Portal](https://krrish41.github.io/General-Medicine/) | [Download PDF](https://krrish41.github.io/General-Medicine/General_Medicine_Master_Notes.pdf) | [Krrish41/General-Medicine](https://github.com/Krrish41/General-Medicine) |
-| 🔬 **Paper III** | **Oral Pathology Pro** (Maxillofacial Pathology & Spotters) | [Launch Portal](https://krrish41.github.io/Oral-Pathology/) | [Download PDF](https://krrish41.github.io/Oral-Pathology/Oral_Pathology_Master_Notes.pdf) | [Krrish41/Oral-Pathology](https://github.com/Krrish41/Oral-Pathology) |
+| **Central Hub** | **BDS Clinical Vault** (Master Directory & Cockpit) | [Launch Hub](https://krrish41.github.io/bds-vault/) | — | [Krrish41/bds-vault](https://github.com/Krrish41/bds-vault) |
+| **Paper I** *(This)* | **General Surgery Pro** (Surgical Principles & Trauma) | [Launch Portal](https://krrish41.github.io/general-surgery/) | [Download PDF](https://krrish41.github.io/general-surgery/General_Surgery_Master_Notes.pdf) | [Krrish41/general-surgery](https://github.com/Krrish41/general-surgery) |
+| **Paper II** | **General Medicine Pro** (Internal Medicine & Therapeutics) | [Launch Portal](https://krrish41.github.io/General-Medicine/) | [Download PDF](https://krrish41.github.io/General-Medicine/General_Medicine_Master_Notes.pdf) | [Krrish41/General-Medicine](https://github.com/Krrish41/General-Medicine) |
+| **Paper III** | **Oral Pathology Pro** (Maxillofacial Pathology & Spotters) | [Launch Portal](https://krrish41.github.io/Oral-Pathology/) | [Download PDF](https://krrish41.github.io/Oral-Pathology/Oral_Pathology_Master_Notes.pdf) | [Krrish41/Oral-Pathology](https://github.com/Krrish41/Oral-Pathology) |
 
 ---
 

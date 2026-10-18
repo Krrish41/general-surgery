@@ -3823,27 +3823,27 @@ body.dark .diagram-item img {{
 
     <nav class="mobile-floating-bottom-bar" id="mobileFloatingBottomBar">
     <button class="mobile-bottom-tab active" data-tab="master" onclick="switchTopicTab('master')">
-        <span class="bottom-tab-icon">📝</span>
+        <span class="bottom-tab-icon">{ICONS["master_answer"]}</span>
         <span class="bottom-tab-text">Answer</span>
     </button>
     <button class="mobile-bottom-tab" data-tab="audio" onclick="togglePlayPauseAudio()" title="Audio Walk" aria-label="Toggle Audio Walk">
-        <span class="bottom-tab-icon">🎧</span>
+        <span class="bottom-tab-icon">{ICONS["headphones"]}</span>
         <span class="bottom-tab-text">Audio</span>
     </button>
     <button class="mobile-bottom-tab" data-tab="diagrams" onclick="switchTopicTab('diagrams')">
-        <span class="bottom-tab-icon">🖼️</span>
+        <span class="bottom-tab-icon">{ICONS["diagrams"]}</span>
         <span class="bottom-tab-text">Diagrams</span>
     </button>
     <button class="mobile-bottom-tab" data-tab="viva" onclick="switchTopicTab('viva')">
-        <span class="bottom-tab-icon">💡</span>
+        <span class="bottom-tab-icon">{ICONS["viva"]}</span>
         <span class="bottom-tab-text">Viva</span>
     </button>
     <button class="mobile-bottom-tab" data-tab="quiz" onclick="switchTopicTab('quiz')">
-        <span class="bottom-tab-icon">🗂️</span>
+        <span class="bottom-tab-icon">{ICONS["quiz"]}</span>
         <span class="bottom-tab-text">Quiz</span>
     </button>
     <button class="mobile-bottom-tab" data-tab="exam" onclick="switchTopicTab('exam')">
-        <span class="bottom-tab-icon">🎯</span>
+        <span class="bottom-tab-icon">{ICONS["cheat_sheet"]}</span>
         <span class="bottom-tab-text">Exam</span>
     </button>
     </nav>
@@ -3857,12 +3857,12 @@ body.dark .diagram-item img {{
                 <span id="modalTitleText">Medical Diagram Viewer</span>
             </div>
             <div class="modal-dialog-actions">
-                <button class="modal-tool-btn" data-testid="spotters" onclick="toggleModalSpotter()" id="btnModalSpotter" title="Spotter Testing Mode">🎯 Spotter Mode</button>
+                <button class="modal-tool-btn" data-testid="spotters" onclick="toggleModalSpotter()" id="btnModalSpotter" title="Spotter Testing Mode">Spotter Mode</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(1.25)" title="Zoom In">Zoom In ＋</button>
                 <button class="modal-tool-btn" onclick="zoomModalImg(0.8)" title="Zoom Out">Zoom Out －</button>
                 <button class="modal-tool-btn" onclick="toggleModalFit()" id="btnModalFit" title="Toggle 100% / Fit to Viewport">100% Size</button>
                 <button class="modal-tool-btn" onclick="openModalImgTab()" title="Open Original Diagram in New Tab">⤢ New Tab</button>
-                <button class="modal-tool-btn modal-close-btn" onclick="closeModal()" title="Close Viewer">✕ Close</button>
+                <button class="modal-tool-btn modal-close-btn" onclick="closeModal()" title="Close Viewer">{ICONS["close_sm"]} Close</button>
             </div>
         </div>
         <div class="modal-image-viewport" id="modalViewport">
@@ -3872,7 +3872,7 @@ body.dark .diagram-item img {{
             </div>
         </div>
         <div class="modal-dialog-footer">
-            <span>💡 <strong>Zero Cutoff Guarantee:</strong> Use 100% Size or Zoom buttons to inspect intricate details and wide matrices. Scroll horizontally or vertically freely.</span>
+            <span><strong>Zero Cutoff Guarantee:</strong> Use 100% Size or Zoom buttons to inspect intricate details and wide matrices. Scroll horizontally or vertically freely.</span>
             <span style="font-size: 7pt; color: var(--text-muted);">Press Esc to Exit</span>
         </div>
     </div>
@@ -4388,10 +4388,13 @@ function renderDashboard() {{
                     <button class="filter-chip ${{currentDashFilter === 'completed' ? 'active' : ''}}" onclick="setDashFilter('completed')">Completed (${{completedCount}})</button>
                     <button class="filter-chip ${{currentDashFilter === 'notes' ? 'active' : ''}}" onclick="setDashFilter('notes')">Has Notes (${{notesCount}})</button>
                 </div>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <button class="filter-chip" data-testid="exam-simulator" onclick="launchExamSimFromDashboard()" style="cursor: pointer;">⏱️ Exam Simulator</button>
-                    <button class="filter-chip" data-testid="spotters" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">🎯 Spotters</button>
-                    <button class="filter-chip" onclick="selectChapter(23)" style="cursor: pointer;">⚡ Cheat Sheet</button>
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;" data-testid="modules">
+                    <button class="filter-chip" data-testid="voice-walk" onclick="togglePlayPauseAudio()" style="cursor: pointer;">Voice Walk</button>
+                    <button class="filter-chip" data-testid="exam-simulator" onclick="launchExamSimFromDashboard()" style="cursor: pointer;">Exam Simulator</button>
+                    <button class="filter-chip" data-testid="spotters" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">Spotters</button>
+                    <button class="filter-chip" data-testid="flashcards" onclick="openFlashcardsFromDashboard()" style="cursor: pointer;">Flashcards</button>
+                    <button class="filter-chip" data-testid="schematics" onclick="openDiagramSpotterFromDashboard()" style="cursor: pointer;">Schematics</button>
+                    <button class="filter-chip" data-testid="cheat-sheet" onclick="selectChapter(23)" style="cursor: pointer;">Cheat Sheet</button>
                 </div>
             </div>
         </div>
@@ -4419,7 +4422,7 @@ function renderDashboard() {{
                 </div>
                 <div class="dash-card-footer-row">
                     <button class="toggle-complete-btn ${{isDone ? 'is-completed' : ''}}" onclick="saveCompletion('${{ch.id}}', ${{!isDone}})">
-                        ${{isDone ? '✓ Completed' : '○ Mark Done'}}
+                        ${{isDone ? SVG_ICONS.check + ' Completed' : SVG_ICONS.circle + ' Mark Done'}}
                     </button>
                     <button class="nav-btn nav-btn-primary" onclick="selectChapter(${{idx}})" style="padding: 6px 14px; font-size: 0.8rem;">Study →</button>
                 </div>
@@ -4451,6 +4454,13 @@ function openDiagramSpotterFromDashboard() {{
         setTimeout(() => {{
             toggleSpotterMode();
         }}, 120);
+    }}, 120);
+}}
+
+function openFlashcardsFromDashboard() {{
+    selectChapter(0);
+    setTimeout(() => {{
+        switchTopicTab('quiz');
     }}, 120);
 }}
 
@@ -5450,7 +5460,7 @@ function toggleModalSpotter() {{
     const btn = document.getElementById('btnModalSpotter');
     const overlay = document.getElementById('modalSpotterOverlay');
     if (btn) {{
-        btn.innerText = modalSpotterActive ? '🎯 Spotter Mode: ON' : '🎯 Spotter Mode';
+        btn.innerText = modalSpotterActive ? 'Spotter Mode: ON' : 'Spotter Mode';
         btn.style.background = modalSpotterActive ? 'var(--primary)' : '';
         btn.style.color = modalSpotterActive ? '#fff' : '';
     }}
@@ -5465,7 +5475,7 @@ function renderModalSpotters() {{
     if (!overlay || !modalCurrentFilename) return;
     const spots = SPOTTERS[modalCurrentFilename] || [];
     if (!spots.length) {{
-        overlay.innerHTML = '<div style="position: absolute; top: 12px; left: 12px; background: rgba(2,132,199,0.9); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 8pt; font-weight: 600;">🎯 No labeled landmarks registered for this diagram.</div>';
+        overlay.innerHTML = '<div style="position: absolute; top: 12px; left: 12px; background: rgba(2,132,199,0.9); color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 8pt; font-weight: 600;">No labeled landmarks registered for this diagram.</div>';
         return;
     }}
     let html = '';
@@ -5590,7 +5600,7 @@ function renderTopicView() {{
             <div class="exam-simulator-view">
                 <div class="exam-sim-header">
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <span class="exam-status-badge">🔴 LIVE UNIVERSITY EXAM SIMULATOR</span>
+                        <span class="exam-status-badge"><span class="pulse-indicator-dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#ef4444; margin-right:6px;"></span>LIVE UNIVERSITY EXAM SIMULATOR</span>
                         <div class="exam-clock" id="examCountdownClock">25:00</div>
                         <div class="exam-clock-controls">
                             <button class="btn btn-secondary" onclick="startExamTimer()" id="btnExamStart">{ICONS["play_sm"]} Start</button>
@@ -5626,7 +5636,7 @@ function renderTopicView() {{
                         </div>
                         <textarea class="exam-draft-textarea" id="examDraftArea" oninput="onExamDraftInput('${{ch.id}}', this)" placeholder="Begin drafting your university answer here... Follow the standard 10 university subheadings (Definition, Anatomy, Pathophysiology, Clinical Signs, Differential, Workup, Pre-op, Surgical Technique, Complications, Viva Pearls)...">${{draftText}}</textarea>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
-                            <span style="font-size: 7.5pt; color: var(--text-muted);">💾 Draft saved locally to your device</span>
+                            <span style="font-size: 7.5pt; color: var(--text-muted);">Draft saved locally to your device</span>
                             <button class="btn btn-primary" onclick="submitExamForReview()" style="padding: 7px 18px; font-size: 8.5pt; font-weight: 600;">
                                 Submit Draft & Self-Grade against Rubric
                             </button>
@@ -5676,7 +5686,7 @@ function renderTopicView() {{
                         <div class="sim-history-pane" style="margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
                             <details>
                                 <summary style="font-size: 8pt; font-weight: 700; color: var(--text-muted); cursor: pointer;">
-                                    📜 Past Evaluation Attempts &amp; Score Logs
+                                    Past Evaluation Attempts &amp; Score Logs
                                 </summary>
                                 <div id="simHistoryList" style="margin-top: 8px;"></div>
                             </details>
@@ -5813,7 +5823,7 @@ function renderTopicView() {{
                                     <div style="flex: 1;">
                                         <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
                                         <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
-                                            💡 Tap question to reveal model answer
+                                            Tap question to reveal model answer
                                         </div>
                                     </div>
                                     <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to question & answer hands-free">
@@ -5937,7 +5947,7 @@ function renderTopicView() {{
                     <div class="split-comparison-header">
                         <div>
                             <div style="font-weight: 700; font-size: 10.5pt; color: var(--primary); display: flex; align-items: center; gap: 8px;">
-                                <span>🔄</span> Side-by-Side Split Comparison Slider
+                                <span>${{SVG_ICONS.sync}}</span> Side-by-Side Split Comparison Slider
                             </div>
                             <div style="font-size: 8pt; color: var(--text-muted); margin-top: 2px;">
                                 Drag the divider handle to see how lecture notes translate into clean 300 DPI schematics: <strong>${{pair.title}}</strong>
@@ -5971,15 +5981,15 @@ function renderTopicView() {{
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <span style="font-size: 9.5pt; font-weight: 700; color: var(--text-main);">Interactive Spotter Test:</span>
                         <button class="btn ${{spotterModeActive ? 'btn-primary' : 'btn-secondary'}}" onclick="toggleSpotterMode()" style="padding: 5px 14px; font-size: 8.5pt; font-weight: 600;">
-                            ${{spotterModeActive ? '🎯 Spotter Mode: ON' : '🎯 Spotter / Test Me Mode: OFF'}}
+                            ${{spotterModeActive ? 'Spotter Mode: ON' : 'Spotter / Test Me Mode: OFF'}}
                         </button>
                         ${{spotterModeActive ? `
-                            <button class="btn btn-secondary" onclick="revealAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">👁️ Reveal All</button>
-                            <button class="btn btn-secondary" onclick="resetAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">🔄 Hide All</button>
+                            <button class="btn btn-secondary" onclick="revealAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">Reveal All</button>
+                            <button class="btn btn-secondary" onclick="resetAllSpotters()" style="padding: 4px 10px; font-size: 8pt;">Hide All</button>
                         ` : ''}}
                     </div>
                     <div style="font-size: 8pt; color: var(--text-muted);">
-                        ${{spotterModeActive ? '💡 Tap purple masks to flip and reveal anatomical structure names' : 'Active Viva Spotter Mode available — tap button to hide labels and test recall'}}
+                        ${{spotterModeActive ? 'Tap purple masks to flip and reveal anatomical structure names' : 'Active Viva Spotter Mode available — tap button to hide labels and test recall'}}
                     </div>
                 </div>
         `;
@@ -6024,7 +6034,7 @@ function renderTopicView() {{
                             <div class="diagram-item-caption">
                                 ${{spotterModeActive && spots.length === 0 ? `
                                     <div style="background: rgba(2, 132, 199, 0.08); border: 1px dashed var(--primary); padding: 6px; border-radius: 6px; margin-bottom: 4px; font-size: 7.5pt; color: var(--primary); cursor: pointer;" onclick="this.nextElementSibling.style.display='block'; this.style.display='none';">
-                                        🎯 Spotter Challenge: Test yourself! Tap to reveal schematic caption.
+                                        Spotter Challenge: Test yourself! Tap to reveal schematic caption.
                                     </div>
                                     <div style="display: none;">${{d.title}}</div>
                                 ` : d.title}}
@@ -6081,7 +6091,7 @@ function renderTopicView() {{
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; color: var(--primary); font-size: 9.5pt; line-height: 1.5;">${{qText}}</div>
                                 <div class="viva-click-hint" style="font-size: 7.5pt; color: var(--text-muted); margin-top: 3px;">
-                                    💡 Tap question to reveal model answer
+                                    Tap question to reveal model answer
                                 </div>
                             </div>
                             <button class="viva-audio-speak-btn" onclick="event.stopPropagation(); speakVivaPearl(this, ${{pIdx}})" title="Listen to question & model answer hands-free">
@@ -6191,7 +6201,7 @@ function renderTopicView() {{
                                 ${{quizAnswerRevealed ? 'Hide' : 'Show'}}
                             </button>
                             <button class="btn ${{isMastered ? 'btn-secondary' : 'btn-primary'}}" onclick="saveQuizMastery('${{qKey}}', ${{!isMastered}})">
-                                ${{isMastered ? '✓ Mastered' : '★ I Knew This'}}
+                                ${{isMastered ? SVG_ICONS.check + ' Mastered' : 'I Knew This'}}
                             </button>
                         </div>
                         <button class="btn btn-secondary" onclick="nextQuizCard(${{totalCards}})" ${{quizCardIdx === totalCards - 1 ? 'disabled' : ''}} style="min-width: 105px;">
@@ -6321,7 +6331,7 @@ function openModal(src, title, filename) {{
     if (spotBtn) {{
         const hasSpots = !!(SPOTTERS[modalCurrentFilename] && SPOTTERS[modalCurrentFilename].length);
         spotBtn.style.display = hasSpots ? 'inline-block' : 'none';
-        spotBtn.innerText = '🎯 Spotter Mode';
+        spotBtn.innerText = 'Spotter Mode';
         spotBtn.style.background = '';
         spotBtn.style.color = '';
     }}
