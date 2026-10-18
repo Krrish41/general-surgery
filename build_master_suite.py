@@ -1857,6 +1857,13 @@ def generate_interactive_dashboard(chapters, b64_images):
         .mobile-bottom-tab.active {{
             color: var(--accent-primary);
         }}
+        body.is-dashboard .mobile-bottom-bar,
+        body.is-dashboard #mobileFloatingBottomBar {{
+            display: none !important;
+        }}
+        body.is-dashboard .content-area {{
+            padding-bottom: 36px !important;
+        }}
 
         /* Modals */
         .modal-overlay {{
@@ -1921,6 +1928,73 @@ def generate_interactive_dashboard(chapters, b64_images):
             }}
             .content-area {{
                 padding: 16px 16px 140px 16px;
+            }}
+            .dash-hero-card {{
+                flex-direction: column !important;
+                padding: 20px 18px !important;
+                align-items: flex-start !important;
+                gap: 16px !important;
+            }}
+            .dash-hero-image-box {{
+                display: none !important;
+            }}
+            .dash-hero-title {{
+                font-size: 1.45rem !important;
+                line-height: 1.25 !important;
+            }}
+            .dash-hero-sub {{
+                font-size: 0.85rem !important;
+                line-height: 1.45 !important;
+                margin-bottom: 12px !important;
+            }}
+            .dash-hero-badge {{
+                font-size: 0.68rem !important;
+                letter-spacing: 0.08em !important;
+                line-height: 1.3 !important;
+                border-radius: 9999px !important;
+                max-width: 100% !important;
+            }}
+            .dash-hero-meta {{
+                gap: 8px !important;
+            }}
+            .dash-hero-stat {{
+                font-size: 0.76rem !important;
+                padding: 4px 10px !important;
+            }}
+            .dash-cheat-sheet-card {{
+                padding: 16px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 14px !important;
+            }}
+            .dash-cheat-sheet-card .nav-btn-primary {{
+                width: 100% !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }}
+            .stats-grid-dashboard {{
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }}
+            .stat-card-box {{
+                padding: 12px 14px !important;
+            }}
+            .stat-card-val {{
+                font-size: 1.5rem !important;
+            }}
+            .stat-card-label {{
+                font-size: 0.68rem !important;
+            }}
+            .dashboard-topic-cards-grid {{
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }}
+        }}
+
+        @media (max-width: 480px) {{
+            .stats-grid-dashboard {{
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
             }}
         }}
 
@@ -2242,7 +2316,7 @@ def generate_interactive_dashboard(chapters, b64_images):
 
         .progress-bar-fill-dash {{
             height: 100%;
-            background: linear-gradient(90deg, #d946ef 0%, #c026d3 50%, #10b981 100%);
+            background: linear-gradient(90deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
             border-radius: 999px;
             width: 0%;
             transition: width 0.4s ease;
@@ -2371,7 +2445,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
     </style>
 </head>
-<body class="dark">
+<body class="dark is-dashboard">
     <!-- Docked Sidebar Render Target -->
     <aside class="portal-sidebar" id="sidebar" data-testid="sidebar"></aside>
 
@@ -2910,6 +2984,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         function selectChapter(idx, updateHash = true) {{
+            document.body.classList.remove('is-dashboard');
             currentChapterIdx = idx;
             if (updateHash) {{
                 const slug = getSlugForChapter(idx);
@@ -2932,6 +3007,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         function showDashboard(updateHash = true) {{
+            document.body.classList.add('is-dashboard');
             currentChapterIdx = -1;
             if (updateHash && window.location.hash && window.location.hash !== '#/' && window.location.hash !== '#') {{
                 history.pushState(null, '', '#/');
@@ -2952,6 +3028,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         function renderDashboard() {{
+            document.body.classList.add('is-dashboard');
             currentChapterIdx = -1;
             const main = document.getElementById('mainContent');
             const total = CHAPTERS.length;
@@ -3104,6 +3181,7 @@ def generate_interactive_dashboard(chapters, b64_images):
                 renderDashboard();
                 return;
             }}
+            document.body.classList.remove('is-dashboard');
 
             const ch = CHAPTERS[currentChapterIdx];
             const main = document.getElementById('mainContent');
