@@ -3791,6 +3791,7 @@ body.dark .diagram-item img {{
             <button class="tab-btn" data-tab="diagrams" data-testid="schematics" onclick="switchTopicTab('diagrams')">{ICONS["diagrams"]} Diagrams Gallery</button>
             <button class="tab-btn" data-tab="viva" onclick="switchTopicTab('viva')">{ICONS["viva"]} Viva Pearls</button>
             <button class="tab-btn" data-tab="quiz" data-testid="flashcards" onclick="switchTopicTab('quiz')">{ICONS["quiz"]} Flashcard Quiz</button>
+            <button class="tab-btn" data-tab="exam" data-testid="exam-simulator" onclick="switchTopicTab('exam')">{ICONS["cheat_sheet"]} Exam Rubric Simulator</button>
             <button class="tab-btn" data-tab="notes" onclick="switchTopicTab('notes')">{ICONS["notes"]} My Notes</button>
         </div>
         <button class="tabs-arrow-btn right" id="tabArrowRight" onclick="scrollTabsNav(150)" title="Scroll tabs right">
@@ -3813,6 +3814,7 @@ body.dark .diagram-item img {{
             <button class="pill-shortcut" data-pill="diagrams" onclick="switchTopicTab('diagrams')">Diagrams</button>
             <button class="pill-shortcut" data-pill="viva" onclick="switchTopicTab('viva')">Viva</button>
             <button class="pill-shortcut" data-pill="quiz" onclick="switchTopicTab('quiz')">Quiz</button>
+            <button class="pill-shortcut" data-pill="exam" onclick="switchTopicTab('exam')">Exam</button>
             <button class="pill-shortcut" data-pill="notes" onclick="switchTopicTab('notes')">Notes</button>
         </div>
     </div>
@@ -3839,6 +3841,10 @@ body.dark .diagram-item img {{
     <button class="mobile-bottom-tab" data-tab="quiz" onclick="switchTopicTab('quiz')">
         <span class="bottom-tab-icon">🗂️</span>
         <span class="bottom-tab-text">Quiz</span>
+    </button>
+    <button class="mobile-bottom-tab" data-tab="exam" onclick="switchTopicTab('exam')">
+        <span class="bottom-tab-icon">🎯</span>
+        <span class="bottom-tab-text">Exam</span>
     </button>
     </nav>
 </div>
@@ -4013,7 +4019,8 @@ function toggleQuizMode() {{
 }}
 
 function saveCompletion(chId, state) {{
-    if (state) {{
+    const willBeDone = (state !== undefined) ? !!state : !completedTopics[chId];
+    if (willBeDone) {{
         completedTopics[chId] = true;
     }} else {{
         delete completedTopics[chId];
@@ -4102,6 +4109,14 @@ function openDashboardView(updateHash = true) {{
     if (updateHash && window.location.hash && window.location.hash !== '#/' && window.location.hash !== '#') {{
         history.pushState(null, '', '#/');
     }}
+    if (window.CoreEngine) {{
+        CoreEngine.currentTopicIndex = -1;
+        CoreEngine.updateViewHeading('Dashboard');
+        CoreEngine.toggleSidebar(false);
+        const dashBtn = document.getElementById('sidebarNavDashboard') || document.getElementById('btnNavDash');
+        if (dashBtn) dashBtn.classList.add('active');
+        document.querySelectorAll('.topic-row').forEach(r => r.classList.remove('active'));
+    }}
     const btnDash = document.getElementById('btnNavDash');
     if (btnDash) btnDash.classList.add('active');
     const tabsNav = document.getElementById('topicTabsNav');
@@ -4112,7 +4127,6 @@ function openDashboardView(updateHash = true) {{
     if (bottomBar) bottomBar.classList.remove('in-chapter');
     const titleBar = document.getElementById('dashTitleBar');
     if (titleBar) titleBar.style.display = 'flex';
-    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
     renderDashboard();
     toggleSidebar(false);
     window.scrollTo({{ top: 0, behavior: 'smooth' }});
@@ -4165,7 +4179,7 @@ function selectChapter(idx, updateHash = true) {{
             history.pushState(null, '', `#/topic/${{slug}}`);
         }}
     }}
-    isExamSimActive = false;
+    isExamSimActive = (currentTopicTab === 'exam');
     stopCurrentSpeech();
     quizCardIdx = 0;
     quizAnswerRevealed = false;
@@ -4192,7 +4206,25 @@ function selectChapter(idx, updateHash = true) {{
         currentTopicTab = 'master';
     }}
 
-    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+    if (window.CoreEngine) {{
+        CoreEngine.currentTopicIndex = idx;
+        CoreEngine.updateViewHeading(CHAPTERS[idx].title, CHAPTERS[idx].category, idx + 1);
+        try {{ localStorage.setItem('bds.surgery.lastTopic', CHAPTERS[idx].id); }} catch(e) {{}}
+        const activeRow = document.querySelector(`.topic-row[data-topic-id="${{CHAPTERS[idx].id}}"]`);
+        if (activeRow) {{
+            document.querySelectorAll('.topic-row').forEach(r => r.classList.remove('active'));
+            activeRow.classList.add('active');
+            activeRow.scrollIntoView({{ block: 'nearest', behavior: 'smooth' }});
+            const parentGroup = activeRow.closest('.category-group');
+            if (parentGroup) {{
+                parentGroup.classList.remove('collapsed');
+                const cat = parentGroup.getAttribute('data-category');
+                if (cat) CoreEngine.collapsedGroups[cat] = false;
+            }}
+        }}
+        CoreEngine.updateProgressDisplays();
+    }}
+
     switchTopicTab(currentTopicTab);
     toggleSidebar(false);
     setTimeout(updateTabScrollButtons, 150);
@@ -4201,6 +4233,11 @@ function selectChapter(idx, updateHash = true) {{
 
 function switchTopicTab(tab) {{
     currentTopicTab = tab;
+    if (tab === 'exam') {{
+        isExamSimActive = true;
+    }} else {{
+        isExamSimActive = false;
+    }}
     if ('speechSynthesis' in window && window.speechSynthesis.speaking) {{
         window.speechSynthesis.cancel();
     }}
@@ -4241,6 +4278,7 @@ function switchTopicTab(tab) {{
         'diagrams': 'Diagrams Gallery',
         'viva': 'Examiner Viva Pearls',
         'quiz': 'Active Recall Flashcard Quiz',
+        'exam': 'Exam Rubric Simulator',
         'notes': 'My Clinical Notes'
     }};
     const labelEl = document.getElementById('mobileActiveTabLabel');
@@ -4963,6 +5001,10 @@ function updateAudioDockUI() {{
             pill.classList.remove('active');
         }}
     }});
+
+    if (window.CoreEngine && CoreEngine.setAudioPlayingState) {{
+        CoreEngine.setAudioPlayingState(isAudioPlaying);
+    }}
 }}
 
 function updateSectionButtonsUI() {{
@@ -5136,13 +5178,13 @@ function playNextInPlaylist() {{
 
 // --- 15-Mark Timed Exam Simulator ---
 function toggleExamSimulator(active) {{
-    isExamSimActive = active;
     if (active) {{
         resetExamTimer();
+        switchTopicTab('exam');
     }} else {{
         pauseExamTimer();
+        switchTopicTab('master');
     }}
-    renderTopicView();
 }}
 
 function startExamTimer() {{
@@ -5514,6 +5556,14 @@ function renderTopicView() {{
     const userNote = getTopicNotes(ch.id);
 
     let html = `
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <button class="nav-btn" onclick="showDashboard()">
+                ← Back to Dashboard
+            </button>
+            <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">
+                Chapter ${{currentChapterIdx + 1}} of ${{CHAPTERS.length}}
+            </div>
+        </div>
         <div class="topic-header-bar">
             <div>
                 <div style="font-size: 8.5pt; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); font-weight: 700;">Chapter ${{currentChapterIdx + 1}}</div>
@@ -5528,7 +5578,137 @@ function renderTopicView() {{
         </div>
     `;
 
-    if (currentTopicTab === 'master') {{
+    if (currentTopicTab === 'exam' || (currentTopicTab === 'master' && isExamSimActive)) {{
+        // Render University Exam Simulator Workspace
+        const draftText = localStorage.getItem('surgery_exam_draft_' + ch.id) || '';
+        const wordsCount = draftText.trim() ? draftText.trim().split(/\\s+/).length : 0;
+        const currentScores = rubricScores[ch.id] || {{}};
+        let scoreSum = 0;
+        for (const v of Object.values(currentScores)) scoreSum += parseFloat(v) || 0;
+
+        html += `
+            <div class="exam-simulator-view">
+                <div class="exam-sim-header">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <span class="exam-status-badge">🔴 LIVE UNIVERSITY EXAM SIMULATOR</span>
+                        <div class="exam-clock" id="examCountdownClock">25:00</div>
+                        <div class="exam-clock-controls">
+                            <button class="btn btn-secondary" onclick="startExamTimer()" id="btnExamStart">{ICONS["play_sm"]} Start</button>
+                            <button class="btn btn-secondary" onclick="pauseExamTimer()" id="btnExamPause">{ICONS["pause_sm"]} Pause</button>
+                            <button class="btn btn-secondary" onclick="resetExamTimer()">{ICONS["sync"]} Reset 25m</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="exam-word-count" id="examWordCount">${{wordsCount}} words | ${{draftText.length}} characters</span>
+                        <button class="btn btn-secondary" onclick="switchTopicTab('master')" style="padding: 5px 12px; font-size: 8pt;">{ICONS["close_sm"]} Exit</button>
+                    </div>
+                </div>
+
+                <div class="prompt-box" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); margin-bottom: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                        <span style="font-weight: 800; text-transform: uppercase; font-size: 8pt; color: #dc2626; letter-spacing: 1px;">
+                            University 15-Mark Examination Paper
+                        </span>
+                        <span style="font-size: 8pt; font-weight: 700; color: #dc2626;">Time Allowed: 25 Minutes | Maximum Marks: 15</span>
+                    </div>
+                    <div style="font-size: 11pt; font-weight: 600; color: var(--text-main); line-height: 1.6;">${{ch.essay_prompt}}</div>
+                </div>
+
+                <div class="exam-workspace-split">
+                    <div class="exam-editor-pane">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                            <label style="font-size: 8.5pt; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                                Student Essay Draft Area
+                            </label>
+                            <button class="btn btn-secondary" onclick="insertRubricTemplate()" style="padding: 3px 10px; font-size: 7.5pt;">
+                                Insert 10-Heading Outline
+                            </button>
+                        </div>
+                        <textarea class="exam-draft-textarea" id="examDraftArea" oninput="onExamDraftInput('${{ch.id}}', this)" placeholder="Begin drafting your university answer here... Follow the standard 10 university subheadings (Definition, Anatomy, Pathophysiology, Clinical Signs, Differential, Workup, Pre-op, Surgical Technique, Complications, Viva Pearls)...">${{draftText}}</textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
+                            <span style="font-size: 7.5pt; color: var(--text-muted);">💾 Draft saved locally to your device</span>
+                            <button class="btn btn-primary" onclick="submitExamForReview()" style="padding: 7px 18px; font-size: 8.5pt; font-weight: 600;">
+                                Submit Draft & Self-Grade against Rubric
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="exam-rubric-pane">
+                        <div class="rubric-header">
+                            <div>
+                                <div style="font-weight: 700; font-size: 9.5pt; color: var(--text-main);">University Marking Rubric (15 Marks)</div>
+                                <div style="font-size: 7.5pt; color: var(--text-muted);">Self-grade each section against gold-standard university criteria</div>
+                            </div>
+                            <div class="rubric-total-badge" id="rubricScoreDisplay">${{scoreSum.toFixed(1)}} / 15.0</div>
+                        </div>
+                        <div class="rubric-items-list" id="rubricItemsList">
+        `;
+
+        RUBRIC_CRITERIA.forEach(crit => {{
+            const assigned = currentScores[crit.num] !== undefined ? currentScores[crit.num] : 0;
+            const isChecked = assigned > 0;
+            html += `
+                <div class="rubric-item">
+                    <input type="checkbox" id="rubric_chk_${{crit.num}}" ${{isChecked ? 'checked' : ''}} onchange="updateRubricScore(${{crit.num}}, null, this.checked)">
+                    <div class="rubric-item-content">
+                        <div class="rubric-item-title">
+                            <span>${{crit.num}}. ${{crit.title}}</span>
+                            <span style="color: var(--primary); font-weight: 800;">${{crit.marks}} Marks</span>
+                        </div>
+                        <div class="rubric-item-desc">${{crit.desc}}</div>
+                        <div class="rubric-item-score-select">
+                            <input type="range" id="rubric_range_${{crit.num}}" min="0" max="${{crit.marks}}" step="0.5" value="${{assigned}}" oninput="updateRubricScore(${{crit.num}}, this.value)">
+                            <span id="rubric_val_${{crit.num}}">${{assigned.toFixed(1)}}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }});
+
+        html += `
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
+                            <div id="simSaveStatus" style="font-size: 7.8pt; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;"></div>
+                            <button class="btn btn-primary btn-save-evaluation" id="btnSaveEvaluation" onclick="saveSurgeryEvaluation('${{ch.id}}')" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 700;">
+                                Save Evaluation
+                            </button>
+                        </div>
+                        <div class="sim-history-pane" style="margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <details>
+                                <summary style="font-size: 8pt; font-weight: 700; color: var(--text-muted); cursor: pointer;">
+                                    📜 Past Evaluation Attempts &amp; Score Logs
+                                </summary>
+                                <div id="simHistoryList" style="margin-top: 8px;"></div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="examModelEssaySlot" style="display: ${{examSubmitted ? 'block' : 'none'}}; margin-top: 24px;">
+                    <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h3 style="font-size: 12pt; color: var(--primary); margin: 0; font-weight: 700;">
+                                Benchmark Your Draft Against the Master Monograph
+                            </h3>
+                            <button class="btn btn-secondary" onclick="document.getElementById('examModelEssaySlot').style.display='none'" style="padding: 4px 10px; font-size: 8pt;">Hide Model Answer</button>
+                        </div>
+                        <p style="font-size: 8.5pt; color: var(--text-muted); margin: 0;">Compare your essay response against the 10 university gold-standard sections below to refine your knowledge and precision.</p>
+                    </div>
+        `;
+
+        // Append the master essay below for direct comparison
+        for (const [secName, secHtml] of Object.entries(ch.sections)) {{
+            const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
+            html += `
+                <div class="card">
+                    <div class="card-title">${{titleFormatted}}</div>
+                    <div style="line-height: 1.7;">${{secHtml}}</div>
+                </div>
+            `;
+        }}
+
+        html += `</div></div>`;
+    }} else if (currentTopicTab === 'master') {{
         // Banner for 15-Mark University Essay Exam Simulator
         html += `
             <div class="exam-simulator-banner" data-testid="exam-simulator">
@@ -5539,146 +5719,15 @@ function renderTopicView() {{
                         <div style="font-size: 8pt; color: var(--text-muted);">Timed 25-minute mock test environment with standard 10-point university marking rubric</div>
                     </div>
                 </div>
-                <button class="btn btn-primary" onclick="toggleExamSimulator(${{!isExamSimActive}})" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 600;">
-                    ${{isExamSimActive ? '✕ Exit Timed Simulator' : 'Launch 25-Min Timed Exam'}}
+                <button class="btn btn-primary" onclick="switchTopicTab('exam')" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 600;">
+                    Launch 25-Min Timed Exam
                 </button>
             </div>
         `;
 
-        if (isExamSimActive) {{
-            // Render University Exam Simulator Workspace
-            const draftText = localStorage.getItem('surgery_exam_draft_' + ch.id) || '';
-            const wordsCount = draftText.trim() ? draftText.trim().split(/\\s+/).length : 0;
-            const currentScores = rubricScores[ch.id] || {{}};
-            let scoreSum = 0;
-            for (const v of Object.values(currentScores)) scoreSum += parseFloat(v) || 0;
-
-            html += `
-                <div class="exam-simulator-view">
-                    <div class="exam-sim-header">
-                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                            <span class="exam-status-badge">🔴 LIVE UNIVERSITY EXAM SIMULATOR</span>
-                            <div class="exam-clock" id="examCountdownClock">25:00</div>
-                            <div class="exam-clock-controls">
-                                <button class="btn btn-secondary" onclick="startExamTimer()" id="btnExamStart">{ICONS["play_sm"]} Start</button>
-                                <button class="btn btn-secondary" onclick="pauseExamTimer()" id="btnExamPause">{ICONS["pause_sm"]} Pause</button>
-                                <button class="btn btn-secondary" onclick="resetExamTimer()">{ICONS["sync"]} Reset 25m</button>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span class="exam-word-count" id="examWordCount">${{wordsCount}} words | ${{draftText.length}} characters</span>
-                            <button class="btn btn-secondary" onclick="toggleExamSimulator(false)" style="padding: 5px 12px; font-size: 8pt;">{ICONS["close_sm"]} Exit</button>
-                        </div>
-                    </div>
-
-                    <div class="prompt-box" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); margin-bottom: 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
-                            <span style="font-weight: 800; text-transform: uppercase; font-size: 8pt; color: #dc2626; letter-spacing: 1px;">
-                                University 15-Mark Examination Paper
-                            </span>
-                            <span style="font-size: 8pt; font-weight: 700; color: #dc2626;">Time Allowed: 25 Minutes | Maximum Marks: 15</span>
-                        </div>
-                        <div style="font-size: 11pt; font-weight: 600; color: var(--text-main); line-height: 1.6;">${{ch.essay_prompt}}</div>
-                    </div>
-
-                    <div class="exam-workspace-split">
-                        <div class="exam-editor-pane">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-                                <label style="font-size: 8.5pt; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
-                                    Student Essay Draft Area
-                                </label>
-                                <button class="btn btn-secondary" onclick="insertRubricTemplate()" style="padding: 3px 10px; font-size: 7.5pt;">
-                                    Insert 10-Heading Outline
-                                </button>
-                            </div>
-                            <textarea class="exam-draft-textarea" id="examDraftArea" oninput="onExamDraftInput('${{ch.id}}', this)" placeholder="Begin drafting your university answer here... Follow the standard 10 university subheadings (Definition, Anatomy, Pathophysiology, Clinical Signs, Differential, Workup, Pre-op, Surgical Technique, Complications, Viva Pearls)...">${{draftText}}</textarea>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
-                                <span style="font-size: 7.5pt; color: var(--text-muted);">💾 Draft saved locally to your device</span>
-                                <button class="btn btn-primary" onclick="submitExamForReview()" style="padding: 7px 18px; font-size: 8.5pt; font-weight: 600;">
-                                    Submit Draft & Self-Grade against Rubric
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="exam-rubric-pane">
-                            <div class="rubric-header">
-                                <div>
-                                    <div style="font-weight: 700; font-size: 9.5pt; color: var(--text-main);">University Marking Rubric (15 Marks)</div>
-                                    <div style="font-size: 7.5pt; color: var(--text-muted);">Self-grade each section against gold-standard university criteria</div>
-                                </div>
-                                <div class="rubric-total-badge" id="rubricScoreDisplay">${{scoreSum.toFixed(1)}} / 15.0</div>
-                            </div>
-                            <div class="rubric-items-list" id="rubricItemsList">
-            `;
-
-            RUBRIC_CRITERIA.forEach(crit => {{
-                const assigned = currentScores[crit.num] !== undefined ? currentScores[crit.num] : 0;
-                const isChecked = assigned > 0;
-                html += `
-                    <div class="rubric-item">
-                        <input type="checkbox" id="rubric_chk_${{crit.num}}" ${{isChecked ? 'checked' : ''}} onchange="updateRubricScore(${{crit.num}}, null, this.checked)">
-                        <div class="rubric-item-content">
-                            <div class="rubric-item-title">
-                                <span>${{crit.num}}. ${{crit.title}}</span>
-                                <span style="color: var(--primary); font-weight: 800;">${{crit.marks}} Marks</span>
-                            </div>
-                            <div class="rubric-item-desc">${{crit.desc}}</div>
-                            <div class="rubric-item-score-select">
-                                <input type="range" id="rubric_range_${{crit.num}}" min="0" max="${{crit.marks}}" step="0.5" value="${{assigned}}" oninput="updateRubricScore(${{crit.num}}, this.value)">
-                                <span id="rubric_val_${{crit.num}}">${{assigned.toFixed(1)}}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }});
-
-            html += `
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
-                                <div id="simSaveStatus" style="font-size: 7.8pt; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;"></div>
-                                <button class="btn btn-primary btn-save-evaluation" id="btnSaveEvaluation" onclick="saveSurgeryEvaluation('${{ch.id}}')" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 700;">
-                                    Save Evaluation
-                                </button>
-                            </div>
-                            <div class="sim-history-pane" style="margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                                <details>
-                                    <summary style="font-size: 8pt; font-weight: 700; color: var(--text-muted); cursor: pointer;">
-                                        📜 Past Evaluation Attempts &amp; Score Logs
-                                    </summary>
-                                    <div id="simHistoryList" style="margin-top: 8px;"></div>
-                                </details>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="examModelEssaySlot" style="display: ${{examSubmitted ? 'block' : 'none'}}; margin-top: 24px;">
-                        <div style="background: var(--bg-card); border: 2px solid var(--primary); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <h3 style="font-size: 12pt; color: var(--primary); margin: 0; font-weight: 700;">
-                                    Benchmark Your Draft Against the Master Monograph
-                                </h3>
-                                <button class="btn btn-secondary" onclick="document.getElementById('examModelEssaySlot').style.display='none'" style="padding: 4px 10px; font-size: 8pt;">Hide Model Answer</button>
-                            </div>
-                            <p style="font-size: 8.5pt; color: var(--text-muted); margin: 0;">Compare your essay response against the 10 university gold-standard sections below to refine your knowledge and precision.</p>
-                        </div>
-            `;
-
-            // Append the master essay below for direct comparison
-            for (const [secName, secHtml] of Object.entries(ch.sections)) {{
-                const titleFormatted = secName.replace(/_/g, ' ').toUpperCase();
-                html += `
-                    <div class="card">
-                        <div class="card-title">${{titleFormatted}}</div>
-                        <div style="line-height: 1.7;">${{secHtml}}</div>
-                    </div>
-                `;
-            }}
-
-            html += `</div></div>`;
-        }} else {{
-            // Render standard essay with Sticky Section Table of Contents Mini-Map
-            html += `
-                <div class="master-answer-wrapper">
+        // Render standard essay with Sticky Section Table of Contents Mini-Map
+        html += `
+            <div class="master-answer-wrapper">
                     <div class="master-essay-content">
                         <div class="hands-free-audio-bar">
                             <div class="audio-banner-left">
@@ -5831,7 +5880,6 @@ function renderTopicView() {{
                     </aside>
                 </div>
             `;
-        }}
     }} else if (currentTopicTab === 'layman') {{
         html += `
             <div class="card" style="padding: 28px;">
@@ -6456,8 +6504,11 @@ if (window.CoreEngine) {{
         hubUrl: 'https://krrish41.github.io/bds-vault/#surgery',
         pdfUrl: 'General_Surgery_Master_Notes.pdf',
         searchPlaceholder: 'Search conditions, signs, drugs...',
-        topics: CHAPTERS.slice(0, 23),
+        topics: CHAPTERS,
         currentTopicIndex: currentChapterIdx,
+        onToggleAudioWalk: () => {{
+            togglePlayPauseAudio();
+        }},
         onOpenDashboard: () => {{
             showDashboard(true);
         }},
