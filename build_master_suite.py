@@ -399,30 +399,6 @@ p.content-para {{
     margin: 5px 0;
 }}
 
-/* Back to BDS Clinical Vault Hub Link */
-.back-to-vault-link {{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 7.5pt;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
-    transition: all 0.2s ease;
-}}
-.back-to-vault-link:hover {{
-    color: var(--primary);
-    border-color: var(--primary-border);
-    background: var(--primary-light);
-}}
-
 /* Focus Timer Pill */
 .focus-timer-pill {{
     display: inline-flex;
@@ -664,12 +640,18 @@ def generate_interactive_website(chapters, b64_images):
 
 html[data-theme="light"], body.light {{
     --bg-main: #f8fafc;
+    --bg-base: #f8fafc;
     --bg-card: #ffffff;
-    --bg-surface: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-surface-2: rgba(15, 23, 42, 0.04);
+    --bg-surface-elevated: #f1f5f9;
     --text-main: #0f172a;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
     --text-muted: #64748b;
     --text-dim: #94a3b8;
     --border: #e2e8f0;
+    --border-color: #e2e8f0;
     --border-strong: #cbd5e1;
     --primary-light: rgba(20, 184, 166, 0.08);
     --primary-border: rgba(20, 184, 166, 0.22);
@@ -3731,30 +3713,6 @@ body.dark .diagram-item img {{
             bottom: 24px;
         }}
     }}
-
-/* Back to BDS Clinical Vault Hub Link */
-.back-to-vault-link {{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 7.5pt;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
-    transition: all 0.2s ease;
-}}
-.back-to-vault-link:hover {{
-    color: var(--primary);
-    border-color: var(--primary-border);
-    background: var(--primary-light);
-}}
 
 /* Focus Timer Pill */
 .focus-timer-pill {{
