@@ -558,8 +558,7 @@
         }
 
         .tab-bar-container {
-            position: sticky;
-            top: 61px;
+            position: relative;
             background: var(--bg-base);
             z-index: 30;
             padding: 10px 0;
@@ -1850,7 +1849,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             <span>Viva</span>
         </button>
-        <button class="mobile-bottom-tab" onclick="togglePlayPauseAudio()">
+        <button class="mobile-bottom-tab" onclick="openAudioSectionModal()">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
             <span>Audio</span>
         </button>
@@ -1862,7 +1861,10 @@
             <div class="audio-dock-meta">
                 <div class="audio-dock-track-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
                 <div class="audio-dock-text">
-                    <div class="audio-dock-track-title" id="audioDockTrackTitle">Section Audio</div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="audio-dock-track-title" id="audioDockTrackTitle">15-Mark Answer</div>
+                        <button class="audio-switch-pill" onclick="openAudioSectionModal()" title="Switch Audio Section">Switch ▾</button>
+                    </div>
                     <div class="audio-dock-chapter-title" id="audioDockChapterTitle">General Surgery Monograph</div>
                 </div>
             </div>
@@ -1884,7 +1886,7 @@
                 <div class="audio-voice-wrap" title="Narration Voice Engine">
                     <span class="speed-label">Voice:</span>
                     <select id="audioVoiceSelect" class="audio-voice-select" onchange="onVoiceSelected(this.value)" aria-label="Select Narration Voice">
-                        <option value="">Auto (Natural Studio)</option>
+                        <option value="auto">Natural / System Default</option>
                     </select>
                 </div>
                 <div class="audio-speed-selector">
@@ -1895,6 +1897,47 @@
                     <button class="speed-pill" onclick="setAudioPlaybackRate(2.0)" data-speed="2.0">2x</button>
                 </div>
                 <button class="audio-dock-close" onclick="closeAudioDock()" title="Stop and Close Player"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Section Selection Modal -->
+    <div class="modal-overlay" id="audioSectionModal" onclick="closeAudioSectionModal(event)">
+        <div class="audio-section-modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-primary);">Audio Walk • Narration Mode</div>
+                    <h3 id="audioModalTopicTitle" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-top: 2px;">Select Narration Section</h3>
+                </div>
+                <button class="audio-dock-close" onclick="closeAudioSectionModal()"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="audio-section-modal-body">
+                <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 4px 0;">Choose which clinical section to listen to in this topic:</p>
+                <div class="audio-section-options-grid">
+                    <div class="audio-section-card" onclick="selectAndPlaySection('master')">
+                        <div class="audio-section-card-header">
+                            <span class="audio-section-badge">Standard Essay</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">~12-15 min</span>
+                        </div>
+                        <div class="audio-section-card-title">15-Mark Master Answer</div>
+                        <div class="audio-section-card-desc">Comprehensive surgical essay covering definition, classification, surgical anatomy, clinical signs, differential diagnosis, and step-by-step operative management.</div>
+                        <button class="audio-card-btn" onclick="event.stopPropagation(); selectAndPlaySection('master');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg> Play 15-Mark Answer
+                        </button>
+                    </div>
+
+                    <div class="audio-section-card" onclick="selectAndPlaySection('viva')">
+                        <div class="audio-section-card-header">
+                            <span class="audio-section-badge viva">High-Yield Viva</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">~4-6 min</span>
+                        </div>
+                        <div class="audio-section-card-title">Examiner Viva Pearls</div>
+                        <div class="audio-section-card-desc">High-frequency viva questions, chairside pearls, eponyms, examiner traps, and quick-fire clinical points.</div>
+                        <button class="audio-card-btn" style="background: #d946ef; color: #fff;" onclick="event.stopPropagation(); selectAndPlaySection('viva');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg> Play Viva Pearls
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1945,46 +1988,55 @@
         let currentFlashcardIdx = 0;
         let isFlashcardFlipped = false;
 
-        // --- Audio & Neural Speech Synthesis Engine ---
+        // --- Sentence-Chunked Smooth Audio & Narration Engine ---
         let availableVoices = [];
         let selectedVoice = null;
         let isAudioPlaying = false;
         let audioPlaybackSpeed = 1.0;
-        let currentSpeechUtterance = null;
-        let speechKeepaliveTimer = null;
+        let activeAudioSectionType = 'master'; // 'master' or 'viva'
+        let currentSentences = [];
+        let currentSentenceIdx = 0;
+        let estTotalDurationSec = 0;
         let speechTickerTimer = null;
-        let chapterAudioQueue = [];
-        let chapterQueueIdx = 0;
+        let audioElapsedSec = 0;
 
         function initVoiceList() {
             if (!('speechSynthesis' in window)) return;
             const updateVoices = () => {
-                availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('en'));
+                const all = window.speechSynthesis.getVoices();
+                if (!all || all.length === 0) return;
+
+                const pickVoice = (langPrefix) => {
+                    const regional = all.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith(langPrefix.toLowerCase()));
+                    if (regional.length === 0) return null;
+                    return regional.find(v => /natural|neural|online|google|samantha|karen|daniel|rishi|veena/i.test(v.name)) || regional[0];
+                };
+
+                const curated = [
+                    { key: 'auto', label: 'Natural / System Default', voice: null },
+                    { key: 'us', label: 'English (United States)', voice: pickVoice('en-US') },
+                    { key: 'gb', label: 'English (United Kingdom)', voice: pickVoice('en-GB') },
+                    { key: 'in', label: 'English (India)', voice: pickVoice('en-IN') },
+                    { key: 'au', label: 'English (Australia)', voice: pickVoice('en-AU') }
+                ].filter(item => item.key === 'auto' || item.voice !== null);
+
+                availableVoices = curated;
                 const select = document.getElementById('audioVoiceSelect');
                 if (!select) return;
 
-                const currentVal = select.value || localStorage.getItem('oral_pathology_selected_voice') || '';
-                select.innerHTML = '<option value="">Auto (Natural Studio)</option>';
+                const savedKey = localStorage.getItem('bds_curated_voice_key') || 'auto';
+                select.innerHTML = '';
 
-                const sorted = [...availableVoices].sort((a, b) => {
-                    const aNat = a.name.includes('Natural') || a.name.includes('Online') || a.name.includes('Enhanced');
-                    const bNat = b.name.includes('Natural') || b.name.includes('Online') || b.name.includes('Enhanced');
-                    if (aNat && !bNat) return -1;
-                    if (!aNat && bNat) return 1;
-                    return a.name.localeCompare(b.name);
-                });
-
-                sorted.forEach(v => {
+                curated.forEach(item => {
                     const opt = document.createElement('option');
-                    opt.value = v.name;
-                    opt.textContent = `${v.name.replace(/Microsoft |Google /g, '')} (${v.lang})`;
-                    if (v.name === currentVal) opt.selected = true;
+                    opt.value = item.key;
+                    opt.textContent = item.label;
+                    if (item.key === savedKey) {
+                        opt.selected = true;
+                        selectedVoice = item.voice;
+                    }
                     select.appendChild(opt);
                 });
-
-                if (currentVal) {
-                    selectedVoice = availableVoices.find(v => v.name === currentVal) || null;
-                }
             };
 
             updateVoices();
@@ -1993,16 +2045,13 @@
             }
         }
 
-        function onVoiceSelected(voiceName) {
-            if (!voiceName) {
-                selectedVoice = null;
-                localStorage.removeItem('oral_pathology_selected_voice');
-            } else {
-                selectedVoice = availableVoices.find(v => v.name === voiceName) || null;
-                localStorage.setItem('oral_pathology_selected_voice', voiceName);
-            }
+        function onVoiceSelected(key) {
+            localStorage.setItem('bds_curated_voice_key', key);
+            const found = availableVoices.find(v => v.key === key);
+            selectedVoice = (found && found.voice) ? found.voice : null;
             if (isAudioPlaying) {
-                speakCurrentChapterSection();
+                window.speechSynthesis.cancel();
+                speakCurrentSentence();
             }
         }
 
@@ -2014,27 +2063,29 @@
             s = s.replace(/```[\s\S]*?```/g, ' ');
             s = s.replace(/`([^`]+)`/g, '$1');
 
-            // Expand standard oral pathology abbreviations
             const expansions = [
-                [/\bOKC\b/g, 'Odontogenic Keratocyst'],
-                [/\bKCOT\b/g, 'Keratocystic Odontogenic Tumor'],
-                [/\bCEOT\b/g, 'Calcifying Epithelial Odontogenic Tumor'],
-                [/\bAOT\b/g, 'Adenomatoid Odontogenic Tumor'],
-                [/\bOPMD\b/g, 'Oral Potentially Malignant Disorders'],
-                [/\bOSMF\b/g, 'Oral Submucous Fibrosis'],
-                [/\bOLP\b/g, 'Oral Lichen Planus'],
-                [/\bOSCC\b/g, 'Oral Squamous Cell Carcinoma'],
-                [/\bAI\b/g, 'Amelogenesis Imperfecta'],
-                [/\bDI\b/g, 'Dentinogenesis Imperfecta'],
-                [/\bDEJ\b/g, 'Dentinoenamel Junction'],
-                [/\bCEJ\b/g, 'Cementoenamel Junction'],
-                [/\bBMZ\b/g, 'Basement Membrane Zone'],
-                [/\bDIF\b/g, 'Direct Immunofluorescence'],
-                [/\bPAS\b/g, 'Periodic Acid Schiff'],
-                [/\bGMS\b/g, 'Grocott Gomori Methenamine Silver'],
-                [/\bREE\b/g, 'Reduced Enamel Epithelium'],
-                [/\bAdCC\b/g, 'Adenoid Cystic Carcinoma'],
-                [/\bMEC\b/g, 'Mucoepidermoid Carcinoma']
+                [/\bFNAC\b/g, 'Fine Needle Aspiration Cytology'],
+                [/\bRLN\b/g, 'Recurrent Laryngeal Nerve'],
+                [/\bEBSLN\b/g, 'External Branch of Superior Laryngeal Nerve'],
+                [/\bMEN\b/g, 'Multiple Endocrine Neoplasia'],
+                [/\bMTC\b/g, 'Medullary Thyroid Carcinoma'],
+                [/\bPTC\b/g, 'Papillary Thyroid Carcinoma'],
+                [/\bFTC\b/g, 'Follicular Thyroid Carcinoma'],
+                [/\bCVP\b/g, 'Central Venous Pressure'],
+                [/\bDVT\b/g, 'Deep Vein Thrombosis'],
+                [/\bPE\b/g, 'Pulmonary Embolism'],
+                [/\bIV\b/g, 'Intravenous'],
+                [/\bIM\b/g, 'Intramuscular'],
+                [/\bCBC\b/g, 'Complete Blood Count'],
+                [/\bLFT\b/g, 'Liver Function Tests'],
+                [/\bRFT\b/g, 'Renal Function Tests'],
+                [/\bUSG\b/g, 'Ultrasonography'],
+                [/\bCT\b/g, 'Computed Tomography'],
+                [/\bMRI\b/g, 'Magnetic Resonance Imaging'],
+                [/\bRSN\b/g, 'R S N'],
+                [/\bNSN\b/g, 'N S N'],
+                [/\bTGN\b/g, 'T G N'],
+                [/\bCSE\b/g, 'C S E']
             ];
 
             expansions.forEach(([rx, replacement]) => {
@@ -2043,157 +2094,182 @@
             return s.trim();
         }
 
-        function togglePlayPauseAudio() {
-            const dock = document.getElementById('masterAudioDock');
-            if (dock) dock.classList.remove('hidden');
+        function openAudioSectionModal() {
+            if (currentChapterIdx < 0) selectChapter(0);
+            const ch = CHAPTERS[currentChapterIdx];
+            const titleEl = document.getElementById('audioModalTopicTitle');
+            if (titleEl && ch) {
+                titleEl.textContent = `${currentChapterIdx + 1}. ${ch.title}`;
+            }
+            const modal = document.getElementById('audioSectionModal');
+            if (modal) {
+                modal.classList.add('open');
+                modal.style.display = 'flex';
+            }
+        }
 
+        function closeAudioSectionModal(e) {
+            if (e && e.target && e.target !== e.currentTarget && !e.target.closest('.audio-dock-close')) return;
+            const modal = document.getElementById('audioSectionModal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+        }
+
+        function selectAndPlaySection(sectionType) {
+            activeAudioSectionType = sectionType;
+            closeAudioSectionModal();
+            playAudioSection(sectionType);
+        }
+
+        function splitIntoSentences(text) {
+            if (!text) return [];
+            const raw = text.match(/[^.!?\n]+[.!?\n]+(?:\s+|$)|[^.!?\n]+$/g) || [text];
+            return raw.map(s => s.trim()).filter(s => s.length > 0);
+        }
+
+        function buildSectionText(ch, sectionType) {
+            if (sectionType === 'viva') {
+                const parts = [];
+                if (ch.clinical_pearl) {
+                    parts.push(`Clinical Viva Pearl. ${ch.clinical_pearl}`);
+                }
+                if (Array.isArray(ch.flashcards)) {
+                    ch.flashcards.forEach((fc, idx) => {
+                        parts.push(`Viva Question ${idx + 1}. ${fc.q}. Answer: ${fc.a}`);
+                    });
+                }
+                if (parts.length === 0 && Array.isArray(ch.key_points)) {
+                    parts.push(ch.key_points.join('. '));
+                }
+                return parts.join(' ');
+            } else {
+                const parts = [`${ch.title}. Category: ${ch.category}.`];
+                if (ch.clinical_pearl) {
+                    parts.push(`Clinical Pearl: ${ch.clinical_pearl}`);
+                }
+                if (Array.isArray(ch.sections)) {
+                    ch.sections.forEach(sec => {
+                        parts.push(`${sec.title}. ${sec.content}`);
+                    });
+                }
+                return parts.join(' ');
+            }
+        }
+
+        function playAudioSection(sectionType) {
             if (!('speechSynthesis' in window)) {
                 if (window.CoreEngine && CoreEngine.showToast) {
                     CoreEngine.showToast('Speech synthesis is not supported in this browser.', 'error');
-                } else {
-                    console.warn('Speech synthesis is not supported in this browser.');
                 }
                 return;
             }
 
-            if (currentChapterIdx < 0) {
-                selectChapter(0);
-                setTimeout(speakCurrentChapterSection, 250);
-                return;
-            }
-
-            if (window.speechSynthesis.paused) {
-                window.speechSynthesis.resume();
-                isAudioPlaying = true;
-                updateAudioUI();
-            } else if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.pause();
-                isAudioPlaying = false;
-                updateAudioUI();
-            } else {
-                speakCurrentChapterSection();
-            }
-        }
-
-        function buildChapterAudioQueue(ch) {
-            const queue = [];
-            if (ch.clinical_pearl) {
-                queue.push({
-                    title: 'Histopathological Pearl',
-                    text: `${ch.title}. Category: ${ch.category}. Histopathological Pearl: ${ch.clinical_pearl}.`
-                });
-            }
-            if (Array.isArray(ch.sections)) {
-                ch.sections.forEach(sec => {
-                    queue.push({
-                        title: sec.title,
-                        text: `${sec.title}. ${sec.content}`
-                    });
-                });
-            }
-            return queue;
-        }
-
-        function speakCurrentChapterSection() {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            clearInterval(speechTickerTimer);
-            clearInterval(speechKeepaliveTimer);
-
-            if (currentChapterIdx < 0) {
-                selectChapter(0);
-                setTimeout(speakCurrentChapterSection, 250);
-                return;
-            }
-
+            if (currentChapterIdx < 0) selectChapter(0);
             const ch = CHAPTERS[currentChapterIdx];
             if (!ch) return;
 
-            chapterAudioQueue = buildChapterAudioQueue(ch);
-            chapterQueueIdx = 0;
-            playQueueItem(ch);
-        }
+            activeAudioSectionType = sectionType || activeAudioSectionType || 'master';
 
-        function playQueueItem(ch) {
-            if (!('speechSynthesis' in window)) return;
+            const dock = document.getElementById('masterAudioDock');
+            if (dock) dock.classList.remove('hidden');
+
+            const sectionName = activeAudioSectionType === 'viva' ? 'Viva Pearls' : '15-Mark Answer';
+            const titleEl = document.getElementById('audioDockTrackTitle');
+            const chTitleEl = document.getElementById('audioDockChapterTitle');
+            if (titleEl) titleEl.innerText = sectionName;
+            if (chTitleEl) chTitleEl.innerText = `${currentChapterIdx + 1}. ${ch.title}`;
+
             window.speechSynthesis.cancel();
             clearInterval(speechTickerTimer);
-            clearInterval(speechKeepaliveTimer);
 
-            if (chapterQueueIdx >= chapterAudioQueue.length) {
-                if (currentChapterIdx + 1 < CHAPTERS.length) {
-                    currentChapterIdx++;
-                    renderChapterView();
-                    speakCurrentChapterSection();
-                } else {
+            const rawText = buildSectionText(ch, activeAudioSectionType);
+            const cleaned = cleanMedicalTextForSpeech(rawText);
+            currentSentences = splitIntoSentences(cleaned);
+            currentSentenceIdx = 0;
+            audioElapsedSec = 0;
+
+            const totalWords = cleaned.split(/\s+/).length;
+            estTotalDurationSec = Math.max(10, (totalWords / (145 * (audioPlaybackSpeed || 1.0))) * 60);
+
+            const durEl = document.getElementById('audioDuration');
+            if (durEl) durEl.innerText = formatTime(estTotalDurationSec);
+
+            isAudioPlaying = true;
+            updateAudioUI();
+            speakCurrentSentence();
+
+            speechTickerTimer = setInterval(() => {
+                if (isAudioPlaying) {
+                    audioElapsedSec += 0.5;
+                    const curTimeEl = document.getElementById('audioCurrentTime');
+                    if (curTimeEl) curTimeEl.innerText = formatTime(audioElapsedSec);
+                    const scrubber = document.getElementById('audioProgressScrubber');
+                    if (scrubber && estTotalDurationSec > 0) {
+                        scrubber.value = Math.min(100, (audioElapsedSec / estTotalDurationSec) * 100);
+                    }
+                }
+            }, 500);
+        }
+
+        function speakCurrentSentence() {
+            if (!isAudioPlaying || currentSentenceIdx >= currentSentences.length) {
+                if (currentSentenceIdx >= currentSentences.length && currentSentences.length > 0) {
                     isAudioPlaying = false;
+                    clearInterval(speechTickerTimer);
                     updateAudioUI();
+                    if (window.CoreEngine && CoreEngine.showToast) {
+                        CoreEngine.showToast('Section narration completed.', 'info');
+                    }
                 }
                 return;
             }
 
-            const item = chapterAudioQueue[chapterQueueIdx];
-            const titleEl = document.getElementById('audioDockTrackTitle');
-            const chTitleEl = document.getElementById('audioDockChapterTitle');
-            if (titleEl) titleEl.innerText = `${item.title} (${chapterQueueIdx + 1}/${chapterAudioQueue.length})`;
-            if (chTitleEl) chTitleEl.innerText = ch.title;
-
-            const cleanText = cleanMedicalTextForSpeech(item.text);
-            const utterance = new SpeechSynthesisUtterance(cleanText);
+            const sentenceText = currentSentences[currentSentenceIdx];
+            const utterance = new SpeechSynthesisUtterance(sentenceText);
             utterance.rate = audioPlaybackSpeed || 1.0;
-
             if (selectedVoice) {
                 utterance.voice = selectedVoice;
-            } else if (availableVoices.length > 0) {
-                const best = availableVoices.find(v => v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Enhanced')) || availableVoices[0];
-                if (best) utterance.voice = best;
             }
 
-            const words = cleanText.split(/\s+/).length;
-            const estDurationSec = Math.max(5, (words / (150 * (audioPlaybackSpeed || 1.0))) * 60);
-            let elapsedSec = 0;
-
-            const durEl = document.getElementById('audioDuration');
-            const curTimeEl = document.getElementById('audioCurrentTime');
-            const scrubber = document.getElementById('audioProgressScrubber');
-            if (durEl) durEl.innerText = formatTime(estDurationSec);
-
-            speechTickerTimer = setInterval(() => {
-                if (isAudioPlaying) {
-                    elapsedSec += 0.5;
-                    if (curTimeEl) curTimeEl.innerText = formatTime(elapsedSec);
-                    if (scrubber && estDurationSec > 0) {
-                        scrubber.value = Math.min(100, (elapsedSec / estDurationSec) * 100);
-                    }
-                }
-            }, 500);
-
-            // Heartbeat to prevent Chromium 15s freeze
-            speechKeepaliveTimer = setInterval(() => {
-                if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-                    window.speechSynthesis.pause();
-                    window.speechSynthesis.resume();
-                }
-            }, 12000);
-
             utterance.onend = () => {
-                clearInterval(speechTickerTimer);
-                clearInterval(speechKeepaliveTimer);
-                chapterQueueIdx++;
-                playQueueItem(ch);
+                if (isAudioPlaying) {
+                    currentSentenceIdx++;
+                    speakCurrentSentence();
+                }
             };
 
-            utterance.onerror = () => {
-                clearInterval(speechTickerTimer);
-                clearInterval(speechKeepaliveTimer);
-                isAudioPlaying = false;
-                updateAudioUI();
+            utterance.onerror = (e) => {
+                console.warn('Speech error on sentence:', e);
+                if (isAudioPlaying) {
+                    currentSentenceIdx++;
+                    speakCurrentSentence();
+                }
             };
 
             window.speechSynthesis.speak(utterance);
-            currentSpeechUtterance = utterance;
-            isAudioPlaying = true;
-            updateAudioUI();
+        }
+
+        function togglePlayPauseAudio() {
+            if (!('speechSynthesis' in window)) return;
+
+            if (currentSentences.length === 0) {
+                openAudioSectionModal();
+                return;
+            }
+
+            if (isAudioPlaying) {
+                // Instant 0ms pause with cancel()
+                isAudioPlaying = false;
+                window.speechSynthesis.cancel();
+                updateAudioUI();
+            } else {
+                // Instant 0ms resume from currentSentenceIdx
+                isAudioPlaying = true;
+                updateAudioUI();
+                speakCurrentSentence();
+            }
         }
 
         function setAudioPlaybackRate(rate) {
@@ -2206,36 +2282,42 @@
                     pill.classList.remove('active');
                 }
             });
-            if (isAudioPlaying && CHAPTERS[currentChapterIdx]) {
-                playQueueItem(CHAPTERS[currentChapterIdx]);
+            if (isAudioPlaying) {
+                window.speechSynthesis.cancel();
+                speakCurrentSentence();
             }
         }
 
         function onAudioScrub(val) {
-            // Visual scrubber
+            if (!currentSentences || currentSentences.length === 0) return;
+            const pct = parseFloat(val) / 100;
+            currentSentenceIdx = Math.min(currentSentences.length - 1, Math.floor(pct * currentSentences.length));
+            audioElapsedSec = pct * estTotalDurationSec;
+            const curTimeEl = document.getElementById('audioCurrentTime');
+            if (curTimeEl) curTimeEl.innerText = formatTime(audioElapsedSec);
+            if (isAudioPlaying) {
+                window.speechSynthesis.cancel();
+                speakCurrentSentence();
+            }
         }
 
         function prevAudioTrack() {
-            if (chapterQueueIdx > 0) {
-                chapterQueueIdx--;
-                const ch = CHAPTERS[currentChapterIdx];
-                if (ch) playQueueItem(ch);
-            } else if (currentChapterIdx > 0) {
+            if (currentChapterIdx > 0) {
                 currentChapterIdx--;
-                renderChapterView();
-                if (isAudioPlaying) speakCurrentChapterSection();
+                selectChapter(currentChapterIdx);
+                if (isAudioPlaying) {
+                    playAudioSection(activeAudioSectionType);
+                }
             }
         }
 
         function nextAudioTrack() {
-            if (chapterQueueIdx + 1 < chapterAudioQueue.length) {
-                chapterQueueIdx++;
-                const ch = CHAPTERS[currentChapterIdx];
-                if (ch) playQueueItem(ch);
-            } else if (currentChapterIdx + 1 < CHAPTERS.length) {
+            if (currentChapterIdx + 1 < CHAPTERS.length) {
                 currentChapterIdx++;
-                renderChapterView();
-                if (isAudioPlaying) speakCurrentChapterSection();
+                selectChapter(currentChapterIdx);
+                if (isAudioPlaying) {
+                    playAudioSection(activeAudioSectionType);
+                }
             }
         }
 
@@ -2244,8 +2326,9 @@
                 window.speechSynthesis.cancel();
             }
             clearInterval(speechTickerTimer);
-            clearInterval(speechKeepaliveTimer);
             isAudioPlaying = false;
+            currentSentences = [];
+            currentSentenceIdx = 0;
             const dock = document.getElementById('masterAudioDock');
             if (dock) dock.classList.add('hidden');
             updateAudioUI();
@@ -2606,6 +2689,20 @@
                 <div id="tabContentContainer">
                     ${getTabHTML(ch, activeTab)}
                 </div>
+
+                <div class="chapter-bottom-nav">
+                    <div class="bottom-nav-label">Switch Section:</div>
+                    <div class="bottom-nav-buttons">
+                        <button class="bottom-nav-btn ${activeTab === 'master' ? 'active' : ''}" data-tab="master" onclick="switchTab('master'); window.scrollTo({ top: 0, behavior: 'smooth' });">15-Mark Master</button>
+                        <button class="bottom-nav-btn ${activeTab === 'layman' ? 'active' : ''}" data-tab="layman" onclick="switchTab('layman'); window.scrollTo({ top: 0, behavior: 'smooth' });">Layman's</button>
+                        <button class="bottom-nav-btn ${activeTab === 'types' ? 'active' : ''}" data-tab="types" onclick="switchTab('types'); window.scrollTo({ top: 0, behavior: 'smooth' });">Explorer</button>
+                        <button class="bottom-nav-btn ${activeTab === 'diagrams' ? 'active' : ''}" data-tab="diagrams" onclick="switchTab('diagrams'); window.scrollTo({ top: 0, behavior: 'smooth' });">Spotters</button>
+                        <button class="bottom-nav-btn ${activeTab === 'viva' ? 'active' : ''}" data-tab="viva" onclick="switchTab('viva'); window.scrollTo({ top: 0, behavior: 'smooth' });">Viva Pearls</button>
+                        <button class="bottom-nav-btn ${activeTab === 'quiz' ? 'active' : ''}" data-tab="quiz" onclick="switchTab('quiz'); window.scrollTo({ top: 0, behavior: 'smooth' });">Flashcards</button>
+                        <button class="bottom-nav-btn ${activeTab === 'exam' ? 'active' : ''}" data-tab="exam" onclick="switchTab('exam'); window.scrollTo({ top: 0, behavior: 'smooth' });">Exam Rubric</button>
+                        <button class="bottom-nav-btn ${activeTab === 'notes' ? 'active' : ''}" data-tab="notes" onclick="switchTab('notes'); window.scrollTo({ top: 0, behavior: 'smooth' });">My Notes</button>
+                    </div>
+                </div>
             `;
         }
 
@@ -2622,6 +2719,10 @@
                 }
             });
             document.querySelectorAll('.mobile-bottom-tab').forEach(btn => {
+                const bTab = btn.getAttribute('data-tab');
+                btn.classList.toggle('active', bTab === tab);
+            });
+            document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
                 const bTab = btn.getAttribute('data-tab');
                 btn.classList.toggle('active', bTab === tab);
             });
