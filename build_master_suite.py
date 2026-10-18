@@ -544,12 +544,38 @@ p.content-para {{
     return "\n".join(html_parts)
 
 def generate_interactive_website(chapters, b64_images):
+    import re
     # Pre-clean chapters data so no raw LaTeX or unrendered math leaks into JavaScript
     cleaned_chapters = []
-    for ch in chapters:
+    for idx, ch in enumerate(chapters):
+        # Derive curriculum category
+        if idx < 6:
+            category = "General Surgery & Critical Care"
+        elif idx < 11:
+            category = "Neck & Faciomaxillary Surgery"
+        elif idx < 18:
+            category = "Specialized Infections, Neuro & Operative"
+        elif idx < 23:
+            category = "Advanced Technologies & Endocrine"
+        else:
+            category = "Rapid Revision & Cheat Sheet"
+
+        word_count = sum(len(s_v.split()) for s_v in ch["sections"].values())
+        word_count += len(ch.get("essay_prompt", "").split())
+        word_count += len(ch.get("layman_explanation", "").split())
+        read_minutes = max(5, round(word_count / 180))
+
+        clean_title = re.sub(r'^(Chapter\s*\d+[:.]*|\d+[\.:\s]+)', '', ch["title"], flags=re.IGNORECASE).strip()
+        slug = re.sub(r'[^a-zA-Z0-9]+', '-', clean_title).strip('-').lower()
+
         ch_clean = {
             "id": ch["id"],
+            "slug": slug,
             "title": ch["title"],
+            "category": category,
+            "readMinutes": read_minutes,
+            "readingTime": f"{read_minutes} min read",
+            "tags": [category, "surgery", slug, ch["id"]],
             "source": ch["source"],
             "essay_prompt": format_inline_markdown(ch["essay_prompt"]),
             "layman_explanation": format_inline_markdown(ch["layman_explanation"]),
@@ -600,6 +626,7 @@ def generate_interactive_website(chapters, b64_images):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="portal-core/core-shell.css">
+<script src="portal-core/core-engine.js"></script>
 <style>
 :root {{
     /* Per-portal Accent: Surgery Teal */
@@ -3789,76 +3816,11 @@ body.dark .diagram-item img {{
 </head>
 <body class="dark">
 
-<div id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
-
-<aside class="sidebar" id="sidebar">
-    <div class="brand-block" onclick="openDashboardView()">
-        <img src="favicon.svg" alt="Surgery Pro Logo" class="brand-logo-tile" width="40" height="40">
-        <div class="brand-text-stack">
-            <div class="brand-wordmark">SURGERY PRO</div>
-            <div class="brand-subtitle">Clinical Monograph · Paper I</div>
-        </div>
-    </div>
-
-    <div class="sidebar-back-row">
-        <a href="https://krrish41.github.io/bds-vault/#surgery" class="back-to-vault-btn" data-testid="back-to-vault" aria-label="Back to BDS Clinical Vault">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            <span>BDS Clinical Vault</span>
-        </a>
-    </div>
-
-    <div class="sidebar-header" style="border-bottom: none; padding-bottom: 0;">
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <button class="nav-btn nav-btn-primary" id="btnNavDash" onclick="openDashboardView()" style="flex: 1; justify-content: center; font-weight: 700;">
-                {ICONS["dashboard"]} Dashboard
-            </button>
-        </div>
-        <div class="search-box">
-            <input type="text" id="searchInput" data-testid="search" class="search-input" placeholder="Search topics, signs, procedures..." aria-label="Search surgical topics and procedures">
-            <button class="search-kbd-btn" data-testid="palette" onclick="document.getElementById('searchInput').focus()" title="Command palette (Ctrl+K)"><kbd class="kbd-label">Ctrl K</kbd></button>
-        </div>
-    </div>
-
-    <div class="topic-list" id="topicList"></div>
-</aside>
+<aside class="portal-sidebar" id="sidebar"></aside>
 
 <!-- Main View Column -->
 <div class="main-column" id="mainView">
-    <div class="top-bar" data-testid="topbar">
-        <div class="top-bar-left">
-            <button class="mobile-menu-btn" onclick="toggleSidebar(true)" aria-label="Open Topics Menu">{ICONS["menu"]}</button>
-            <div class="brand" onclick="openDashboardView()" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                <img src="favicon.svg" alt="Surgery Pro" class="brand-logo-tile" width="32" height="32" style="width: 32px; height: 32px; border-radius: 8px;">
-                <div class="brand-title-group" style="display: flex; flex-direction: column;">
-                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); letter-spacing: 0.02em; line-height: 1.2;">SURGERY PRO</div>
-                    <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">Clinical Monograph · Paper I</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="top-right-tools">
-            <button class="nav-btn" data-testid="audio-walkthrough" data-action="voice-walk" onclick="togglePlayPauseAudio()" title="Continuous Audio Walk (1x-2x)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                <span class="btn-label">Audio Walk</span>
-            </button>
-            <div class="focus-timer-pill" data-testid="focus-timer">
-                <button class="nav-btn btn-focus-timer" id="btnFocusTimer" onclick="toggleStudyFocusTimer()" title="25m Focus Study Timer" aria-label="Focus Study Timer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span id="focusTimerDisplay">25:00</span>
-                </button>
-            </div>
-            <button class="nav-btn" data-testid="palette" onclick="openCmdkModal()" title="Command Palette">
-                <kbd class="kbd-label" style="font-family: monospace; font-size: 0.72rem; padding: 2px 6px; background: rgba(255,255,255,0.08); border-radius: 4px;">Ctrl K</kbd>
-            </button>
-            <button class="nav-btn" data-testid="open-pdf" onclick="openPdfModal()" title="View Master PDF">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13v-2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/><path d="M10 18h4"/></svg>
-                <span class="btn-label">Master PDF</span>
-            </button>
-            <button class="nav-btn" data-testid="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-label="Toggle dark/light mode">
-                {ICONS["moon"]}
-            </button>
-        </div>
-    </div>
+    <header class="portal-topbar" id="portalTopBar" data-testid="topbar"></header>
 
     <div class="tabs-nav-wrapper" id="topicTabsNav" style="display: none; margin: 0 16px 12px 16px;">
         <button class="tabs-arrow-btn left" id="tabArrowLeft" onclick="scrollTabsNav(-150)" title="Scroll tabs left">
@@ -4102,7 +4064,9 @@ function saveCompletion(chId, state) {{
         localStorage.setItem('bds.surgery.progress', JSON.stringify(completedTopics));
         localStorage.setItem('surgery_completed_topics', JSON.stringify(completedTopics));
     }} catch(e) {{}}
-    renderSidebar(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+    if (window.CoreEngine && CoreEngine.updateProgressDisplays) {{
+        CoreEngine.updateProgressDisplays();
+    }}
     if (currentChapterIdx === -1) {{
         renderDashboard();
     }} else {{
@@ -4123,41 +4087,21 @@ function saveTopicNotes(chId, text) {{
 }}
 
 function toggleSidebar(open) {{
-    const sb = document.getElementById('sidebar');
-    const bd = document.getElementById('sidebar-backdrop');
-    if (open) {{
-        sb.classList.add('open');
-        bd.classList.add('active');
+    if (window.CoreEngine && CoreEngine.toggleSidebar) {{
+        CoreEngine.toggleSidebar(open);
     }} else {{
-        sb.classList.remove('open');
-        bd.classList.remove('active');
+        const sb = document.getElementById('sidebar');
+        if (sb) {{
+            if (open) sb.classList.add('open');
+            else sb.classList.remove('open');
+        }}
     }}
 }}
 
 function renderSidebar(filterText = '') {{
-    const container = document.getElementById('topicList');
-    container.innerHTML = '';
-    const q = filterText.toLowerCase();
-
-    CHAPTERS.forEach((ch, idx) => {{
-        if (q && !ch.title.toLowerCase().includes(q) && !JSON.stringify(ch.sections).toLowerCase().includes(q)) {{
-            return;
-        }}
-        const isDone = !!completedTopics[ch.id];
-        const item = document.createElement('div');
-        item.className = `topic-item ${{idx === currentChapterIdx ? 'active' : ''}}`;
-        item.onclick = () => selectChapter(idx);
-        item.innerHTML = `
-            <div class="topic-check ${{isDone ? 'completed' : ''}}" onclick="event.stopPropagation(); saveCompletion('${{ch.id}}', ${{!isDone}})">
-                ${{isDone ? SVG_ICONS.check : SVG_ICONS.circle}}
-            </div>
-            <div class="topic-info">
-                <div class="topic-title">${{idx + 1}}. ${{ch.title}}</div>
-                <div class="topic-meta">Chapter ${{idx + 1}} • 25 min read</div>
-            </div>
-        `;
-        container.appendChild(item);
-    }});
+    if (window.CoreEngine && CoreEngine.onSidebarSearch) {{
+        CoreEngine.onSidebarSearch(filterText);
+    }}
 }}
 
 function getSlugForChapter(idx) {{
@@ -6469,56 +6413,59 @@ function showDashboard() {{
     openDashboardView();
 }}
 
-document.getElementById('searchInput').addEventListener('input', (e) => {{
-    renderSidebar(e.target.value);
-}});
+// Scalpel Logo SVG for Surgery Pro
+const SURGERY_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="surgBgCard" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#042f2e"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="url(#surgBgCard)" stroke="rgba(255,255,255,0.20)" stroke-width="16"/><g fill="none" stroke="#f8fafc" stroke-linecap="round" stroke-linejoin="round"><path d="M128 384 L244 268" stroke-width="28"/><line x1="148" y1="336" x2="164" y2="352" stroke="#5eead4" stroke-width="10"/><line x1="172" y1="312" x2="188" y2="328" stroke="#5eead4" stroke-width="10"/><line x1="196" y1="288" x2="212" y2="304" stroke="#5eead4" stroke-width="10"/><path d="M236 276 L252 260" stroke="#f8fafc" stroke-width="34"/><path d="M244 268 L384 128 C416 148 400 200 364 236 C324 276 276 280 244 268 Z" fill="#5eead4" fill-opacity="0.25" stroke="#ffffff" stroke-width="24"/><line x1="272" y1="240" x2="324" y2="188" stroke="#5eead4" stroke-width="12"/></g></svg>`;
 
-function openCmdkModal() {{
-    const searchInput = document.getElementById('searchInput');
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar && !sidebar.classList.contains('active')) {{
-        toggleSidebar(true);
-    }}
-    if (searchInput) {{
-        searchInput.focus();
-        searchInput.select();
-    }}
-}}
-
-function openCmdkFromDashboard() {{
-    openCmdkModal();
-}}
-
-// Keyboard Shortcuts
+// Escape to close modals
 window.addEventListener('keydown', e => {{
-    if ((e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {{
-        e.preventDefault();
-        openCmdkModal();
-    }} else if (e.key === 'Escape') {{
+    if (e.key === 'Escape') {{
         closePdfModal();
         closeDiagramModal();
         toggleSidebar(false);
     }}
 }});
 
-// Initialization: Dark by default
-const savedTheme = localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
-if (savedTheme === 'light') {{
-    document.body.classList.remove('dark');
-    document.body.classList.add('light');
-    document.documentElement.setAttribute('data-theme', 'light');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
-}} else {{
-    document.body.classList.add('dark');
-    document.body.classList.remove('light');
-    document.documentElement.setAttribute('data-theme', 'dark');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+// Initialize Shared Core Engine
+if (window.CoreEngine) {{
+    CoreEngine.init({{
+        portalKey: 'surgery',
+        name: 'SURGERY PRO',
+        subtitle: 'Paper I · Clinical monograph',
+        logoSvg: SURGERY_LOGO_SVG,
+        hubUrl: 'https://krrish41.github.io/bds-vault/#surgery',
+        pdfUrl: 'General_Surgery_Master_Notes.pdf',
+        searchPlaceholder: 'Search conditions, signs, drugs...',
+        topics: CHAPTERS.slice(0, 23),
+        currentTopicIndex: currentChapterIdx,
+        onOpenDashboard: () => {{
+            showDashboard(true);
+        }},
+        onSelectTopic: (idx) => {{
+            selectChapter(idx, true);
+        }},
+        onOpenSimulator: () => {{
+            launchExamSimFromDashboard();
+        }},
+        onOpenSpotters: () => {{
+            openDiagramSpotterFromDashboard();
+        }},
+        onOpenFlashcards: () => {{
+            selectChapter(currentChapterIdx >= 0 ? currentChapterIdx : 0);
+            setTimeout(() => switchTopicTab('quiz'), 120);
+        }},
+        onOpenCheatSheet: () => {{
+            selectChapter(23);
+        }},
+        onToggleComplete: (id, isDone) => {{
+            saveCompletion(id, isDone);
+        }},
+        onResetStatusFilter: () => {{
+            setDashFilter('all');
+        }}
+    }});
 }}
 
 // Initialize on Dashboard view
-renderSidebar();
 renderDashboard();
 initMasterAudio();
 
@@ -6583,32 +6530,32 @@ if ('serviceWorker' in navigator) {{
         </div>
     </div>
 </div>
-<script src="portal-core/core-engine.js"></script>
 </body>
 </html>
 """
     return html
 
 def main():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     print("Loading base64 diagram assets...")
     b64_images = load_diagrams_b64()
     print(f"Loaded {len(b64_images)} diagram images.")
 
     print("Generating Markdown compendium...")
     md_content = generate_markdown(ALL_CHAPTERS)
-    with open("General_Surgery_Master_Notes.md", "w", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "General_Surgery_Master_Notes.md"), "w", encoding="utf-8") as f:
         f.write(md_content)
     print("Saved General_Surgery_Master_Notes.md")
 
     print("Generating Print-Ready HTML with clean LaTeX and table parsing...")
     html_content = generate_html(ALL_CHAPTERS, b64_images)
-    with open("General_Surgery_Master_Notes.html", "w", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "General_Surgery_Master_Notes.html"), "w", encoding="utf-8") as f:
         f.write(html_content)
     print("Saved General_Surgery_Master_Notes.html")
 
     print("Generating Interactive Study Dashboard Website...")
     site_content = generate_interactive_website(ALL_CHAPTERS, b64_images)
-    with open("index.html", "w", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(site_content)
     print("Saved index.html")
 
@@ -6619,19 +6566,40 @@ def main():
         title = ch["title"]
         clean_title = re.sub(r'^(Chapter\s*\d+[:.]*|\d+[\.:\s]+)', '', title, flags=re.IGNORECASE).strip()
         slug = re.sub(r'[^a-zA-Z0-9]+', '-', clean_title).strip('-').lower()
-        is_cheat_sheet = "cheat sheet" in title.lower() or "rapid revision" in title.lower()
+        is_cheat_sheet = "cheat sheet" in title.lower() or "rapid revision" in title.lower() or idx >= 23
+
+        if idx < 6:
+            category = "General Surgery & Critical Care"
+        elif idx < 11:
+            category = "Neck & Faciomaxillary Surgery"
+        elif idx < 18:
+            category = "Specialized Infections, Neuro & Operative"
+        elif idx < 23:
+            category = "Advanced Technologies & Endocrine"
+        else:
+            category = "Rapid Revision & Cheat Sheet"
+
+        word_count = sum(len(s_v.split()) for s_v in ch["sections"].values())
+        word_count += len(ch.get("essay_prompt", "").split())
+        word_count += len(ch.get("layman_explanation", "").split())
+        read_minutes = max(5, round(word_count / 180))
+
         topics_registry.append({
             "id": slug,
             "title": title,
+            "category": category,
+            "readMinutes": read_minutes,
+            "readingTime": f"{read_minutes} min read",
             "portal": "surgery",
             "portalName": "General Surgery Pro",
             "paper": "Paper I · Surgery",
             "chapter": idx + 1,
             "type": "cheat-sheet" if is_cheat_sheet else "essay",
             "url": f"https://krrish41.github.io/general-surgery/#/topic/{slug}",
-            "order": idx + 1
+            "order": idx + 1,
+            "tags": [category, "surgery", slug]
         })
-    with open("topics.json", "w", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "topics.json"), "w", encoding="utf-8") as f:
         json.dump(topics_registry, f, indent=2)
     print(f"Emitted topics.json ({len(topics_registry)} topics).")
 
