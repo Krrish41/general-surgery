@@ -36,6 +36,9 @@
             /* Per-portal Accent: General Surgery Teal */
             --accent-primary: #14b8a6;
             --accent-primary-dark: #0f766e;
+            --accent-btn-bg: #0f766e;
+            --accent-btn-hover: #115e59;
+            --accent-btn-border: rgba(20, 184, 166, 0.55);
             --accent-light: rgba(20, 184, 166, 0.12);
             --accent-glow: rgba(20, 184, 166, 0.18);
             --border-accent: rgba(20, 184, 166, 0.28);
@@ -280,17 +283,17 @@
         }
 
         .nav-btn-primary {
-            background: #0f766e;
+            background: var(--accent-btn-bg);
             color: #ffffff !important;
-            border: 1px solid rgba(20, 184, 166, 0.45);
+            border: 1px solid var(--accent-btn-border);
             font-weight: 700;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
         }
         .nav-btn-primary:hover {
-            background: #115e59;
-            border-color: #14b8a6;
+            background: var(--accent-btn-hover);
+            border-color: var(--accent-primary);
             color: #ffffff !important;
-            box-shadow: 0 0 14px rgba(20, 184, 166, 0.4);
+            box-shadow: 0 0 14px var(--accent-glow);
         }
 
         .sidebar-header {
@@ -367,10 +370,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .filter-chip:hover, .filter-chip.active {
-            background: var(--accent-primary);
-            color: #ffffff;
+        .filter-chip:hover:not(.active) {
+            background: var(--accent-light);
+            color: var(--text-primary);
+            border-color: var(--border-accent);
+        }
+        .filter-chip.active {
+            background: var(--accent-btn-bg);
+            color: #ffffff !important;
+            border-color: var(--accent-btn-border);
+            box-shadow: 0 0 10px var(--accent-glow);
+            font-weight: 700;
+        }
+        .filter-chip.active:hover {
+            background: var(--accent-btn-hover);
             border-color: var(--accent-primary);
+            color: #ffffff !important;
         }
 
         .topic-list {
@@ -562,10 +577,11 @@
             color: var(--text-primary);
         }
         .tab-btn.active {
-            background: var(--accent-primary);
-            color: #ffffff;
-            border-color: var(--accent-primary);
+            background: var(--accent-btn-bg);
+            color: #ffffff !important;
+            border-color: var(--accent-btn-border);
             box-shadow: 0 4px 12px var(--accent-glow);
+            font-weight: 700;
         }
 
         /* 15-Mark Master Essay Reading Ergonomics */
@@ -1052,12 +1068,13 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent-primary);
+            background: var(--accent-btn-bg);
+            border: 1px solid var(--accent-btn-border);
             color: #ffffff !important;
             box-shadow: 0 4px 14px var(--accent-glow);
         }
         .audio-btn-playpause:hover {
-            background: #7e22ce;
+            background: var(--accent-btn-hover);
             transform: scale(1.04);
         }
         .audio-dock-progress-wrap {
@@ -1143,8 +1160,10 @@
             color: var(--accent-primary);
         }
         .speed-pill.active {
-            background: var(--accent-primary);
-            color: #ffffff;
+            background: var(--accent-btn-bg);
+            color: #ffffff !important;
+            border: 1px solid var(--accent-btn-border);
+            font-weight: 700;
         }
         .audio-dock-close {
             background: transparent;
