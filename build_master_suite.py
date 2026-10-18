@@ -637,18 +637,23 @@ def generate_interactive_dashboard(chapters, b64_images):
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Surgery Pro">
-    <meta name="theme-color" content="#090a12">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#090a12" id="metaThemeColor">
     <title>Surgery Pro — University Exam Monograph | BDS Clinical Vault</title>
     <script>
     (function() {{
         try {{
-            var t = localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
+            var t = localStorage.getItem('bds.theme') || localStorage.getItem('bds.surgery.theme') || localStorage.getItem('surgery_theme');
             if (t === 'light') {{
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                document.documentElement.style.colorScheme = 'light';
             }} else {{
                 document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.classList.remove('light');
                 document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
             }}
         }} catch(e) {{}}
     }})();
@@ -660,6 +665,8 @@ def generate_interactive_dashboard(chapters, b64_images):
     <script src="portal-core/core-engine.js"></script>
     <style>
         :root {{
+            color-scheme: dark;
+
             /* Per-portal Accent: General Surgery Teal */
             --accent-primary: #14b8a6;
             --accent-primary-dark: #0f766e;
@@ -694,6 +701,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         html[data-theme="light"], body.light {{
+            color-scheme: light;
             --bg-base: #f8fafc;
             --bg-surface: #ffffff;
             --bg-card: #ffffff;
@@ -710,7 +718,8 @@ def generate_interactive_dashboard(chapters, b64_images):
             --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
         }}
 
-        body.dark {{
+        html[data-theme="dark"], body.dark {{
+            color-scheme: dark;
             --bg-base: #090a12;
             --bg-surface: #101322;
             --bg-card: #101322;
@@ -1154,10 +1163,17 @@ def generate_interactive_dashboard(chapters, b64_images):
             margin-bottom: 8px;
             border: 1px solid var(--accent-primary);
         }}
+        html[data-theme="light"] .chapter-top-badge,
+        body.light .chapter-top-badge {{
+            background: rgba(20, 184, 166, 0.12);
+            color: #0f766e;
+            border-color: rgba(20, 184, 166, 0.4);
+        }}
+        html[data-theme="dark"] .chapter-top-badge,
         body.dark .chapter-top-badge {{
-            background: rgba(192, 132, 252, 0.2);
-            color: #d8b4fe;
-            border-color: #d8b4fe;
+            background: rgba(20, 184, 166, 0.18);
+            color: #5eead4;
+            border-color: rgba(20, 184, 166, 0.6);
         }}
         .chapter-title-display {{
             font-family: 'Newsreader', serif;
@@ -1592,20 +1608,21 @@ def generate_interactive_dashboard(chapters, b64_images):
             width: calc(100% - 48px);
             max-width: 1040px;
             z-index: 1050;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(28px) saturate(180%);
             -webkit-backdrop-filter: blur(28px) saturate(180%);
-            border: 1px solid rgba(147, 51, 234, 0.25);
+            border: 1px solid rgba(20, 184, 166, 0.35);
             border-radius: 22px;
             box-shadow: 0 16px 42px -6px rgba(15, 23, 42, 0.25), 0 4px 16px rgba(0, 0, 0, 0.05);
             padding: 12px 22px;
             display: block;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
         }}
-        body.dark .audio-dock {{
-            background: rgba(21, 18, 38, 0.94);
-            border: 1px solid rgba(192, 132, 252, 0.25);
-            box-shadow: 0 20px 50px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(147, 51, 234, 0.18);
+        body.dark .audio-dock,
+        html[data-theme="dark"] .audio-dock {{
+            background: rgba(16, 19, 34, 0.95);
+            border: 1px solid rgba(20, 184, 166, 0.4);
+            box-shadow: 0 20px 50px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(20, 184, 166, 0.18);
         }}
         .audio-dock.hidden {{
             transform: translate(-50%, 150%);
@@ -2807,7 +2824,7 @@ def generate_interactive_dashboard(chapters, b64_images):
             utterance.rate = audioPlaybackSpeed || 1.0;
             if (selectedVoice) utterance.voice = selectedVoice;
 
-            btn.style.color = '#c084fc';
+            btn.style.color = 'var(--accent-primary, #14b8a6)';
             utterance.onend = () => {{ btn.style.color = ''; }};
             utterance.onerror = () => {{ btn.style.color = ''; }};
             window.speechSynthesis.speak(utterance);
@@ -3225,7 +3242,7 @@ def generate_interactive_dashboard(chapters, b64_images):
                                     </div>
                                     <div class="type-card-title">${{t.name}}</div>
                                     <div class="type-card-summary" id="typeSummary_${{tIdx}}">${{parseMarkdown(t.summary)}}</div>
-                                    <button type="button" class="type-card-expand-btn" onclick="toggleTypeCardExpand(${{tIdx}})" aria-expanded="false" style="margin-top:8px; background:none; border:none; color:var(--accent-primary, #c084fc); font-size:0.75rem; font-weight:700; cursor:pointer; padding:0; display:inline-flex; align-items:center; gap:4px;">
+                                    <button type="button" class="type-card-expand-btn" onclick="toggleTypeCardExpand(${{tIdx}})" aria-expanded="false" style="margin-top:8px; background:none; border:none; color:var(--accent-primary, #14b8a6); font-size:0.75rem; font-weight:700; cursor:pointer; padding:0; display:inline-flex; align-items:center; gap:4px;">
                                         Read full criteria ▾
                                     </button>
                                 </div>
@@ -3653,7 +3670,7 @@ def generate_interactive_dashboard(chapters, b64_images):
             if (isFlashcardFlipped) {{
                 textEl.innerText = card.a;
                 tagEl.innerText = `ANSWER (CARD ${{currentFlashcardIdx + 1}} OF ${{ch.flashcards.length}})`;
-                tagEl.style.color = '#c084fc';
+                tagEl.style.color = 'var(--accent-primary, #14b8a6)';
             }} else {{
                 textEl.innerText = card.q;
                 tagEl.innerText = `QUESTION (CARD ${{currentFlashcardIdx + 1}} OF ${{ch.flashcards.length}})`;
@@ -3808,13 +3825,28 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         function toggleTheme() {{
-            const isDark = document.body.classList.toggle('dark');
-            document.body.classList.toggle('light', !isDark);
-            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-            try {{
-                localStorage.setItem('surgery_theme', isDark ? 'dark' : 'light');
-                localStorage.setItem('bds.surgery.theme', isDark ? 'dark' : 'light');
-            }} catch(e) {{}}
+            if (window.CoreEngine && typeof window.CoreEngine.toggleTheme === 'function') {{
+                window.CoreEngine.toggleTheme();
+            }} else {{
+                const isLight = document.documentElement.getAttribute('data-theme') === 'light' || document.body.classList.contains('light');
+                const next = isLight ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                document.documentElement.classList.remove('dark', 'light');
+                document.documentElement.classList.add(next);
+                document.documentElement.style.colorScheme = next;
+                if (document.body) {{
+                    document.body.classList.remove('dark', 'light');
+                    document.body.classList.add(next);
+                }}
+                const metaTheme = document.getElementById('metaThemeColor') || document.querySelector('meta[name="theme-color"]');
+                if (metaTheme) metaTheme.setAttribute('content', next === 'light' ? '#f8fafc' : '#090a12');
+                try {{
+                    localStorage.setItem('surgery_theme', next);
+                    localStorage.setItem('bds.surgery.theme', next);
+                    localStorage.setItem('bds.theme', next);
+                }} catch(e) {{}}
+            }}
+            const isDark = document.documentElement.getAttribute('data-theme') !== 'light' && !document.body.classList.contains('light');
             const btn = document.getElementById('themeToggleBtn');
             if (btn) btn.innerHTML = isDark ? '{ICONS["sun"]}' : '{ICONS["moon"]}';
         }}
