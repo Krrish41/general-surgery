@@ -5038,7 +5038,11 @@ function speakVivaPearl(btn, pearlIdx) {{
         masterAudio.pause();
     }}
     if (!('speechSynthesis' in window)) {{
-        alert('Web Speech API is not supported on this browser.');
+        if (window.CoreEngine && CoreEngine.showToast) {{
+            CoreEngine.showToast('Web Speech API is not supported on this browser.', 'error');
+        }} else {{
+            console.warn('Web Speech API is not supported on this browser.');
+        }}
         return;
     }}
 
@@ -5155,7 +5159,11 @@ function startExamTimer() {{
             updateExamClockDisplay();
         }} else {{
             pauseExamTimer();
-            alert('⏱️ Time Up! 25 minutes allocated for this 15-Mark University Essay have concluded. Submit your draft to self-grade against the university rubric.');
+            if (window.CoreEngine && CoreEngine.showToast) {{
+                CoreEngine.showToast('⏱️ Time Up! 25 minutes allocated for this 15-Mark Essay have concluded. Submit your draft to self-grade.', 'warning', 6000);
+            }} else {{
+                console.log('Exam timer ended');
+            }}
         }}
     }}, 1000);
 }}
@@ -5318,6 +5326,43 @@ function calculateTotalRubricScore() {{
     }}
     return total;
 }}
+
+function saveSurgeryEvaluation(chId) {{
+    const total = calculateTotalRubricScore();
+    let gradeLabel = 'Pass';
+    if (total >= 12.0) gradeLabel = 'Distinction / Honors';
+    else if (total >= 10.0) gradeLabel = 'First Class';
+    else if (total < 7.5) gradeLabel = 'Needs Revision';
+
+    const scores = rubricScores[chId] || {{}};
+    if (window.BdsSimulator) {{
+        window.BdsSimulator.saveEvaluation('surgery', chId, {{
+            total: parseFloat(total.toFixed(1)),
+            outOf: 15,
+            gradeLabel: gradeLabel,
+            scores: scores
+        }});
+        window.BdsSimulator.renderHistoryList('surgery', chId);
+    }}
+}}
+
+window.applyLoadedEvaluationScores = function(scores) {{
+    if (!scores) return;
+    const ch = CHAPTERS[currentChapterIdx];
+    if (!ch) return;
+    if (!rubricScores[ch.id]) rubricScores[ch.id] = {{}};
+    RUBRIC_CRITERIA.forEach(crit => {{
+        const val = scores[crit.num] !== undefined ? scores[crit.num] : 0;
+        rubricScores[ch.id][crit.num] = val;
+        const slider = document.getElementById('rubric_range_' + crit.num);
+        const valDisp = document.getElementById('rubric_val_' + crit.num);
+        const chk = document.getElementById('rubric_chk_' + crit.num);
+        if (slider) slider.value = val;
+        if (valDisp) valDisp.innerText = val.toFixed(1);
+        if (chk) chk.checked = val > 0;
+    }});
+    calculateTotalRubricScore();
+}};
 
 function submitExamForReview() {{
     pauseExamTimer();
@@ -5588,6 +5633,20 @@ function renderTopicView() {{
             }});
 
             html += `
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;">
+                                <div id="simSaveStatus" style="font-size: 7.8pt; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;"></div>
+                                <button class="btn btn-primary btn-save-evaluation" id="btnSaveEvaluation" onclick="saveSurgeryEvaluation('${{ch.id}}')" style="padding: 6px 16px; font-size: 8.5pt; font-weight: 700;">
+                                    Save Evaluation
+                                </button>
+                            </div>
+                            <div class="sim-history-pane" style="margin-top: 14px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                                <details>
+                                    <summary style="font-size: 8pt; font-weight: 700; color: var(--text-muted); cursor: pointer;">
+                                        📜 Past Evaluation Attempts &amp; Score Logs
+                                    </summary>
+                                    <div id="simHistoryList" style="margin-top: 8px;"></div>
+                                </details>
                             </div>
                         </div>
                     </div>
@@ -6143,8 +6202,12 @@ function renderTopicView() {{
         }}
     }}
 
-    if (currentTopicTab === 'master' && !isExamSimActive) {{
-        setTimeout(initScrollspy, 100);
+    if (currentTopicTab === 'master') {{
+        if (!isExamSimActive) {{
+            setTimeout(initScrollspy, 100);
+        }} else if (window.BdsSimulator && ch) {{
+            setTimeout(() => window.BdsSimulator.renderHistoryList('surgery', ch.id), 20);
+        }}
     }}
 }}
 
@@ -6575,8 +6638,8 @@ def main():
 
     if browser_bin:
         print(f"Compiling PDF via Headless Browser: {browser_bin}...")
-        html_abs = os.path.abspath("General_Surgery_Master_Notes.html")
-        pdf_abs = os.path.abspath("General_Surgery_Master_Notes.pdf")
+        html_abs = os.path.join(base_dir, "General_Surgery_Master_Notes.html")
+        pdf_abs = os.path.join(base_dir, "General_Surgery_Master_Notes.pdf")
         cmd = [
             browser_bin,
             "--headless",
@@ -6584,14 +6647,17 @@ def main():
             "--run-all-compositor-stages-before-draw",
             "--no-pdf-header-footer",
             f"--print-to-pdf={pdf_abs}",
-            html_abs
+            f"file:///{html_abs.replace(os.sep, '/')}"
         ]
-        res = subprocess.run(cmd, capture_output=True)
-        if os.path.exists(pdf_abs):
-            size_mb = os.path.getsize(pdf_abs) / (1024 * 1024)
-            print(f"Successfully compiled PDF: General_Surgery_Master_Notes.pdf ({size_mb:.2f} MB)")
-        else:
-            print("PDF generation failed:", res.stderr.decode('utf-8', 'ignore'))
+        try:
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=120)
+            if os.path.exists(pdf_abs):
+                size_mb = os.path.getsize(pdf_abs) / (1024 * 1024)
+                print(f"Successfully compiled PDF: General_Surgery_Master_Notes.pdf ({size_mb:.2f} MB)")
+            else:
+                print("PDF generation failed:", res.stderr.decode('utf-8', 'ignore'))
+        except Exception as e:
+            print("PDF generation failed with exception:", e)
     else:
         print("No headless browser found to compile PDF.")
 
