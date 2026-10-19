@@ -1869,7 +1869,7 @@ def generate_interactive_dashboard(chapters, b64_images):
 
         @media (max-width: 1024px) {{
             .audio-dock {{
-                bottom: 74px !important;
+                bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
                 padding: 10px 16px;
             }}
             .sidebar {{
@@ -1954,7 +1954,7 @@ def generate_interactive_dashboard(chapters, b64_images):
             }}
         }}
 
-        @media (max-width: 640px) {{
+        @media (max-width: 768px) {{
             .navbar {{
                 padding: 0.6rem 1rem;
             }}
@@ -1962,8 +1962,52 @@ def generate_interactive_dashboard(chapters, b64_images):
                 font-size: 1.6rem;
             }}
             .audio-dock {{
-                width: calc(100% - 24px);
-                padding: 8px 12px;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                transform: translateX(0) translateY(0) !important;
+                border-radius: 18px 18px 0 0 !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-bottom: none !important;
+                padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 16px)) 14px !important;
+                box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7) !important;
+            }}
+            .audio-dock.hidden {{
+                transform: translateX(0) translateY(120%) !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }}
+            .audio-dock-inner {{
+                gap: 8px !important;
+            }}
+            .audio-dock-meta {{
+                min-width: 0 !important;
+                flex: 1 !important;
+                gap: 8px !important;
+            }}
+            .audio-dock-track-icon {{
+                width: 32px !important;
+                height: 32px !important;
+                border-radius: 8px !important;
+            }}
+            .audio-dock-controls-wrap {{
+                min-width: 0 !important;
+                width: 100% !important;
+                order: 3 !important;
+                gap: 4px !important;
+            }}
+            .audio-dock-buttons {{
+                gap: 14px !important;
+            }}
+            .audio-btn-playpause {{
+                width: 34px !important;
+                height: 34px !important;
+            }}
+            .audio-dock-options {{
+                gap: 8px !important;
             }}
             .audio-voice-wrap {{
                 display: none;
