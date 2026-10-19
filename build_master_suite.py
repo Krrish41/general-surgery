@@ -772,7 +772,7 @@ def generate_interactive_dashboard(chapters, b64_images):
         }}
 
         /* Tactile button feedback */
-        .btn:active, .nav-btn:active, .speed-pill:active, .mobile-bottom-tab:active, .filter-chip:active {{
+        .btn:active, .nav-btn:active, .speed-pill:active, .filter-chip:active {{
             transform: scale(0.96) translateY(1px);
         }}
 
@@ -1823,43 +1823,6 @@ def generate_interactive_dashboard(chapters, b64_images):
             background: var(--bg-card-hover);
             color: #ef4444;
         }}
-
-        /* Mobile Bottom Floating Bar */
-        .mobile-bottom-bar {{
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--header-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-color);
-            padding: 6px 12px 10px 12px;
-            z-index: 90;
-            justify-content: space-around;
-        }}
-        .mobile-bottom-tab {{
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.74rem;
-            font-weight: 700;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-        }}
-        .mobile-bottom-tab.active {{
-            color: var(--accent-primary);
-        }}
-        body.is-dashboard .mobile-bottom-bar,
-        body.is-dashboard #mobileFloatingBottomBar {{
-            display: none !important;
-        }}
         body.is-dashboard .content-area {{
             padding-bottom: 36px !important;
         }}
@@ -1919,14 +1882,8 @@ def generate_interactive_dashboard(chapters, b64_images):
             .sidebar.open {{
                 transform: translateX(0);
             }}
-            .mobile-bottom-bar {{
-                display: flex;
-            }}
-            .tab-btn[data-tab="diagrams"] {{
-                display: none !important;
-            }}
             .content-area {{
-                padding: 16px 16px 140px 16px;
+                padding: 16px 16px calc(40px + env(safe-area-inset-bottom, 20px)) 16px;
             }}
             .dash-hero-card {{
                 flex-direction: column !important;
@@ -2457,30 +2414,6 @@ def generate_interactive_dashboard(chapters, b64_images):
             <!-- Dynamically rendered (Dashboard or Chapter View) -->
         </main>
     </div>
-
-    <!-- Mobile Floating Bottom Navigation Bar -->
-    <nav class="mobile-bottom-bar" id="mobileFloatingBottomBar">
-        <button class="mobile-bottom-tab" onclick="toggleMobileSidebar()">
-            {ICONS["menu"]}
-            <span>Topics</span>
-        </button>
-        <button class="mobile-bottom-tab active" data-tab="master" onclick="switchTab('master')">
-            {ICONS["master_answer"]}
-            <span>15-Mark</span>
-        </button>
-        <button class="mobile-bottom-tab" data-tab="diagrams" onclick="switchTab('diagrams')">
-            {ICONS["diagrams"]}
-            <span>Spotters</span>
-        </button>
-        <button class="mobile-bottom-tab" data-tab="viva" onclick="switchTab('viva')">
-            {ICONS["viva"]}
-            <span>Viva</span>
-        </button>
-        <button class="mobile-bottom-tab" onclick="openAudioSectionModal()">
-            {ICONS["headphones"]}
-            <span>Audio</span>
-        </button>
-    </nav>
 
     <!-- Floating Island Audio Dock -->
     <div id="masterAudioDock" class="audio-dock hidden">
@@ -3316,20 +3249,6 @@ def generate_interactive_dashboard(chapters, b64_images):
                 <div id="tabContentContainer">
                     ${{getTabHTML(ch, activeTab)}}
                 </div>
-
-                <div class="chapter-bottom-nav">
-                    <div class="bottom-nav-label">Switch Section:</div>
-                    <div class="bottom-nav-buttons">
-                        <button class="bottom-nav-btn ${{activeTab === 'master' ? 'active' : ''}}" data-tab="master" onclick="switchTab('master'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">15-Mark Master</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'layman' ? 'active' : ''}}" data-tab="layman" onclick="switchTab('layman'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Layman's</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'types' ? 'active' : ''}}" data-tab="types" onclick="switchTab('types'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Explorer</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'diagrams' ? 'active' : ''}}" data-tab="diagrams" onclick="switchTab('diagrams'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Spotters</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'viva' ? 'active' : ''}}" data-tab="viva" onclick="switchTab('viva'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Viva Pearls</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'quiz' ? 'active' : ''}}" data-tab="quiz" onclick="switchTab('quiz'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Flashcards</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'exam' ? 'active' : ''}}" data-tab="exam" onclick="switchTab('exam'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">Exam Rubric</button>
-                        <button class="bottom-nav-btn ${{activeTab === 'notes' ? 'active' : ''}}" data-tab="notes" onclick="switchTab('notes'); window.scrollTo({{ top: 0, behavior: 'smooth' }});">My Notes</button>
-                    </div>
-                </div>
             `;
         }}
 
@@ -3344,14 +3263,6 @@ def generate_interactive_dashboard(chapters, b64_images):
                 if (isMatch) {{
                     btn.scrollIntoView({{ behavior: 'smooth', block: 'nearest', inline: 'center' }});
                 }}
-            }});
-            document.querySelectorAll('.mobile-bottom-tab').forEach(btn => {{
-                const bTab = btn.getAttribute('data-tab');
-                btn.classList.toggle('active', bTab === tab);
-            }});
-            document.querySelectorAll('.bottom-nav-btn').forEach(btn => {{
-                const bTab = btn.getAttribute('data-tab');
-                btn.classList.toggle('active', bTab === tab);
             }});
 
             // Sync URL query (?tab=...)
