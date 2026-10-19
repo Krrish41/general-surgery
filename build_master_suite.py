@@ -2315,7 +2315,7 @@ def generate_interactive_dashboard(chapters, b64_images):
 
         .progress-bar-fill-dash {{
             height: 100%;
-            background: linear-gradient(90deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
+            background: linear-gradient(90deg, #0f766e 0%, #14b8a6 50%, #38bdf8 100%);
             border-radius: 999px;
             width: 0%;
             transition: width 0.4s ease;
