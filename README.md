@@ -2,7 +2,7 @@
 ### Comprehensive 15-Mark University Examination Blueprints, Clinical Viva Pearls & Interactive Study Portal for MBBS & MS General Surgery
 
 [![GitHub Pages](https://img.shields.io/badge/Live%20Web%20App-GitHub%20Pages-0284c7?style=for-the-badge&logo=github)](https://krrish41.github.io/general-surgery/)
-[![Exam Compendium PDF](https://img.shields.io/badge/Exam%20Compendium-Download%20PDF-dc2626?style=for-the-badge&logo=adobeacrobatreader)](General_Surgery_Master_Notes.pdf)
+[![Exam Compendium PDF](https://img.shields.io/badge/Exam%20Compendium-Download%20PDF-dc2626?style=for-the-badge&logo=adobeacrobatreader)](https://krrish41.github.io/general-surgery/General_Surgery_Master_Notes.pdf)
 [![Syllabus Chapters](https://img.shields.io/badge/University%20Chapters-24%20Complete-16a34a?style=for-the-badge)](General_Surgery_Master_Notes.md)
 [![Answer Standard](https://img.shields.io/badge/Answer%20Standard-15--Mark%20Format-d97706?style=for-the-badge)](General_Surgery_Master_Notes.md)
 
@@ -25,13 +25,16 @@ This repository is **Paper I** in the 4-part BDS Clinical Vault 3rd Year examina
 
 - **Live Study Dashboard & Web App**: [https://krrish41.github.io/general-surgery/](https://krrish41.github.io/general-surgery/)
   - Real-time syllabus completion tracker with persistent checkmarks (`localStorage`).
-  - Personal student clinical notes auto-saved per topic.
+  - Interactive **Audio Walkthrough Player** with speed controls (1x, 1.25x, 1.5x, 2x) and docked mobile bottom sheet.
+  - Built-in **Pomodoro Focus Timer** (25m / 50m presets with gentle audio chime).
+  - Instant **Command Palette (`Ctrl + K`)** for curriculum search with instant keyboard navigation.
+  - Timed **University Exam Simulator** with randomized clinical scenario questions.
   - Interactive **Types & Subtypes Explorer** (Shock hemodynamics, Transfusion reactions, Neck triangles, Le Fort fractures, Intracranial hematomas, Thyroid malignancies).
   - Active Recall **Flashcard Deck & Quiz** with 149 high-yield viva questions and mastery tracking.
-  - Touch-optimized, fully responsive mobile layout with Dark & Light theme modes.
-  - Built-in PDF reader with offline and direct cloud mirror viewing for tablets and mobile devices.
-- **Master Exam Monograph (Typeset PDF)**: [`General_Surgery_Master_Notes.pdf`](General_Surgery_Master_Notes.pdf)
-  - Exhaustive, print-ready, 100% copyable and selectable typeset compendium with all clinical diagrams, flowcharts, and schematics preserved.
+  - High-resolution anatomical diagrams & surgical schematics viewer.
+  - Touch-optimized responsive mobile layout with Dark Obsidian default (`#090a12`) and Light mode toggle.
+- **Master Exam Monograph (Typeset PDF)**: [`General_Surgery_Master_Notes.pdf`](https://krrish41.github.io/general-surgery/General_Surgery_Master_Notes.pdf)
+  - 143-page, print-ready, 100% copyable and selectable typeset compendium with all clinical diagrams, flowcharts, and schematics preserved.
 - **Master Markdown Notes**: [`General_Surgery_Master_Notes.md`](General_Surgery_Master_Notes.md)
 
 ---
@@ -99,7 +102,7 @@ Every surgical topic in this monograph strictly adheres to the university 15-mar
 ```text
 ├── assets/
 │   ├── diagrams/             # High-resolution clinical schematics and original anatomical sketches
-│   └── illustrations/        # High-definition 300 DPI medical illustrations
+│   └── illustrations/        # High-definition medical illustrations
 ├── content/
 │   ├── general_surgery.py    # Chapters 1–6 (Core General Surgery Principles)
 │   ├── neck_and_face.py      # Chapters 7–11 (Neck Swellings, Diathermy, Trauma)
@@ -108,11 +111,14 @@ Every surgical topic in this monograph strictly adheres to the university 15-mar
 │   ├── cheat_sheet.py        # Chapter 24 (Rapid Revision Cheat Sheet)
 │   ├── formatter.py          # Markdown, LaTeX, responsive table parser & SVG icon library
 │   └── interactive_data.py   # Interactive presets for Types & Subtypes explorer
+├── portal-core/              # Ecosystem design tokens, core-shell CSS, and engine JS mirror
+├── tests_ui_consistency/     # Automated Playwright multi-viewport UI consistency tests
 ├── build_master_suite.py     # Unified compilation script (Markdown + HTML + PDF + Web App)
 ├── index.html                # Interactive, mobile-responsive study dashboard (GitHub Pages)
-├── General_Surgery_Master_Notes.pdf # Typeset 15-mark university compendium PDF
+├── 404.html                  # Branded ecosystem routing & fallback page
+├── General_Surgery_Master_Notes.pdf # Typeset 15-mark university compendium PDF (143 pages)
 ├── General_Surgery_Master_Notes.html# Styled print-ready template
-├── General_Surgery_Master_Notes.md  # Complete markdown text
-├── favicon.svg               # Application icon
+├── General_Surgery_Master_Notes.md  # Complete master markdown text
+├── favicon.svg               # Scalpel & surgical crest SVG icon
 └── README.md                 # Repository documentation & guide
 ```
